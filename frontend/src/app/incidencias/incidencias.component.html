@@ -96,10 +96,9 @@
     <mat-spinner diameter="40" [strokeWidth]="4" [color]="'accent'"></mat-spinner>
     <span>Cargando...</span>
   </div>
-
-  <!-- Lista de Incidencias -->
-  <div class="incidencias-list-container claude-table-container" *ngIf="!cargando">
-    <table mat-table [dataSource]="incidencias" class="claude-table incidencias-table">
+  <!-- Lista de Incidencias -->  <div class="incidencias-list-container claude-table-container mat-elevation-z1" *ngIf="!cargando">
+    <div class="table-responsive-wrapper">
+      <table mat-table [dataSource]="incidencias" class="claude-table incidencias-table mat-elevation-z0">
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -154,33 +153,33 @@
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef>Fecha</th>
         <td mat-cell *matCellDef="let incidencia">{{ incidencia.fechaHora | date:'dd/MM/yyyy HH:mm' }}</td>
-      </ng-container>
-
-      <!-- Acciones Column -->
+      </ng-container>      <!-- Acciones Column -->
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let incidencia" class="actions-cell">
-          <button mat-icon-button class="claude-theme" matTooltip="Ver detalles" (click)="verIncidencia(incidencia)">
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button class="claude-theme" matTooltip="Editar" (click)="editarIncidencia(incidencia)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button class="claude-theme" matTooltip="Eliminar" (click)="eliminarIncidencia(incidencia)">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="actions-cell-wrapper">
+            <button mat-icon-button class="claude-theme action-button" matTooltip="Ver detalles" (click)="verIncidencia(incidencia)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button class="claude-theme action-button" matTooltip="Editar" (click)="editarIncidencia(incidencia)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="claude-theme action-button" matTooltip="Eliminar" (click)="eliminarIncidencia(incidencia)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="['id', 'titulo', 'tipo', 'alumnos', 'profesor', 'urgencia', 'estado', 'fecha', 'acciones']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['id', 'titulo', 'tipo', 'alumnos', 'profesor', 'urgencia', 'estado', 'fecha', 'acciones']"></tr>
-    </table>
+      <tr mat-row *matRowDef="let row; columns: ['id', 'titulo', 'tipo', 'alumnos', 'profesor', 'urgencia', 'estado', 'fecha', 'acciones']"></tr>    </table>
 
     <div *ngIf="incidencias.length === 0 && !cargando && !mensajeError" class="no-data">
       <mat-icon>info</mat-icon>
       <span>No hay incidencias que coincidan con los criterios de búsqueda.</span>
     </div>
   </div>
+  <div class="table-footer"></div>
 </div>
 
 <!-- Modal de Formulario de Incidencia -->

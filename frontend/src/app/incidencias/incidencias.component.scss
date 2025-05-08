@@ -2,7 +2,7 @@
 .incidencias-container {
   padding: var(--spacing-lg);
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: visible;
   background-color: var(--color-background);
   color: var(--color-text);
 }
@@ -106,20 +106,37 @@
 
 // Contenedor de tabla
 .incidencias-list-container {
-  overflow-x: auto;
+  // overflow-x: hidden; // Eliminado para que no interfiera con el scroll del wrapper
   margin-bottom: var(--spacing-xl);
+  width: 100%;
+  max-width: 100%;
+  // border: 1px solid var(--color-border); // Movido a table-responsive-wrapper
+  // border-radius: var(--border-radius-md); // Movido a table-responsive-wrapper
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
 }
 
 // Estilos específicos para la tabla de incidencias
 .incidencias-table {
+  width: 100%; // Aseguramos que la tabla ocupe el ancho completo
+  border-collapse: collapse;
+  border-spacing: 0;
+  // min-width removed to ajustar al contenido
+  
   .actions-cell {
     white-space: nowrap;
-    width: 1%;
+    padding: var(--spacing-sm) var(--spacing-md); // Padding igual al resto de celdas
+    display: flex;
+    align-items: center; // Centrar verticalmente el contenido
+    justify-content: flex-start;
     
     button.mat-icon-button {
       width: 36px;
       height: 36px;
       line-height: 36px;
+      margin: 0 4px; // Aumentamos el margen horizontal entre botones
+      padding: 0; // Eliminamos el padding para que los íconos se vean completos
       
       .mat-icon {
         display: flex !important;
@@ -132,6 +149,137 @@
       }
     }
   }
+  
+  th.mat-header-cell,
+  td.mat-cell {
+    border: 1px solid var(--color-border);
+  }
+  
+  th.mat-header-cell {
+    font-weight: 600; // Encabezados más visibles
+    background-color: var(--color-surface); // Fondo para los encabezados
+    white-space: nowrap; // Evitar que el texto se rompa
+    padding: var(--spacing-md) var(--spacing-lg); // Más espacio para los encabezados
+    position: sticky; // Mantener encabezados visibles al hacer scroll
+    top: 0;
+    z-index: 2;
+  }
+  
+  td.mat-cell {
+    padding: var(--spacing-sm) var(--spacing-md); // Espaciado adecuado para las celdas
+    vertical-align: middle; // Alinear contenido verticalmente
+  }
+  
+  tr.mat-row:nth-child(even) {
+    background-color: var(--color-hover); // Color alternado para filas
+  }
+  
+  tr.mat-row:hover td {
+    background-color: var(--color-surface); // Efecto hover mejorado
+  }
+  
+  tr.mat-row:last-child td {
+    border-bottom: none; // Eliminamos el borde inferior de la última fila para evitar duplicados
+  }
+
+  tr.mat-row:last-child:hover td:first-child {
+    border-bottom-left-radius: var(--border-radius-md);
+  }
+  tr.mat-row:last-child:hover td:last-child {
+    border-bottom-right-radius: var(--border-radius-md);
+  }
+}
+
+// Estilos para el contenedor de botones de acción
+.actions-cell-wrapper {
+  display: flex;
+  gap: 6px; // Aumentamos el espacio entre botones
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start; // Alinear botones al inicio (izquierda)
+  min-width: 150px; // Aseguramos un ancho mínimo suficiente
+  width: 100%; // Ocupamos todo el espacio disponible en la celda
+  padding: 0; // Eliminamos padding extra para alinear verticalmente los botones
+}
+
+.action-button {
+  flex-shrink: 0; // Evita que los botones se encojan
+  display: inline-flex !important; // Aseguramos que el botón sea inline-flex
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+// Estilos responsivos para la tabla
+@media (max-width: 768px) {
+  .incidencias-table {
+    .actions-cell {
+      padding: var(--spacing-xs); // Reducimos el padding en dispositivos móviles
+      min-width: 140px; // Ajustamos a un tamaño menor pero suficiente
+      width: 140px;
+      display: flex;
+      justify-content: center; // Centramos los botones
+      
+      button.mat-icon-button {
+        width: 34px;
+        height: 34px;
+        line-height: 34px;
+        margin: 0 2px; // Un poco más de margen en dispositivos móviles para facilitar el toque
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .incidencias-table {
+    min-width: 800px; // Ajustamos para tablets
+  }
+}
+
+// Mejora para dispositivos muy pequeños
+@media (max-width: 576px) {
+  .incidencias-list-container {
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border); // Aseguramos que haya un borde inferior en móviles
+  }
+}
+
+// Estilos para el contenedor de tabla responsiva
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // Mejora del desplazamiento en iOS
+  position: relative; // Esto ayuda con el posicionamiento de elementos dentro
+  display: flex; // Cambiamos a flex para mejor gestión del espacio
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 0; // Eliminamos el padding para evitar espacios extras
+  
+  border: 1px solid var(--color-border); // Añadido borde aquí
+  border-radius: var(--border-radius-md); // Añadido border-radius aquí
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--color-surface);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 4px;
+  }
+}
+
+// Ocultar el footer que deja un espacio inferior
+.table-footer {
+  display: none;
 }
 
 // Mensaje cuando no hay datos
@@ -142,6 +290,8 @@
   padding: var(--spacing-xl) 0;
   color: var(--color-text-muted);
   gap: var(--spacing-sm);
+  border-top: 1px solid var(--color-border); // Añadimos un borde superior para separarlo de la tabla vacía
+  width: 100%;
 
   mat-icon {
     font-size: 24px;
