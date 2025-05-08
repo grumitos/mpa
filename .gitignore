@@ -13,6 +13,9 @@ db.sqlite3
 *.log
 .env
 
+# Entorno virtual de Python
+backend/venv/
+
 # Angular / Node
 node_modules/
 dist/

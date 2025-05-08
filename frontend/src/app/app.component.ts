@@ -16,6 +16,7 @@ export class AppComponent implements AfterViewInit {
   title = 'frontend';
   showSidebar = false;
   sidebarCollapsed = false;
+  isDark = false;
 
   @ViewChild(SidebarComponent) sidebarComponent!: SidebarComponent;
 
@@ -39,6 +40,18 @@ export class AppComponent implements AfterViewInit {
     const isLoginRoute = currentUrl === '/' || currentUrl === '/login';
     this.showSidebar = isAuthenticated && !isLoginRoute;
     this.cdr.detectChanges();
+  }
+
+  ngOnInit() {
+    // Definir tema inicial
+    document.documentElement.classList.add('theme-light');
+  }
+
+  toggleTheme(): void {
+    this.isDark = !this.isDark;
+    const root = document.documentElement;
+    root.classList.toggle('theme-dark', this.isDark);
+    root.classList.toggle('theme-light', !this.isDark);
   }
 
   isAuthenticated(): boolean {
