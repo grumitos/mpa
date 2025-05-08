@@ -1,0 +1,53 @@
+<div class="login-container">
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+    <div class="logo-container">
+      <div class="app-logo outfit-bold">M</div>
+    </div>
+    
+    <h2 class="outfit-bold">Iniciar Sesión</h2>
+
+    <div class="form-group">
+      <label for="username" class="outfit-medium">Usuario:</label>
+      <input type="text"
+             id="username"
+             name="username"
+             [(ngModel)]="credentials.username"
+             required
+             #username="ngModel"
+             [ngClass]="{ 'is-invalid': loginForm.submitted && username.invalid }"
+             placeholder="Ingrese su nombre de usuario">
+      <div *ngIf="loginForm.submitted && username.invalid" class="invalid-feedback">
+        <div *ngIf="username.errors?.['required']">El nombre de usuario es requerido.</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="outfit-medium">Contraseña:</label>
+      <input type="password"
+             id="password"
+             name="password"
+             [(ngModel)]="credentials.password"
+             required
+             #password="ngModel"
+             [ngClass]="{ 'is-invalid': loginForm.submitted && password.invalid }"
+             placeholder="Ingrese su contraseña">
+      <div *ngIf="loginForm.submitted && password.invalid" class="invalid-feedback">
+        <div *ngIf="password.errors?.['required']">La contraseña es requerida.</div>
+      </div>
+    </div>
+
+    <div class="remember-forgot">
+      <div>
+        <input type="checkbox" id="remember" name="remember" [(ngModel)]="rememberMe">
+        <label for="remember" class="outfit-regular">Recordarme</label>
+      </div>
+      <a href="javascript:void(0)" class="outfit-medium">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    <div *ngIf="loginError" class="error-message outfit-medium">
+      {{ loginError }}
+    </div>
+
+    <button type="submit" class="btn-submit outfit-semibold">Entrar</button>
+  </form>
+</div>

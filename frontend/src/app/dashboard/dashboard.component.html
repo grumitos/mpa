@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1 class="outfit-bold">Dashboard</h1>
+    <p>Bienvenido de vuelta, aquí tienes un resumen de la información</p>
+  </div>
+  
+  <div class="card-grid">
+    <!-- Tarjeta de Resumen de Asistencia -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="outfit-semibold">Asistencia</h2>
+      </div>
+      <div class="card-content">
+        <p>Resumen de asistencias del mes actual</p>
+        <div class="stat-container">
+          <div class="stat">
+            <span class="stat-value outfit-bold">85%</span>
+            <span class="stat-label">Promedio</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value outfit-bold">42</span>
+            <span class="stat-label">Estudiantes</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/asistencia" class="link">Ver detalles</a>
+      </div>
+    </div>
+    
+    <!-- Tarjeta de Pagos -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="outfit-semibold">Pagos</h2>
+      </div>
+      <div class="card-content">
+        <p>Estado de pagos mensuales</p>
+        <div class="stat-container">
+          <div class="stat">
+            <span class="stat-value outfit-bold">80%</span>
+            <span class="stat-label">Completados</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value outfit-bold">8</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/economia/pagos" class="link">Ver detalles</a>
+      </div>
+    </div>
+    
+    <!-- Tarjeta de Incidencias -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="outfit-semibold">Incidencias</h2>
+      </div>
+      <div class="card-content">
+        <p>Incidencias reportadas recientemente</p>
+        <div class="stat-container">
+          <div class="stat">
+            <span class="stat-value outfit-bold">3</span>
+            <span class="stat-label">Sin resolver</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value outfit-bold">12</span>
+            <span class="stat-label">Total</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/incidencias" class="link">Ver detalles</a>
+      </div>
+    </div>
+    
+    <!-- Tarjeta de Calendario -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="outfit-semibold">Próximos eventos</h2>
+      </div>
+      <div class="card-content">
+        <ul class="event-list">
+          <li class="event-item">
+            <div class="event-date">15/05</div>
+            <div class="event-details">
+              <h3 class="outfit-medium">Entrega de notas</h3>
+              <p>Plazo final para la carga de calificaciones</p>
+            </div>
+          </li>
+          <li class="event-item">
+            <div class="event-date">20/05</div>
+            <div class="event-details">
+              <h3 class="outfit-medium">Reunión de profesores</h3>
+              <p>Sala de reuniones principal</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <a routerLink="/planificador" class="link">Ver calendario</a>
+      </div>
+    </div>
+  </div>
+</div>

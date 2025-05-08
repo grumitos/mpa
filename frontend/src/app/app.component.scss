@@ -1,0 +1,61 @@
+:host {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family, sans-serif);
+  background-color: var(--color-background, #f0f2f5);
+  color: var(--color-text-default, #333);
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100vh;
+  transition: margin-left 0.3s ease;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background-color: var(--color-background);
+}
+
+.main-content.with-sidebar {
+  margin-left: var(--sidebar-width-expanded);
+}
+
+.main-content.with-sidebar.sidebar-collapsed {
+  margin-left: var(--sidebar-width-collapsed);
+}
+
+/* Estilos para los encabezados de página */
+.page-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.page-header p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+  .main-content.with-sidebar {
+    margin-left: 0;
+  }
+  
+  .main-content.with-sidebar.sidebar-collapsed {
+    margin-left: 0;
+  }
+}

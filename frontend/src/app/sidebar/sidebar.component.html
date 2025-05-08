@@ -1,0 +1,64 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-top">
+    <button (click)="toggleCollapse()" class="collapse-button" [title]="isCollapsed ? 'Expandir menú' : 'Colapsar menú'">
+      <mat-icon>{{ isCollapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+    <div class="sidebar-header">
+      <ng-container *ngIf="!isCollapsed">
+        <span class="logo-text outfit-bold">MPA</span>
+      </ng-container>
+      <ng-container *ngIf="isCollapsed">
+        <span class="logo-icon outfit-bold">M</span>
+      </ng-container>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.path" routerLinkActive="active" [title]="item.label">
+          <span class="nav-icon">
+            <mat-icon>{{ item.icon }}</mat-icon>
+          </span>
+          <span class="nav-label outfit-regular" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button 
+      class="theme-toggle"
+      (click)="toggleTheme()"
+      [title]="theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+    >
+      <mat-icon>{{ theme === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      <span class="theme-label outfit-medium" *ngIf="!isCollapsed">
+        {{ theme === 'dark' ? 'Modo claro' : 'Modo oscuro' }}
+      </span>
+    </button>
+    
+    <div class="separator"></div>
+    
+    <!-- Contenedor para el perfil de usuario y su menú desplegable -->
+    <div class="user-menu-container">
+      <!-- Al hacer clic en este div se abrirá el menú desplegable -->
+      <div class="user-profile-preview user-clickable" (click)="toggleUserMenu($event)">
+        <div class="user-avatar outfit-medium">U</div>
+        <div class="user-info" *ngIf="!isCollapsed">
+          <span class="user-name outfit-medium">Usuario</span>
+          <span class="user-role outfit-regular">Rol</span>
+        </div>
+      </div>
+      
+      <!-- Menú desplegable que se muestra cuando isUserMenuOpen es true -->
+      <div class="user-dropdown-menu" *ngIf="isUserMenuOpen">
+        <!-- Solo incluimos la opción de cerrar sesión como solicitado -->
+        <div class="menu-item outfit-regular" (click)="logout()">
+          <span>Cerrar sesión</span>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</aside>

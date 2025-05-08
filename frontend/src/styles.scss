@@ -1,0 +1,762 @@
+/* Importación del tema de Angular Material */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+html, body { 
+  height: 100%;
+  margin: 0;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; 
+}
+
+body { 
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease; 
+  font-family: var(--font-body);
+}
+
+:root {
+  /* Configuración general */
+  --sidebar-width-expanded: 15.5rem;
+  --sidebar-width-collapsed: 4rem;
+  
+  /* Colores principales - estilo Claude */
+  --color-primary: #f97316; /* Color naranja para el acento */
+  --color-primary-rgb: 249, 115, 22;
+  --color-primary-hover: #fb923c;
+  --color-primary-text: #ffffff;
+  
+  /* Colores de estado */
+  --color-success: #45a15f;
+  --color-success-rgb: 69, 161, 95;
+  --color-error: #d9534f;
+  --color-error-rgb: 217, 83, 79;
+  --color-warning: #f0ad4e;
+  --color-warning-rgb: 240, 173, 78;
+  
+  /* Colores para modo oscuro - estilo Claude */
+  --color-background-dark: #1F1E1D; /* Fondo oscuro como en Claude */
+  --color-surface-dark: #262624; /* Superficie oscura / tarjeta */
+  --color-card-dark: #2D2C2A; /* Un poco más claro para tarjetas */
+  --color-sidebar-dark: #0F0F0E; /* Sidebar más oscuro */
+  --color-sidebar-active-bg-dark: #26252E;
+  --color-text-dark: #ECECF1; /* Texto claro */
+  --color-text-muted-dark: #A9A9B3; /* Texto secundario */
+  --color-border-dark: #3A3C40; /* Bordes oscuros */
+  --color-input-bg-dark: #212121; /* Fondo para inputs */
+  --color-hover-dark: rgba(255, 255, 255, 0.05); /* Color para hover en elementos */
+  
+  /* Colores para modo claro - estilo Claude */
+  --color-background-light: #FFFFFF; /* Fondo blanco claro */
+  --color-surface-light: #FAF9F5; /* Superficie clara / tarjeta */
+  --color-card-light: #F5F5F0; /* Un poco más oscuro para tarjetas */
+  --color-sidebar-light: #F5F5F0; /* Sidebar claro */
+  --color-sidebar-active-bg-light: #E5E5E0;
+  --color-text-light: #262626; /* Texto oscuro */
+  --color-text-muted-light: #6D6D69; /* Texto secundario */
+  --color-border-light: #E5E7EB; /* Bordes claros */
+  --color-input-bg-light: #FFFFFF; /* Fondo para inputs */
+  --color-hover-light: rgba(0, 0, 0, 0.05); /* Color para hover en elementos */
+
+  /* Radios y espaciado */
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-xxl: 24px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  /* Tipografías */
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Outfit", sans-serif;
+}
+
+/* Clases de tipografía Outfit */
+.outfit {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.outfit-thin {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.outfit-light {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.outfit-regular {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.outfit-medium {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.outfit-semibold {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.outfit-bold {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.outfit-black {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Para mantener compatibilidad con las clases existentes, redireccionamos a Outfit */
+.merriweather,
+.merriweather-light,
+.merriweather-regular,
+.merriweather-bold,
+.merriweather-black {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.merriweather-light { font-weight: 300; }
+.merriweather-regular { font-weight: 400; }
+.merriweather-bold { font-weight: 700; }
+.merriweather-black { font-weight: 900; }
+
+.montserrat,
+.montserrat-light,
+.montserrat-regular,
+.montserrat-medium,
+.montserrat-semibold,
+.montserrat-bold {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.montserrat-light { font-weight: 300; }
+.montserrat-regular { font-weight: 400; }
+.montserrat-medium { font-weight: 500; }
+.montserrat-semibold { font-weight: 600; }
+.montserrat-bold { font-weight: 700; }
+
+/* Asignación de fuentes a los elementos */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+p, span, a, button, input, textarea, select, li, label {
+  font-family: var(--font-body);
+}
+
+/* Configuración de temas */
+:root.theme-light {
+  --color-background: var(--color-background-light);
+  --color-surface: var(--color-surface-light);
+  --color-card: var(--color-card-light);
+  --color-sidebar: var(--color-sidebar-light);
+  --color-sidebar-active-bg: var(--color-sidebar-active-bg-light);
+  --color-text: var(--color-text-light);
+  --color-text-muted: var(--color-text-muted-light);
+  --color-border: var(--color-border-light);
+  --color-input-bg: var(--color-input-bg-light);
+  --color-hover: var(--color-hover-light);
+  color-scheme: light;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  
+  .mat-mdc-form-field-label,
+  .mat-mdc-select-value,
+  .mat-mdc-input-element,
+  .mat-mdc-form-field-required-marker,
+  textarea.mat-mdc-input-element {
+    color: var(--color-text) !important;
+  }
+
+  .mat-mdc-card {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+}
+
+:root.theme-dark {
+  --color-background: var(--color-background-dark);
+  --color-surface: var(--color-surface-dark);
+  --color-card: var(--color-card-dark);
+  --color-sidebar: var(--color-sidebar-dark);
+  --color-sidebar-active-bg: var(--color-sidebar-active-bg-dark);
+  --color-text: var(--color-text-dark);
+  --color-text-muted: var(--color-text-muted-dark);
+  --color-border: var(--color-border-dark);
+  --color-input-bg: var(--color-input-bg-dark);
+  --color-hover: var(--color-hover-dark);
+  color-scheme: dark;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  
+  // Estilos para los componentes de Material en modo oscuro
+  .mat-mdc-form-field .mdc-text-field--filled,
+  .mat-mdc-form-field .mdc-text-field--outlined,
+  .mat-mdc-form-field .mat-mdc-form-field-focus-overlay {
+    background-color: var(--color-surface);
+  }
+
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--color-surface);
+  }
+
+  .mat-mdc-form-field-label,
+  .mat-mdc-select-value,
+  .mat-mdc-select-arrow,
+  .mat-mdc-input-element,
+  .mat-mdc-form-field-required-marker,
+  .mdc-floating-label,
+  textarea.mat-mdc-input-element {
+    color: var(--color-text) !important;
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline__leading,
+  .mdc-text-field--outlined .mdc-notched-outline__notch,
+  .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-color: var(--color-border) !important;
+  }
+
+  // Paneles y popups
+  .mat-mdc-select-panel,
+  .mat-mdc-autocomplete-panel,
+  .mat-datepicker-content .mat-calendar,
+  .mat-mdc-menu-panel {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+
+  .mat-mdc-option {
+    color: var(--color-text) !important;
+  }
+
+  // Otros componentes de Material
+  .mat-mdc-card {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+
+  .mat-mdc-card-title, 
+  .mat-mdc-card-subtitle {
+    color: var(--color-text) !important;
+  }
+
+  // Tablas
+  .mat-mdc-table {
+    background-color: var(--color-surface) !important;
+  }
+
+  .mat-mdc-cell, 
+  .mat-mdc-header-cell {
+    color: var(--color-text) !important;
+  }
+
+  // Botones
+  .mat-mdc-button .mat-mdc-button-persistent-ripple {
+    background-color: var(--color-surface);
+  }
+
+  .mat-mdc-outlined-button {
+    border-color: var(--color-border) !important;
+  }
+
+  // Forzar colores en diálogos y popups
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+
+  /* Estilos para texto de placeholder en inputs y textareas en modo oscuro */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted) !important;
+  }
+}
+
+/* Estilos de componentes básicos - estilo Claude */
+
+/* Botones */
+button {
+  font-family: var(--font-body);
+  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.theme-light button {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.theme-light button:hover {
+  background-color: var(--color-hover);
+  border-color: var(--color-text-muted);
+}
+
+.theme-dark button {
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.theme-dark button:hover {
+  background-color: var(--color-hover);
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
+}
+
+.theme-dark button.primary,
+.theme-light button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
+
+.theme-dark button.primary:hover,
+.theme-light button.primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: var(--color-primary-text);
+}
+
+/* Corrección para modo oscuro - botón "Limpiar Filtros" */
+.theme-dark button.claude-theme {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-muted) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.theme-dark button.claude-theme:hover {
+  background-color: var(--color-hover) !important;
+  color: var(--color-text) !important;
+}
+
+/* Estilos de formulario centralizados */
+.form-group, .claude-form-group {
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+}
+
+.form-group label, .claude-form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+  text-align: left;
+  font-family: var(--font-body);
+}
+
+.form-actions, .claude-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+/* Badge de estado unificado - estilo Claude */
+.claude-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Badges para diferentes estados */
+.claude-badge--success {
+  background-color: rgba(var(--color-success-rgb), 0.1);
+  color: var(--color-success);
+}
+
+.claude-badge--error {
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  color: var(--color-error);
+}
+
+.claude-badge--warning {
+  background-color: rgba(var(--color-warning-rgb), 0.1);
+  color: var(--color-warning);
+}
+
+.claude-badge--primary {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+}
+
+/* Tablas - estilo Claude */
+.claude-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-body);
+}
+
+.claude-table th {
+  text-align: left;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.claude-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.claude-table tr:hover {
+  background-color: var(--color-hover);
+}
+
+.claude-table-container {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  margin: var(--spacing-md) 0;
+}
+
+/* Tarjetas - estilo Claude */
+.claude-card {
+  background-color: var(--color-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.3s ease;
+}
+
+.claude-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.claude-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.claude-card__title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.claude-card__content {
+  font-family: var(--font-body);
+}
+
+.claude-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+  gap: var(--spacing-sm);
+}
+
+/* Contenedor principal con estilo Claude */
+.claude-container {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.claude-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text);
+}
+
+/* Modales - estilo Claude */
+.claude-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.claude-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.claude-modal {
+  background-color: var(--color-card);
+  border-radius: var(--border-radius-lg);
+  width: 90%;
+  max-width: 50rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+.claude-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.claude-modal__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.claude-modal__close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.claude-modal__close:hover {
+  color: var(--color-text);
+}
+
+.claude-modal__body {
+  padding: var(--spacing-lg);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.claude-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Material Angular con tema Claude */
+.mat-mdc-card.claude-theme {
+  background-color: var(--color-card) !important;
+  border-radius: var(--border-radius-lg) !important;
+  padding: var(--spacing-md) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: var(--shadow-sm) !important;
+  color: var(--color-text) !important;
+}
+
+.mat-mdc-form-field.claude-theme {
+  width: 100%;
+
+  .mdc-text-field--outlined {
+    background-color: var(--color-input-bg) !important;
+    border-radius: var(--border-radius-md) !important;
+    height: auto;
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline__leading,
+  .mdc-text-field--outlined .mdc-notched-outline__notch,
+  .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-color: var(--color-border) !important;
+    border-radius: 0 !important;
+  }
+
+  /* Corregir los bordes extraños de los campos del formulario */
+  .mdc-text-field--outlined .mdc-notched-outline {
+    z-index: 1;
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline__leading {
+    border-top-left-radius: var(--border-radius-md) !important;
+    border-bottom-left-radius: var(--border-radius-md) !important;
+    border-right: none !important;
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline__notch {
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline__trailing {
+    border-top-right-radius: var(--border-radius-md) !important;
+    border-bottom-right-radius: var(--border-radius-md) !important;
+    border-left: none !important;
+  }
+
+  .mdc-text-field--focused .mdc-notched-outline__leading,
+  .mdc-text-field--focused .mdc-notched-outline__notch,
+  .mdc-text-field--focused .mdc-notched-outline__trailing {
+    border-color: var(--color-primary) !important;
+    border-width: 1px !important;
+  }
+
+  /* Asegurar que el padding interno sea consistente */
+  .mat-mdc-text-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+/* Asegurar que los iconos en los botones estén bien centrados */
+.mat-icon-button .mat-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 24px !important;
+  width: 24px !important;
+  line-height: 24px !important;
+  margin: auto !important;
+}
+
+/* Aplicar la fuente Outfit a todos los elementos */
+body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, a, li, label, th, td {
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+.mat-typography {
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+.mat-typography h1, .mat-typography h2, .mat-typography h3, 
+.mat-typography h4, .mat-typography h5, .mat-typography h6 {
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+/* Botones Material con tema Claude */
+.mat-mdc-raised-button.claude-theme-primary {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-text) !important;
+}
+
+.mat-mdc-outlined-button.claude-theme {
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.mat-mdc-outlined-button.claude-theme:hover {
+  background-color: var(--color-hover) !important;
+}
+
+/* Estilos para hacer la aplicación más centrada como Claude */
+.app-centered {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+// Override Angular Material primary and secondary colors
+:root.theme-light, .theme-light {
+  --mdc-theme-primary: var(--color-primary) !important;
+  --mdc-theme-secondary: var(--color-primary) !important;
+}
+
+:root.theme-dark, .theme-dark {
+  --mdc-theme-primary: var(--color-primary) !important;
+  --mdc-theme-secondary: var(--color-primary) !important;
+}
+
+/* Centrar iconos en botones de acciones */
+.actions-cell button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Alinear los botones de acciones en horizontal */
+.actions-cell {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: var(--spacing-sm) !important;
+  align-items: center !important;
+}
+
+/* Centrar icono de toggle del datepicker */
+.mat-datepicker-toggle .mat-icon-button, .mat-datepicker-toggle button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Ajustes de modo oscuro para el calendario */
+:root.theme-dark {
+  .mat-calendar {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+  .mat-calendar-header {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+  .mat-calendar-body-cell,
+  .mat-calendar-body-label,
+  .mat-calendar-body-disabled,
+  .mat-calendar-body-selected {
+    color: var(--color-text) !important;
+  }
+}
+
+/* Asegurar que los overlays de Material (como selectores y datepickers) aparezcan por encima de todo */
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  z-index: 10000 !important; /* Un valor muy alto para asegurar que esté por encima de todo */
+}
+
+/* Mejorar estilos de los selectores en modales */
+.claude-modal .mat-select-panel {
+  max-height: 400px !important;
+}

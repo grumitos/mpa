@@ -1,0 +1,33 @@
+# Visual Studio Code
+.vscode/
+ejemplo/
+
+# Python / Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+/static/
+/media/
+*.log
+.env
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log
+yarn-error.log
+e2e/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar package-lock.json en el raíz
+/package-lock.json

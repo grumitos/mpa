@@ -1,0 +1,161 @@
+<div class="notas-container">
+  <div class="page-header">
+    <h1 class="outfit-bold">Gestión de Notas</h1>
+    <p>Registro y seguimiento del rendimiento académico</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2 class="outfit-semibold">Filtros</h2>
+    </div>
+    <div class="card-content">
+      <div class="filters-container">
+        <div class="form-group">
+          <label for="curso">Curso</label>
+          <select id="curso" name="curso">
+            <option value="">Todos los cursos</option>
+            <option value="1">1° Primaria</option>
+            <option value="2">2° Primaria</option>
+            <option value="3">3° Primaria</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="asignatura">Asignatura</label>
+          <select id="asignatura" name="asignatura">
+            <option value="">Todas las asignaturas</option>
+            <option value="1">Matemáticas</option>
+            <option value="2">Lengua</option>
+            <option value="3">Ciencias</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="periodo">Periodo</label>
+          <select id="periodo" name="periodo">
+            <option value="1">Primer trimestre</option>
+            <option value="2">Segundo trimestre</option>
+            <option value="3">Tercer trimestre</option>
+            <option value="final">Nota final</option>
+          </select>
+        </div>
+        
+        <button class="primary">Buscar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2 class="outfit-semibold">Calificaciones</h2>
+      <div class="card-header-actions">
+        <button class="primary"><mat-icon>save</mat-icon> Guardar cambios</button>
+        <button><mat-icon>download</mat-icon> Exportar</button>
+      </div>
+    </div>
+    <div class="card-content">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Estudiante</th>
+            <th>Evaluación 1 (20%)</th>
+            <th>Evaluación 2 (30%)</th>
+            <th>Evaluación final (50%)</th>
+            <th>Nota Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="student-info">
+                <div class="student-avatar">JD</div>
+                <span class="outfit-medium">Juan Díaz</span>
+              </div>
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="8.5" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="7.8" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="9.2" class="nota-input">
+            </td>
+            <td>
+              <span class="nota-final">8.65</span>
+              <span class="calificacion calificacion-notable">Notable</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="student-info">
+                <div class="student-avatar">MP</div>
+                <span class="outfit-medium">María Pérez</span>
+              </div>
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="9.5" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="9.8" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="9.7" class="nota-input">
+            </td>
+            <td>
+              <span class="nota-final">9.68</span>
+              <span class="calificacion calificacion-sobresaliente">Sobresaliente</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="student-info">
+                <div class="student-avatar">RL</div>
+                <span class="outfit-medium">Roberto López</span>
+              </div>
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="6.2" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="5.5" class="nota-input">
+            </td>
+            <td>
+              <input type="number" min="0" max="10" step="0.1" value="4.8" class="nota-input">
+            </td>
+            <td>
+              <span class="nota-final">5.28</span>
+              <span class="calificacion calificacion-suficiente">Suficiente</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h2 class="outfit-semibold">Estadísticas</h2>
+    </div>
+    <div class="card-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title outfit-regular">Promedio de clase</div>
+          <div class="stat-value outfit-bold">7.87</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title outfit-regular">Nota más alta</div>
+          <div class="stat-value outfit-bold">9.68</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title outfit-regular">Nota más baja</div>
+          <div class="stat-value outfit-bold">5.28</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title outfit-regular">Porcentaje de aprobados</div>
+          <div class="stat-value outfit-bold">100%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
