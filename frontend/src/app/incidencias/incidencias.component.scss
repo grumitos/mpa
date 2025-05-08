@@ -1,13 +1,13 @@
-// Contenedor principal
+/* Contenedor principal */
 .incidencias-container {
   padding: var(--spacing-lg);
   max-width: 100%;
   overflow-x: visible;
-  background-color: var(--color-background);
-  color: var(--color-text);
+  background-color: var(--color-bg-lightest);
+  color: var(--color-dark);
 }
 
-// Sección de encabezado
+/* Sección de encabezado */
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -17,16 +17,16 @@
   h1 {
     margin: 0;
     font-size: 1.75rem;
-    color: var(--color-text);
+    color: var(--color-dark);
   }
 }
 
-// Estilos para la tarjeta de filtros
+/* Estilos para la tarjeta de filtros */
 .filtros-card {
   margin-bottom: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
-  background-color: var(--color-card);
-  color: var(--color-text);
+  background-color: var(--color-white);
+  color: var(--color-dark);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-lg);
 
@@ -37,7 +37,7 @@
   mat-card-title {
     font-size: 1.25rem;
     margin-bottom: 0;
-    color: var(--color-text);
+    color: var(--color-dark);
   }
 
   mat-card-content {
@@ -45,7 +45,7 @@
   }
 }
 
-// Contenedores de filtros
+/* Contenedores de filtros */
 .filtros-container {
   display: flex;
   flex-direction: column;
@@ -71,7 +71,7 @@
   }
 }
 
-// Mensaje de error
+/* Mensaje de error */
 .error-message {
   display: flex;
   align-items: center;
@@ -88,7 +88,7 @@
   }
 }
 
-// Indicador de carga
+/* Indicador de carga */
 .loading-spinner-container {
   display: flex;
   flex-direction: column;
@@ -98,13 +98,13 @@
   gap: var(--spacing-md);
 
   span {
-    color: var(--color-accent);
+    color: var(--color-primary);
     font-size: 1rem;
     margin-top: var(--spacing-sm);
   }
 }
 
-// Contenedor de tabla
+/* Contenedor de tabla */
 .incidencias-list-container {
   margin-bottom: var(--spacing-xl);
   width: 100%;
@@ -114,7 +114,7 @@
   flex-direction: column;
 }
 
-// Estilos específicos para la tabla de incidencias
+/* Estilos específicos para la tabla de incidencias */
 .incidencias-table {
   width: 100%;
   border-collapse: collapse;
@@ -153,7 +153,7 @@
   
   th.mat-header-cell {
     font-weight: 600;
-    background-color: var(--color-surface);
+    background-color: var(--color-white);
     white-space: nowrap;
     padding: var(--spacing-md) var(--spacing-lg);
     position: sticky;
@@ -167,11 +167,11 @@
   }
   
   tr.mat-row:nth-child(even) {
-    background-color: var(--color-hover);
+    background-color: var(--color-bg-light);
   }
   
   tr.mat-row:hover td {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg-lighter);
   }
   
   tr.mat-row:last-child td {
@@ -186,7 +186,7 @@
   }
 }
 
-// Estilos para el contenedor de botones de acción
+/* Estilos para el contenedor de botones de acción */
 .actions-cell-wrapper {
   display: flex;
   gap: 6px;
@@ -205,7 +205,7 @@
   justify-content: center !important;
 }
 
-// Estilos responsivos para la tabla
+/* Estilos responsivos para la tabla */
 @media (max-width: 768px) {
   .incidencias-table {
     .actions-cell {
@@ -231,7 +231,7 @@
   }
 }
 
-// Mejora para dispositivos muy pequeños
+/* Mejora para dispositivos muy pequeños */
 @media (max-width: 576px) {
   .incidencias-list-container {
     margin-left: -10px;
@@ -244,7 +244,7 @@
   }
 }
 
-// Estilos para el contenedor de tabla responsiva
+/* Estilos para el contenedor de tabla responsiva */
 .table-responsive-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -263,22 +263,22 @@
   }
   
   &::-webkit-scrollbar-track {
-    background: var(--color-surface);
+    background: var(--color-white);
     border-radius: 4px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: var(--color-accent);
+    background: var(--color-primary);
     border-radius: 4px;
   }
 }
 
-// Ocultar el footer que deja un espacio inferior
+/* Ocultar el footer que deja un espacio inferior */
 .table-footer {
   display: none;
 }
 
-// Mensaje cuando no hay datos
+/* Mensaje cuando no hay datos */
 .no-data {
   display: flex;
   align-items: center;
@@ -294,12 +294,12 @@
   }
 }
 
-// Estilos para el formulario
+/* Estilos para el formulario */
 .formulario-incidencia {
   padding: var(--spacing-sm) 0;
 }
 
-// Filas del formulario
+/* Filas del formulario */
 .form-row {
   display: flex;
   gap: var(--spacing-md);
@@ -311,7 +311,7 @@
   }
 }
 
-// Campos del formulario
+/* Campos del formulario */
 .form-field {
   flex: 1;
   min-width: 180px;
@@ -321,7 +321,7 @@
   width: 100%;
 }
 
-// Fila para carga de archivos
+/* Fila para carga de archivos */
 .file-upload-row {
   display: flex;
   align-items: center;
@@ -333,25 +333,25 @@
   }
 }
 
-// Etiqueta para carga de archivos
+/* Etiqueta para carga de archivos */
 .file-upload-label {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-surface);
+  background-color: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: background-color 0.3s;
-  color: var(--color-text);
+  color: var(--color-dark);
   
   &:hover {
-    background-color: var(--color-hover);
+    background-color: var(--color-bg-light);
   }
 }
 
-// Nombres de archivos
+/* Nombres de archivos */
 .file-names {
   color: var(--color-text-muted);
   display: flex;

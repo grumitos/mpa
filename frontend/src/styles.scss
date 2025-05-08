@@ -12,6 +12,8 @@ body {
   margin: 0;
   transition: background-color 0.2s ease, color 0.2s ease; 
   font-family: var(--font-body);
+  background-color: var(--color-bg-lightest);
+  color: var(--color-dark);
 }
 
 /* Configuración de variables globales */
@@ -49,46 +51,27 @@ body {
   --color-error-rgb: 217, 83, 79;
   --color-warning: #f0ad4e;
   --color-warning-rgb: 240, 173, 78;
-}
 
-/* Tema oscuro - Claude AI */
-.theme-dark,
-:root.theme-dark {
-  /* Colores principales */
+  /* Nueva paleta de colores */
+  --color-dark: #3D3D3A;
+  --color-darker: #141413; 
+  --color-dark-alt: #1F1E1D;
+  --color-bg-light: #F5F4ED;
+  --color-bg-lighter: #F0EEE6;
+  --color-bg-lightest: #FAF9F5;
+  --color-text-muted: #73726C;
   --color-primary: #C96442;
-  --color-primary-rgb: 201, 100, 66;
   --color-primary-hover: #D97757;
-  --color-primary-text: #FFFFFF;
+  --color-white: #FFFFFF;
   
-  /* Colores de fondo */
-  --color-background: #262624;
-  --color-surface: #30302E;
-  --color-card: #1F1E1D;
-  --color-sidebar: #0F0F0E;
-  --color-sidebar-active-bg: #3D3D3A;
-  
-  /* Colores de texto */
-  --color-text: #DEDCD1;
-  --color-text-muted: #C2C0B6;
-  --color-text-subtle: #9C9A92;
-  
-  /* Colores de borde */
-  --color-border: #3A3A38;
-  --color-border-light: #44443F;
-  
-  /* Colores de entrada/formulario */
-  --color-input-bg: #30302E;
-  --color-hover: rgba(255, 255, 255, 0.05);
-  
-  /* Colores de acento */
-  --color-accent: #D97757;
-  --color-accent-dark: #C96442;
-  --color-accent-text: #FFFFFF;
-  
-  /* Esquema de color */
-  color-scheme: dark;
-  color: var(--color-text);
-  background-color: var(--color-background);
+  /* Colores de texto y fondo para claridad */
+  --color-text: var(--color-dark);
+  --color-text-light: var(--color-text-muted);
+  --color-background: var(--color-bg-lightest);
+  --color-surface: var(--color-white);
+  --color-card: var(--color-white);
+  --color-border: var(--color-bg-lighter);
+  --color-hover: var(--color-bg-light);
 }
 
 /* Clases de tipografía Outfit */
@@ -150,42 +133,26 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
-
-.theme-dark button {
-  background-color: var(--color-surface);
-  color: var(--color-text-muted);
+  background-color: var(--color-white);
+  color: var(--color-dark);
   border: 1px solid var(--color-border);
 }
 
-.theme-dark button:hover {
-  background-color: var(--color-hover);
-  border-color: var(--color-border-light);
-  color: var(--color-text);
+button:hover {
+  background-color: var(--color-bg-light);
+  border-color: var(--color-text-muted);
+  color: var(--color-darker);
 }
 
-.theme-dark button.primary {
+button.primary {
   background-color: var(--color-primary);
-  color: var(--color-primary-text);
+  color: var(--color-white);
   border-color: var(--color-primary);
 }
 
-.theme-dark button.primary:hover {
+button.primary:hover {
   background-color: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
-  color: var(--color-primary-text);
-}
-
-.theme-dark button.accent {
-  background-color: var(--color-accent);
-  color: var(--color-accent-text);
-  border-color: var(--color-accent);
-}
-
-.theme-dark button.accent:hover {
-  background-color: var(--color-accent-dark);
-  border-color: var(--color-accent-dark);
-  color: var(--color-accent-text);
 }
 
 /* Estilos de formulario */
@@ -198,61 +165,58 @@ button {
   display: block;
   margin-bottom: var(--spacing-xs);
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--color-dark);
   font-size: 0.95rem;
   font-family: var(--font-body);
 }
 
-.theme-dark input[type="text"],
-.theme-dark input[type="password"],
-.theme-dark input[type="email"],
-.theme-dark input[type="number"],
-.theme-dark textarea,
-.theme-dark select {
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
   padding: 0.8rem 1rem;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 1rem;
   font-family: var(--font-body);
-  background-color: var(--color-input-bg);
-  color: var(--color-text);
+  background-color: var(--color-white);
+  color: var(--color-dark);
   transition: border-color 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
 }
 
-.theme-dark input:focus,
-.theme-dark textarea:focus,
-.theme-dark select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--color-primary);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+  box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.25);
 }
 
-.theme-dark input::placeholder,
-.theme-dark textarea::placeholder {
-  color: var(--color-text-subtle);
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
 }
 
-.theme-dark input.is-invalid {
+input.is-invalid {
   border-color: var(--color-error);
 }
 
 /* Cards y paneles */
 .card {
-  background-color: var(--color-surface);
+  background-color: var(--color-white);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
+  border: 1px solid var(--color-border);
   
   &.mt-4 {
     margin-top: 1.5rem;
   }
-}
-
-.theme-dark .card {
-  border: 1px solid var(--color-border);
 }
 
 .card-header {
@@ -267,7 +231,7 @@ button {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-dark);
 }
 
 .card-content {
@@ -285,14 +249,14 @@ button {
     padding: 1rem;
     border-bottom: 2px solid var(--color-border);
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--color-dark);
   }
   
   td {
     padding: 1rem;
     border-bottom: 1px solid var(--color-border);
     vertical-align: middle;
-    color: var(--color-text);
+    color: var(--color-dark);
     text-align: center;
     
     &:first-child {
@@ -301,7 +265,7 @@ button {
   }
   
   tbody tr:hover {
-    background-color: var(--color-hover);
+    background-color: var(--color-bg-light);
   }
 }
 
@@ -331,7 +295,7 @@ button {
 }
 
 .badge-primary {
-  background-color: rgba(var(--color-primary-rgb), 0.1);
+  background-color: rgba(201, 100, 66, 0.1);
   color: var(--color-primary);
 }
 
@@ -343,7 +307,7 @@ button {
 .page-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-dark);
   margin: 0;
   margin-bottom: 0.5rem;
 }
@@ -354,95 +318,93 @@ button {
   margin: 0;
 }
 
-/* Material Angular en modo oscuro */
-.theme-dark {
-  /* Form fields */
-  .mat-mdc-form-field {
-    .mdc-text-field--filled,
-    .mdc-text-field--outlined,
-    .mat-mdc-form-field-focus-overlay {
-      background-color: var(--color-input-bg);
-    }
-
-    .mat-mdc-text-field-wrapper {
-      background-color: var(--color-input-bg);
-    }
+/* Material Angular en modo claro */
+/* Form fields */
+.mat-mdc-form-field {
+  .mdc-text-field--filled,
+  .mdc-text-field--outlined,
+  .mat-mdc-form-field-focus-overlay {
+    background-color: var(--color-white);
   }
 
-  /* Form field labels and inputs */
-  .mat-mdc-form-field-label,
-  .mat-mdc-select-value,
-  .mat-mdc-select-arrow,
-  .mat-mdc-input-element,
-  .mat-mdc-form-field-required-marker,
-  .mdc-floating-label,
-  textarea.mat-mdc-input-element {
-    color: var(--color-text);
-  }
-
-  /* Form field outlines */
-  .mdc-text-field--outlined .mdc-notched-outline__leading,
-  .mdc-text-field--outlined .mdc-notched-outline__notch,
-  .mdc-text-field--outlined .mdc-notched-outline__trailing {
-    border-color: var(--color-border);
-  }
-
-  /* Panels & popups */
-  .mat-mdc-select-panel,
-  .mat-mdc-autocomplete-panel,
-  .mat-datepicker-content .mat-calendar,
-  .mat-mdc-menu-panel {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-  }
-
-  /* Options */
-  .mat-mdc-option {
-    color: var(--color-text);
-  }
-
-  /* Cards */
-  .mat-mdc-card {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-  }
-
-  .mat-mdc-card-title, 
-  .mat-mdc-card-subtitle {
-    color: var(--color-text);
-  }
-
-  /* Tables */
-  .mat-mdc-table {
-    background-color: var(--color-surface);
-  }
-
-  .mat-mdc-cell, 
-  .mat-mdc-header-cell {
-    color: var(--color-text);
-  }
-
-  /* Buttons */
-  .mat-mdc-button .mat-mdc-button-persistent-ripple {
-    background-color: var(--color-surface);
-  }
-
-  .mat-mdc-outlined-button {
-    border-color: var(--color-border);
-  }
-
-  /* Dialog containers */
-  .mat-mdc-dialog-container .mdc-dialog__surface {
-    background-color: var(--color-surface);
-    color: var(--color-text);
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--color-white);
   }
 }
 
+/* Form field labels and inputs */
+.mat-mdc-form-field-label,
+.mat-mdc-select-value,
+.mat-mdc-select-arrow,
+.mat-mdc-input-element,
+.mat-mdc-form-field-required-marker,
+.mdc-floating-label,
+textarea.mat-mdc-input-element {
+  color: var(--color-dark);
+}
+
+/* Form field outlines */
+.mdc-text-field--outlined .mdc-notched-outline__leading,
+.mdc-text-field--outlined .mdc-notched-outline__notch,
+.mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: var(--color-border);
+}
+
+/* Panels & popups */
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel,
+.mat-datepicker-content .mat-calendar,
+.mat-mdc-menu-panel {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+}
+
+/* Options */
+.mat-mdc-option {
+  color: var(--color-dark);
+}
+
+/* Cards */
+.mat-mdc-card {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+  border: 1px solid var(--color-border);
+}
+
+.mat-mdc-card-title, 
+.mat-mdc-card-subtitle {
+  color: var(--color-dark);
+}
+
+/* Tables */
+.mat-mdc-table {
+  background-color: var(--color-white);
+}
+
+.mat-mdc-cell, 
+.mat-mdc-header-cell {
+  color: var(--color-dark);
+}
+
+/* Buttons */
+.mat-mdc-button .mat-mdc-button-persistent-ripple {
+  background-color: var(--color-white);
+}
+
+.mat-mdc-outlined-button {
+  border-color: var(--color-border);
+}
+
+/* Dialog containers */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--color-white);
+  color: var(--color-dark);
+}
+
 /* Asignar color primario a Material */
-:root.theme-dark, .theme-dark {
+:root {
   --mdc-theme-primary: var(--color-primary);
-  --mdc-theme-secondary: var(--color-accent);
+  --mdc-theme-secondary: var(--color-primary-hover);
 }
 
 /* Asegurar que los overlays aparezcan encima de todo */
