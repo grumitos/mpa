@@ -96,6 +96,154 @@
     <mat-spinner diameter="40" [strokeWidth]="4" [color]="'accent'"></mat-spinner>
     <span>Cargando...</span>
   </div>
+  
+  <!-- Formulario de Nueva Incidencia Integrado -->
+  <mat-card class="formulario-integrado-card claude-theme" *ngIf="mostrarFormularioIntegrado">
+    <mat-card-header>
+      <mat-card-title>{{ modoFormulario === 'nueva' ? 'Nueva Incidencia' : 'Editar Incidencia' }}</mat-card-title>
+      <button mat-icon-button class="cerrar-formulario-btn" (click)="cerrarFormularioIntegrado()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="formularioIncidencia" class="formulario-incidencia">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width claude-theme">
+            <mat-label>Título</mat-label>
+            <input matInput formControlName="titulo" placeholder="Título de la incidencia">
+            <mat-error *ngIf="formularioIncidencia.get('titulo')?.hasError('required')">
+              El título es obligatorio
+            </mat-error>
+            <mat-error *ngIf="formularioIncidencia.get('titulo')?.hasError('maxlength')">
+              El título no puede exceder los 100 caracteres
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Tipo de incidencia</mat-label>
+            <mat-select formControlName="tipoIncidencia" (openedChange)="debugSelector('tipoIncidencia')" panelClass="select-panel-above">
+              <mat-option *ngFor="let tipo of tiposIncidencia" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formularioIncidencia.get('tipoIncidencia')?.hasError('required')">
+              El tipo de incidencia es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Nivel de urgencia</mat-label>
+            <mat-select formControlName="nivelUrgencia" panelClass="select-panel-above">
+              <mat-option *ngFor="let nivel of nivelesUrgencia" [value]="nivel">
+                {{ nivel }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formularioIncidencia.get('nivelUrgencia')?.hasError('required')">
+              El nivel de urgencia es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="estado" panelClass="select-panel-above">
+              <mat-option *ngFor="let estado of estadosIncidencia" [value]="estado">
+                {{ estado }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formularioIncidencia.get('estado')?.hasError('required')">
+              El estado es obligatorio
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Alumnos implicados</mat-label>
+            <input matInput formControlName="alumnosImplicados" placeholder="Nombres separados por comas">
+            <mat-error *ngIf="formularioIncidencia.get('alumnosImplicados')?.hasError('required')">
+              Los alumnos implicados son obligatorios
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Profesor que reporta</mat-label>
+            <input matInput formControlName="profesorReporta" placeholder="Nombre del profesor">
+            <mat-error *ngIf="formularioIncidencia.get('profesorReporta')?.hasError('required')">
+              El profesor que reporta es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Lugar del suceso</mat-label>
+            <mat-select formControlName="lugarSuceso">
+              <mat-option *ngFor="let lugar of lugaresSuceso" [value]="lugar">
+                {{ lugar }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formularioIncidencia.get('lugarSuceso')?.hasError('required')">
+              El lugar del suceso es obligatorio
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width claude-theme">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput formControlName="descripcion" rows="4" placeholder="Descripción detallada de la incidencia"></textarea>
+            <mat-error *ngIf="formularioIncidencia.get('descripcion')?.hasError('required')">
+              La descripción es obligatoria
+            </mat-error>
+            <mat-error *ngIf="formularioIncidencia.get('descripcion')?.hasError('maxlength')">
+              La descripción no puede exceder los 1000 caracteres
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field claude-theme">
+            <mat-label>Fecha y hora del suceso</mat-label>
+            <input matInput [matDatepicker]="fechaHoraPicker" formControlName="fechaHora">
+            <mat-datepicker-toggle matSuffix [for]="fechaHoraPicker"></mat-datepicker-toggle>
+            <mat-datepicker #fechaHoraPicker></mat-datepicker>
+            <mat-error *ngIf="formularioIncidencia.get('fechaHora')?.hasError('required')">
+              La fecha y hora son obligatorias
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row file-upload-row">
+          <label class="file-upload-label">
+            <mat-icon>attach_file</mat-icon>
+            <span>Adjuntar archivos</span>
+            <input type="file" multiple (change)="$event.preventDefault()" style="display:none">
+          </label>
+          <div class="file-names">
+            <span *ngIf="formularioIncidencia.get('adjuntos')?.value?.length === 0">
+              No hay archivos adjuntos
+            </span>
+            <!-- Aquí se mostrarían los nombres de archivos adjuntos -->
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="claude-form-actions">
+        <button mat-button class="claude-theme" (click)="cerrarFormularioIntegrado()">
+          Cancelar
+        </button>
+        <button 
+          mat-raised-button 
+          class="claude-theme-primary"
+          [disabled]="formularioIncidencia.invalid"
+          (click)="guardarIncidencia()">
+          Guardar
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+
   <!-- Lista de Incidencias -->  <div class="incidencias-list-container claude-table-container mat-elevation-z1" *ngIf="!cargando">
     <div class="table-responsive-wrapper">
       <table mat-table [dataSource]="incidencias" class="claude-table incidencias-table mat-elevation-z0">

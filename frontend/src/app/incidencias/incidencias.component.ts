@@ -63,6 +63,7 @@ export class IncidenciasComponent implements OnInit {
   incidenciaSeleccionada: Incidencia | null = null;
   
   formularioVisible = false;
+  mostrarFormularioIntegrado = false;
   
   modoFormulario: 'nueva' | 'ver' | 'editar' = 'nueva';
   
@@ -194,9 +195,10 @@ export class IncidenciasComponent implements OnInit {
       })
       .finally(() => this.cargando = false);
   }
-  
-  aplicarFiltros(): void {
+    aplicarFiltros(): void {
     this.cargando = true;
+    // Al aplicar filtros, cerramos el formulario integrado si está abierto
+    this.mostrarFormularioIntegrado = false;
     
     let incidenciasFiltradas = [...this.allIncidencias];
     
@@ -248,8 +250,7 @@ export class IncidenciasComponent implements OnInit {
     this.incidencias = incidenciasFiltradas;
     this.cargando = false;
   }
-  
-  limpiarFiltros(): void {
+    limpiarFiltros(): void {
     this.filtros = {
       estado: '',
       tipoIncidencia: '',
@@ -260,10 +261,11 @@ export class IncidenciasComponent implements OnInit {
       terminoBusqueda: ''
     };
     
+    // Ocultamos el formulario integrado al limpiar filtros
+    this.mostrarFormularioIntegrado = false;
     this.aplicarFiltros();
   }
-  
-  nuevaIncidencia(): void {
+    nuevaIncidencia(): void {
     this.modoFormulario = 'nueva';
     this.incidenciaSeleccionada = null;
     
@@ -280,26 +282,40 @@ export class IncidenciasComponent implements OnInit {
       adjuntos: []
     });
     
-    this.formularioVisible = true;
+    // En lugar de mostrar el modal, mostrar el formulario integrado
+    this.mostrarFormularioIntegrado = true;
+    // Hacer scroll suave hacia el formulario
+    setTimeout(() => {
+      const elemento = document.querySelector('.formulario-integrado-card');
+      if (elemento) {
+        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }
-  
-  verIncidencia(incidencia: Incidencia): void {
+    verIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'ver';
     this.incidenciaSeleccionada = { ...incidencia };
     this.formularioIncidencia.patchValue(incidencia);
     this.formularioIncidencia.disable();
+    // Para ver detalles seguimos usando el modal
     this.formularioVisible = true;
   }
-  
-  editarIncidencia(incidencia: Incidencia): void {
+    editarIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'editar';
     this.incidenciaSeleccionada = { ...incidencia };
     this.formularioIncidencia.patchValue(incidencia);
     this.formularioIncidencia.enable();
-    this.formularioVisible = true;
+    // Usar el formulario integrado en lugar del modal
+    this.mostrarFormularioIntegrado = true;
+    // Hacer scroll suave hacia el formulario
+    setTimeout(() => {
+      const elemento = document.querySelector('.formulario-integrado-card');
+      if (elemento) {
+        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }
-  
-  guardarIncidencia(): void {
+    guardarIncidencia(): void {
     if (this.formularioIncidencia.invalid) {
       this.formularioIncidencia.markAllAsTouched();
       return;
@@ -315,7 +331,12 @@ export class IncidenciasComponent implements OnInit {
         .then(updated => {
           this.allIncidencias = this.allIncidencias.map(inc => inc.id === updated.id ? updated : inc);
           this.mostrarMensaje('Incidencia actualizada correctamente');
-          this.cerrarFormulario();
+          // Cerrar formulario según dónde estemos
+          if (this.formularioVisible) {
+            this.cerrarFormulario();
+          } else if (this.mostrarFormularioIntegrado) {
+            this.cerrarFormularioIntegrado();
+          }
           this.aplicarFiltros();
         })
         .catch(err => {
@@ -328,7 +349,12 @@ export class IncidenciasComponent implements OnInit {
         .then(created => {
           this.allIncidencias.unshift(created);
           this.mostrarMensaje('Incidencia creada correctamente');
-          this.cerrarFormulario();
+          // Cerrar formulario según dónde estemos
+          if (this.formularioVisible) {
+            this.cerrarFormulario();
+          } else if (this.mostrarFormularioIntegrado) {
+            this.cerrarFormularioIntegrado();
+          }
           this.aplicarFiltros();
         })
         .catch(err => {
@@ -354,8 +380,7 @@ export class IncidenciasComponent implements OnInit {
       })
       .finally(() => this.cargando = false);
   }
-  
-  cerrarFormulario(): void {
+    cerrarFormulario(): void {
     this.formularioVisible = false;
     this.incidenciaSeleccionada = null;
     setTimeout(() => {
@@ -366,6 +391,17 @@ export class IncidenciasComponent implements OnInit {
         adjuntos: []
       });
     }, 300);
+  }
+  
+  cerrarFormularioIntegrado(): void {
+    this.mostrarFormularioIntegrado = false;
+    this.incidenciaSeleccionada = null;
+    this.formularioIncidencia.enable();
+    this.formularioIncidencia.reset({
+      estado: 'Pendiente',
+      fechaHora: new Date(),
+      adjuntos: []
+    });
   }
   
   mostrarMensaje(mensaje: string): void {
