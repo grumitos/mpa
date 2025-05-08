@@ -1,0 +1,74 @@
+.horario {
+  .schedule-container {
+    display: grid;
+    grid-template-columns: 50px repeat(7, 1fr);
+    grid-template-rows: 30px repeat(9, 60px);
+    font-family: var(--font-body);
+
+    .schedule-header {
+      display: contents;
+      background: var(--color-bg-lightest);
+
+      .time-column {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .day-column {
+        text-align: center;
+        font-weight: 600;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ccc;
+      }
+    }
+
+    .schedule-body {
+      display: contents;
+
+      .time-slot {
+        grid-column: 1;
+        text-align: right;
+        padding-right: 0.5rem;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.8rem;
+      }
+
+      .event {
+        position: relative;
+        background-color: var(--color-primary);
+        color: #fff;
+        padding: 0.2rem;
+        font-size: 0.75rem;
+        border-radius: 3px;
+        z-index: 1;
+      }
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .form-card {
+    margin-bottom: 1rem;
+  }
+
+  .fila {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+
+  table {
+    width: 100%;
+  }
+}
