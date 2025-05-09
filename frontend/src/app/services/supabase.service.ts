@@ -32,8 +32,14 @@ export class SupabaseService {
     const key = 'REDACTED_SUPABASE_ANON_KEY';
     console.log('SupabaseService: Initializing client...');
     try {
-      const opts = { auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false } };
-      this.supabase = createClient(url, key, opts as any);
+      // Cambiar a true para que Supabase guarde la sesión y envíe el JWT en cada llamada
+      this.supabase = createClient(url, key, {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: false
+        }
+      });
       console.log('SupabaseService: Client initialized:', this.supabase ? 'OK' : 'FAILED');
     } catch (e) {
       console.error('SupabaseService: Error during client initialization:', e);
@@ -241,7 +247,7 @@ export class SupabaseService {
     const { data, error } = await this.supabase
       .from(this.TABLE_NOTAS)
       .select('*')
-      .order('fecha_creacion', { ascending: false }); // Or 'estudiante_nombre', etc.
+      .order('created_at', { ascending: false });
     if (error) {
       console.error('Error fetching notas:', error);
       return [];

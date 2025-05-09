@@ -1,6 +1,22 @@
+/* Importación de fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 /* Importación del tema de Angular Material */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* Sobrescritura de colores primarios de Angular Material para alinear con nuestra paleta */
+.mat-primary {
+  --mdc-filled-button-container-color: var(--color-primary) !important;
+  --mdc-filled-button-label-text-color: var(--color-white) !important;
+  --mdc-protected-button-container-color: transparent !important;
+  --mdc-protected-button-label-text-color: var(--color-primary) !important;
+  --mdc-outlined-button-outline-color: var(--color-primary) !important;
+  --mdc-outlined-button-label-text-color: var(--color-primary) !important;
+}
+
+.mat-accent {
+  --mdc-filled-button-container-color: var(--color-primary-hover) !important;
+}
 
 html, body { 
   height: 100%;
@@ -51,27 +67,31 @@ body {
   --color-error-rgb: 217, 83, 79;
   --color-warning: #f0ad4e;
   --color-warning-rgb: 240, 173, 78;
-
-  /* Nueva paleta de colores */
-  --color-dark: #3D3D3A;
-  --color-darker: #141413; 
-  --color-dark-alt: #1F1E1D;
-  --color-bg-light: #F5F4ED;
-  --color-bg-lighter: #F0EEE6;
-  --color-bg-lightest: #FAF9F5;
-  --color-text-muted: #73726C;
-  --color-primary: #C96442;
-  --color-primary-hover: #D97757;
-  --color-white: #FFFFFF;
-  
-  /* Colores de texto y fondo para claridad */
-  --color-text: var(--color-dark);
-  --color-text-light: var(--color-text-muted);
-  --color-background: var(--color-bg-lightest);
-  --color-surface: var(--color-white);
-  --color-card: var(--color-white);
-  --color-border: var(--color-bg-lighter);
-  --color-hover: var(--color-bg-light);
+  /* Paleta de colores homogeneizada */
+  --color-dark: #3D3D3A; /* Gris oscuro principal */
+  --color-darker: #141413; /* Negro/casi negro */
+  --color-dark-alt: #1F1E1D; /* Negro ligeramente más claro */
+  --color-bg-light: #F5F4ED; /* Blanco amarillento */
+  --color-bg-lighter: #F0EEE6; /* Beige más claro */
+  --color-bg-lightest: #FAF9F5; /* Casi blanco */
+  --color-text-muted: #73726C; /* Gris medio */
+  --color-bg-muted: #E8E6DC; /* Beige claro */
+  --color-primary: #C96442; /* Naranja/terracota */
+  --color-primary-hover: #D97757; /* Naranja/terracota más claro */
+  --color-primary-rgb: 201, 100, 66; /* Valores RGB de color primario */
+  --color-white: #FFFFFF; /* Blanco puro */
+    /* Colores de texto y fondo para claridad */
+  --color-text: var(--color-dark); /* #3D3D3A */
+  --color-text-light: var(--color-text-muted); /* #73726C */
+  --color-background: var(--color-bg-lightest); /* #FAF9F5 */
+  --color-surface: var(--color-white); /* #FFFFFF */
+  --color-card: var(--color-white); /* #FFFFFF */
+  --color-border: var(--color-bg-lighter); /* #F0EEE6 */
+  --color-border-light: var(--color-bg-muted); /* #E8E6DC */
+  --color-hover: var(--color-bg-light); /* #F5F4ED */
+  --color-sidebar: var(--color-bg-light); /* #F5F4ED */
+  --color-sidebar-active-bg: var(--color-bg-muted); /* #E8E6DC */
+  --color-primary-text: var(--color-white); /* #FFFFFF */
 }
 
 /* Clases de tipografía Outfit */

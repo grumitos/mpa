@@ -2,8 +2,8 @@
   padding: var(--spacing-lg); // Use consistent spacing variables
   max-width: 100%;
   overflow-x: hidden; // Prevent horizontal scroll on main container
-  background-color: var(--color-bg-lightest);
-  color: var(--color-dark);
+  background-color: var(--color-bg-lightest); /* #FAF9F5 */
+  color: var(--color-dark); /* #3D3D3A */
 }
 
 .page-header {
@@ -11,24 +11,24 @@
   h1 {
     font-size: 1.8rem; // Slightly larger for page titles
     font-weight: 700;
-    color: var(--color-dark);
+    color: var(--color-dark); /* #3D3D3A */
     margin: 0 0 0.5rem 0;
   }
   p {
     font-family: var(--font-body);
-    color: var(--color-text-muted);
+    color: var(--color-text-muted); /* #73726C */
     margin: 0;
     font-size: 1rem;
   }
 }
 
 .card {
-  background-color: var(--color-white);
+  background-color: var(--color-white); /* #FFFFFF */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border); /* #F0EEE6 */
   
   &.mt-4 {
     margin-top: 1.5rem;
@@ -140,11 +140,10 @@
     vertical-align: middle;
     text-align: left;
   }
-
   th.mat-header-cell {
     font-weight: 600;
-    color: var(--color-dark);
-    background-color: var(--color-bg-lighter); // Light background for headers
+    color: var(--color-dark); /* #3D3D3A */
+    background-color: var(--color-bg-lighter); /* #F0EEE6 */
     position: sticky; // For sticky headers
     top: 0;
     z-index: 10;
@@ -207,30 +206,28 @@
     font-weight: 500;
     text-transform: capitalize;
   }
-
   .calificacion-sobresaliente {
     background-color: rgba(69, 161, 95, 0.15);
-    color: #3a8a4d; // Darker for better contrast
+    color: var(--color-success); /* #45a15f */
   }
   .calificacion-notable {
-    background-color: rgba(var(--color-primary-rgb), 0.15); // Use primary color variable
-    color: var(--color-primary);
+    background-color: rgba(201, 100, 66, 0.15); /* #C96442 con opacidad */
+    color: var(--color-primary); /* #C96442 */
   }
   .calificacion-suficiente {
     background-color: rgba(240, 173, 78, 0.15);
-    color: #c88f2a; // Darker for better contrast
+    color: var(--color-warning); /* #f0ad4e */
   }
   .calificacion-insuficiente {
-    background-color: rgba(var(--color-error-rgb), 0.15);
-    color: var(--color-error);
+    background-color: rgba(217, 83, 79, 0.15);
+    color: var(--color-error); /* #d9534f */
   }
   .calificacion-na {
-    background-color: var(--color-bg-muted);
-    color: var(--color-text-muted);
+    background-color: var(--color-bg-light); /* #F5F4ED */
+    color: var(--color-text-muted); /* #73726C */
   }
-
   tr.mat-row:hover td.mat-cell {
-    background-color: var(--color-bg-hover); // Subtle hover effect
+    background-color: var(--color-hover); /* #F5F4ED */
   }
 
   .no-data {

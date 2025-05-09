@@ -1,8 +1,8 @@
 // Se agregan estilos basados en cus08.css adaptados a Angular
 .contenedor-planificador {
   padding: 20px;
-  background-color: #f5f6fa;
-  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-bg-lightest); /* #FAF9F5 */
+  font-family: var(--font-body);
 }
 
 .encabezado {
@@ -27,7 +27,8 @@
 .btn-nuevo {
   margin-left: auto;
   padding: 6px 15px;
-  background-color: #ccc;
+  background-color: var(--color-primary); /* #C96442 */
+  color: var(--color-white);
   border: none;
   border-radius: 4px;
   font-weight: bold;
@@ -41,17 +42,17 @@
 }
 
 .tabla-planificador thead {
-  background-color: #e0ecff;
+  background-color: var(--color-bg-lighter); /* #F0EEE6 */
 }
 
 .tabla-planificador th, .tabla-planificador td {
   padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tabla-planificador tr:nth-child(even) {
-  background-color: #f0f8ff;
+  background-color: var(--color-bg-light); /* #F5F4ED */
 }
 
 .estado {
@@ -59,15 +60,15 @@
 }
 
 .aceptado {
-  color: green;
+  color: var(--color-success); /* #45a15f */
 }
 
 .rechazado {
-  color: red;
+  color: var(--color-error); /* #d9534f */
 }
 
 .pendiente {
-  color: orange;
+  color: var(--color-warning); /* #f0ad4e */
 }
 
 .resumen {
@@ -78,9 +79,10 @@
 }
 
 .bloque {
-  background: #e7f8f5;
+  background: var(--color-bg-light); /* #F5F4ED */
   padding: 15px 30px;
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   text-align: center;
-  box-shadow: 0 0 8px #ccc;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
 }

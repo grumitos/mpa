@@ -12,13 +12,11 @@
       .time-column {
         grid-column: 1;
         grid-row: 1;
-      }
-
-      .day-column {
+      }      .day-column {
         text-align: center;
         font-weight: 600;
         padding: 0.5rem;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid var(--color-border); /* #E8E6DC o #F0EEE6 */
       }
     }
 
@@ -29,14 +27,12 @@
         grid-column: 1;
         text-align: right;
         padding-right: 0.5rem;
-        border-top: 1px solid #e0e0e0;
+        border-top: 1px solid var(--color-border); /* #E8E6DC o #F0EEE6 */
         font-size: 0.8rem;
-      }
-
-      .event {
+      }      .event {
         position: relative;
-        background-color: var(--color-primary);
-        color: #fff;
+        background-color: var(--color-primary); /* #C96442 */
+        color: var(--color-white); /* #FFFFFF */
         padding: 0.2rem;
         font-size: 0.75rem;
         border-radius: 3px;
