@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  padding: 20px;
+  padding: var(--spacing-lg);
   background-color: var(--color-bg-lightest);
   color: var(--color-dark);
   background-image: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05) 0%, transparent 100%);
@@ -18,14 +18,14 @@
 
 .login-form {
   background: var(--color-surface);
-  padding: 2.5rem;
+  padding: var(--spacing-xl);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
   width: 100%;
   max-width: 380px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
   border: 1px solid var(--color-border);
   position: relative;
   box-sizing: border-box;
@@ -33,7 +33,7 @@
   h2 {
     text-align: center;
     color: var(--color-text);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
     font-size: 1.75rem;
     font-weight: 700;
     font-family: var(--font-heading);
@@ -42,7 +42,7 @@
 }
 
 .logo-container {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
@@ -55,137 +55,118 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 1rem;
+  margin: 0 auto var(--spacing-md);
   font-size: 1.8rem;
   font-weight: bold;
   font-family: var(--font-heading);
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.5rem;
+  margin: var(--form-field-margin);
+}
+
+.form-control {
+  padding: var(--form-control-padding);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
-
-  label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--color-text);
-    font-size: 0.95rem;
-    font-family: var(--font-body);
-  }
-
-  input[type="text"],
-  input[type="password"] {
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: var(--font-body);
-    background-color: transparent;
-    color: var(--color-text);
-    transition: border-color 0.2s ease-in-out;
-    width: 100%;
-    box-sizing: border-box;
-
-    &:focus {
-      border-color: var(--color-primary);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
-    }
-  }
-  
-  .theme-dark & input {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-  
-  .theme-light & input {
-    background-color: white;
-  }
-
-  input.is-invalid {
-    border-color: var(--color-primary);
-  }
+  height: var(--form-control-height);
 }
 
-.invalid-feedback {
-  color: var(--color-primary);
-  font-size: 0.85rem;
-  font-family: var(--font-body);
-  margin-top: 0.25rem;
+.form-control:focus {
+  border-color: var(--input-border-focus);
+  outline: none;
+  box-shadow: var(--input-shadow-focus);
 }
 
-.error-message {
-  color: var(--color-primary-text);
-  background-color: var(--color-primary);
-  border: 1px solid rgba(var(--color-primary-rgb), 0.5);
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  font-size: 0.9rem;
-  font-family: var(--font-body);
-}
-
-.btn-submit {
-  padding: 0.8rem 1.5rem;
-  background-color: var(--color-primary); /* #C96442 */
-  color: var(--color-white);
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 0.5rem;
-
-  &:hover {
-    background-color: var(--color-primary-hover); /* #D97757 */
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
+.form-control.is-invalid {
+  border-color: var(--form-error-color);
 }
 
 .remember-forgot {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: -0.5rem;
   font-size: 0.9rem;
-  font-family: var(--font-body);
-  width: 100%;
-  box-sizing: border-box;
+  margin: var(--spacing-sm) 0 var(--spacing-md);
   
-  a {
+  a.forgot-link {
     color: var(--color-primary);
     text-decoration: none;
-    font-family: var(--font-body);
     
     &:hover {
       text-decoration: underline;
     }
   }
-  
-  div {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    
-    input[type="checkbox"] {
-      margin: 0;
-      accent-color: var(--color-primary);
-    }
+}
 
-    label {
-      font-family: var(--font-body);
-    }
-  }
+.form-error, .invalid-feedback {
+  color: var(--form-error-color);
+  font-size: 0.875rem;
+  margin-top: var(--spacing-xs);
+  font-family: var(--font-body);
+}
+
+.error-message {
+  color: var(--color-primary-text);
+  background-color: var(--form-error-color);
+  border: 1px solid var(--form-error-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-top: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+}
+
+.btn-submit {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: var(--spacing-sm);
+  height: var(--form-control-height);
+}
+
+.btn-submit:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin: var(--spacing-sm) 0;
+}
+
+.form-check-input {
+  margin: 0;
+  margin-right: var(--spacing-xs);
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+}
+
+.form-check-label {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
 }
 
 @media (max-width: 480px) {

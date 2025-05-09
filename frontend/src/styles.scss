@@ -73,7 +73,8 @@ body {
   --color-primary-hover: #D97757; /* Naranja/terracota más claro */
   --color-primary-rgb: 201, 100, 66; /* Valores RGB de color primario */
   --color-white: #FFFFFF; /* Blanco puro */
-    /* Colores de texto y fondo para claridad */
+  
+  /* Colores de texto y fondo para claridad */
   --color-text: var(--color-dark); /* #3D3D3A */
   --color-text-light: var(--color-text-muted); /* #73726C */
   --color-background: var(--color-bg-lightest); /* #FAF9F5 */
@@ -85,6 +86,29 @@ body {
   --color-sidebar: var(--color-bg-light); /* #F5F4ED */
   --color-sidebar-active-bg: var(--color-bg-muted); /* #E8E6DC */
   --color-primary-text: var(--color-white); /* #FFFFFF */
+
+  /* Variables para formularios y componentes de entrada */
+  --form-control-height: 42px;
+  --form-control-padding: 0.8rem 1rem;
+  --form-field-margin: var(--spacing-md) 0;
+  --form-label-margin: 0 0 var(--spacing-xs) 0;
+  --form-card-padding: var(--spacing-lg);
+  --form-group-spacing: var(--spacing-md);
+  --form-row-spacing: var(--spacing-md);
+
+  /* Colores y estados para formularios */
+  --input-bg: transparent;
+  --input-bg-disabled: var(--color-bg-light);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-primary);
+  --input-border-error: #D32F2F;
+  --input-text: var(--color-text);
+  --input-text-disabled: var(--color-text-muted);
+  --input-placeholder: var(--color-text-muted);
+  --form-error-color: #D32F2F;
+  
+  /* Sombras de estado */
+  --input-shadow-focus: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
 }
 
 /* Clases de tipografía Outfit */
@@ -97,6 +121,11 @@ body {
 .outfit-thin {
   font-family: "Outfit", sans-serif;
   font-weight: 100;
+}
+
+.outfit-extralight {
+  font-family: "Outfit", sans-serif;
+  font-weight: 200;
 }
 
 .outfit-light {
@@ -122,6 +151,11 @@ body {
 .outfit-bold {
   font-family: "Outfit", sans-serif;
   font-weight: 700;
+}
+
+.outfit-extrabold {
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
 }
 
 .outfit-black {
@@ -452,4 +486,167 @@ textarea.mat-mdc-input-element {
   .card-content {
     padding: 1rem;
   }
+}
+
+/* Estilos comunes para formularios */
+.form-container {
+  width: 100%;
+}
+
+.form-card {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.form-content {
+  padding: var(--spacing-lg);
+}
+
+.form-group {
+  margin: var(--form-field-margin);
+}
+
+.form-label {
+  display: block;
+  margin: var(--form-label-margin);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.form-control {
+  width: 100%;
+  height: var(--form-control-height);
+  padding: var(--form-control-padding);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius-md);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: var(--input-border-focus);
+  outline: none;
+  box-shadow: var(--input-shadow-focus);
+}
+
+.form-control::placeholder {
+  color: var(--input-placeholder);
+  opacity: 0.7;
+}
+
+.form-control:disabled {
+  background-color: var(--input-bg-disabled);
+  color: var(--input-text-disabled);
+  cursor: not-allowed;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--form-row-spacing);
+  margin-bottom: var(--form-group-spacing);
+}
+
+.form-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.form-error {
+  color: var(--form-error-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-family: var(--font-body);
+}
+
+/* Estilos para select y textarea */
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem;
+}
+
+textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Checkbox y Radio personalizado */
+.form-check {
+  display: flex;
+  align-items: center;
+  margin: var(--spacing-sm) 0;
+}
+
+.form-check-input {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.form-check-label {
+  margin: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+/* Estilo para mat-form-field consistente */
+.mat-form-field {
+  width: 100%;
+  font-family: var(--font-body) !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: var(--input-border);
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: var(--input-border-focus);
+}
+
+.mat-form-field-label {
+  font-family: var(--font-body) !important;
+  color: var(--input-placeholder) !important;
+}
+
+.mat-input-element, .mat-select-value-text {
+  font-family: var(--font-body) !important;
+  color: var(--input-text) !important;
 }
