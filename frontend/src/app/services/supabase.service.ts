@@ -4,11 +4,28 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Incidencia } from '../incidencias/incidencias.component';
 import { Horario }    from '../horario/horario.component';
 
+// Define Nota interface for use within the service and by components
+export interface Nota {
+  id?: number;
+  estudiante_id: string; // Keep as snake_case to match potential DB column
+  estudiante_nombre?: string; // To store/retrieve student's name
+  curso: string;
+  asignatura: string;
+  periodo: string;
+  evaluacion1?: number | null;
+  evaluacion2?: number | null;
+  evaluacion_final_examen?: number | null;
+  nota_final_calculada?: number | null;
+  fecha_creacion?: Date; // Managed by Supabase (created_at)
+  fecha_modificacion?: Date; // Managed by Supabase (updated_at)
+}
+
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private supabase: SupabaseClient;
   private readonly TABLE_INCIDENCIAS = 'incidencias';
   private readonly TABLE_HORARIO     = 'horario';
+  private readonly TABLE_NOTAS       = 'notas'; // New table name for notas
 
   constructor() {
     const url = 'REDACTED_SUPABASE_URL';
@@ -177,5 +194,125 @@ export class SupabaseService {
       .delete()
       .eq('id', id);
     if (error) throw error;
+  }
+
+  // --- Notas ---
+  // Maps a row from Supabase (snake_case) to a Nota object for the app (camelCase)
+  private mapRowToNota(row: any): Nota {
+    return {
+      id: row.id,
+      estudiante_id: row.estudiante_id,
+      estudiante_nombre: row.estudiante_nombre,
+      curso: row.curso,
+      asignatura: row.asignatura,
+      periodo: row.periodo,
+      evaluacion1: row.evaluacion1,
+      evaluacion2: row.evaluacion2,
+      evaluacion_final_examen: row.evaluacion_final_examen,
+      nota_final_calculada: row.nota_final_calculada,
+      fecha_creacion: row.created_at ? new Date(row.created_at) : undefined, // Supabase uses 'created_at'
+      fecha_modificacion: row.updated_at ? new Date(row.updated_at) : undefined // Supabase uses 'updated_at'
+    };
+  }
+
+  // Maps a Nota object from the app (camelCase) to a row for Supabase (snake_case)
+  private mapNotaToRow(nota: Nota): any {
+    const row: any = {
+      estudiante_id: nota.estudiante_id,
+      estudiante_nombre: nota.estudiante_nombre,
+      curso: nota.curso,
+      asignatura: nota.asignatura,
+      periodo: nota.periodo,
+      evaluacion1: nota.evaluacion1,
+      evaluacion2: nota.evaluacion2,
+      evaluacion_final_examen: nota.evaluacion_final_examen,
+      nota_final_calculada: nota.nota_final_calculada
+      // id is not included for insert, handled by .eq for update
+      // created_at and updated_at are managed by Supabase
+    };
+    if (nota.id) {
+      row.id = nota.id; // Include ID for updates, but Supabase handles it in .eq()
+    }
+    return row;
+  }
+
+  async getAllNotas(): Promise<Nota[]> {
+    console.log('SupabaseService: getAllNotas()');
+    const { data, error } = await this.supabase
+      .from(this.TABLE_NOTAS)
+      .select('*')
+      .order('fecha_creacion', { ascending: false }); // Or 'estudiante_nombre', etc.
+    if (error) {
+      console.error('Error fetching notas:', error);
+      return [];
+    }
+    return (data || []).map(r => this.mapRowToNota(r));
+  }
+
+  async getNotaById(id: number): Promise<Nota | null> {
+    console.log(`SupabaseService: getNotaById(${id})`);
+    const { data, error } = await this.supabase
+      .from(this.TABLE_NOTAS)
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) {
+      console.error(`Error fetching nota with id ${id}:`, error);
+      return null;
+    }
+    return data ? this.mapRowToNota(data) : null;
+  }
+
+  async createNota(nota: Omit<Nota, 'id' | 'fecha_creacion' | 'fecha_modificacion'>): Promise<Nota | null> {
+    console.log('SupabaseService: createNota()', nota);
+    const row = this.mapNotaToRow(nota as Nota); // Cast because mapNotaToRow expects Nota
+    delete row.id; // Ensure id is not sent for creation
+
+    const { data, error } = await this.supabase
+      .from(this.TABLE_NOTAS)
+      .insert(row)
+      .select()
+      .single();
+    if (error) {
+      console.error('Error creating nota:', error, 'Row:', row);
+      return null;
+    }
+    return data ? this.mapRowToNota(data) : null;
+  }
+
+  async updateNota(nota: Nota): Promise<Nota | null> {
+    if (!nota.id) {
+      console.error('Update error: Nota ID is missing');
+      return null; // Or throw error
+    }
+    console.log('SupabaseService: updateNota()', nota);
+    const row = this.mapNotaToRow(nota);
+    // Do not send id in the update payload itself, it's used in .eq()
+    const { id, ...updateData } = row;
+
+    const { data, error } = await this.supabase
+      .from(this.TABLE_NOTAS)
+      .update(updateData)
+      .eq('id', nota.id)
+      .select()
+      .single();
+    if (error) {
+      console.error('Error updating nota:', error, 'Row:', updateData);
+      return null;
+    }
+    return data ? this.mapRowToNota(data) : null;
+  }
+
+  async deleteNota(id: number): Promise<boolean> {
+    console.log(`SupabaseService: deleteNota(${id})`);
+    const { error } = await this.supabase
+      .from(this.TABLE_NOTAS)
+      .delete()
+      .eq('id', id);
+    if (error) {
+      console.error('Error deleting nota:', error);
+      return false;
+    }
+    return true;
   }
 }

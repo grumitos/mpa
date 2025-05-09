@@ -1,39 +1,38 @@
 .notas-container {
-  padding: 0;
+  padding: var(--spacing-lg); // Use consistent spacing variables
+  max-width: 100%;
+  overflow-x: hidden; // Prevent horizontal scroll on main container
+  background-color: var(--color-bg-lightest);
+  color: var(--color-dark);
 }
 
 .page-header {
-  margin-bottom: 1.75rem;
-}
-
-.page-header h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0;
-  margin-bottom: 0.5rem;
-}
-
-.page-header p {
-  font-family: var(--font-body);
-  color: var(--color-text-muted);
-  margin: 0;
+  margin-bottom: var(--spacing-lg);
+  h1 {
+    font-size: 1.8rem; // Slightly larger for page titles
+    font-weight: 700;
+    color: var(--color-dark);
+    margin: 0 0 0.5rem 0;
+  }
+  p {
+    font-family: var(--font-body);
+    color: var(--color-text-muted);
+    margin: 0;
+    font-size: 1rem;
+  }
 }
 
 .card {
-  background-color: var(--color-surface);
+  background-color: var(--color-white);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
+  border: 1px solid var(--color-border);
   
   &.mt-4 {
     margin-top: 1.5rem;
   }
-}
-
-.theme-dark .card {
-  border: 1px solid var(--color-border);
 }
 
 .card-header {
@@ -48,208 +47,230 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-dark);
 }
 
 .card-content {
   padding: 1.5rem;
 }
 
-.filters-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  align-items: flex-end;
+.filtros-card, .notas-table-card {
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-white);
+  color: var(--color-dark);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
 
-  .form-group {
-    margin-bottom: 0;
+  mat-card-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border-light);
   }
 
-  button {
-    height: 42px;
-    align-self: flex-end;
+  mat-card-title {
+    font-size: 1.25rem;
+    font-weight: 600; // outfit-semibold equivalent
+    margin: 0;
+  }
+
+  mat-card-content {
+    padding: var(--spacing-lg);
   }
 }
 
-.data-table {
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  align-items: flex-end; // Align items to the bottom for button alignment
+
+  .filtro-field {
+    flex: 1 1 200px; // Flex grow, shrink, basis
+    min-width: 180px;
+  }
+  .filter-button {
+    height: 52px; // Match Material outlined field height
+    // If using mat-stroked-button, it might have its own padding/height rules
+  }
+}
+
+.loading-spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: var(--spacing-xl) 0;
+  gap: var(--spacing-md);
+  span {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: rgba(var(--color-error-rgb), 0.1);
+  color: var(--color-error);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  border: 1px solid transparent; // Or var(--color-error) for a solid border
+  mat-icon {
+    color: var(--color-error);
+  }
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.data-table.notas-table {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-body);
-  
-  th {
-    text-align: left;
-    padding: 1rem;
-    border-bottom: 2px solid var(--color-border);
-    font-weight: 600;
-    color: var(--color-text);
-  }
-  
-  td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--color-border);
+
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: var(--spacing-sm) var(--spacing-md); // Consistent padding
+    border-bottom: 1px solid var(--color-border-light);
     vertical-align: middle;
-    color: var(--color-text);
-    text-align: center;
-    
-    &:first-child {
-      text-align: left;
+    text-align: left;
+  }
+
+  th.mat-header-cell {
+    font-weight: 600;
+    color: var(--color-dark);
+    background-color: var(--color-bg-lighter); // Light background for headers
+    position: sticky; // For sticky headers
+    top: 0;
+    z-index: 10;
+  }
+
+  td.mat-cell {
+    color: var(--color-text-main);
+    &.actions-cell {
+      text-align: right; // Align action buttons to the right
+      min-width: 120px; // Ensure enough space for buttons
     }
   }
-  
-  tbody tr:hover {
-    background-color: rgba(var(--color-primary-rgb), 0.05);
+
+  .nota-input-field {
+    width: 80px; // Small input for grades
+    margin: -0.5rem 0; // Adjust to align better within cell padding
+    .mat-form-field-wrapper {
+      padding-bottom: 0; // Remove extra padding
+    }
+    input {
+      text-align: center;
+    }
+  }
+
+  .nota-final {
+    font-weight: bold;
+    font-size: 1.05rem;
+  }
+
+  .calificacion {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--border-radius-sm);
+    display: inline-block;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .calificacion-sobresaliente {
+    background-color: rgba(69, 161, 95, 0.15);
+    color: #3a8a4d; // Darker for better contrast
+  }
+  .calificacion-notable {
+    background-color: rgba(var(--color-primary-rgb), 0.15); // Use primary color variable
+    color: var(--color-primary);
+  }
+  .calificacion-suficiente {
+    background-color: rgba(240, 173, 78, 0.15);
+    color: #c88f2a; // Darker for better contrast
+  }
+  .calificacion-insuficiente {
+    background-color: rgba(var(--color-error-rgb), 0.15);
+    color: var(--color-error);
+  }
+  .calificacion-na {
+    background-color: var(--color-bg-muted);
+    color: var(--color-text-muted);
+  }
+
+  tr.mat-row:hover td.mat-cell {
+    background-color: var(--color-bg-hover); // Subtle hover effect
+  }
+
+  .no-data {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-muted);
+    font-style: italic;
   }
 }
 
-.student-info {
+.actions-cell-wrapper {
   display: flex;
+  gap: 6px;
+  justify-content: flex-end; // Align buttons to the end of the cell
   align-items: center;
-  gap: 0.75rem;
-}
-
-.student-avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: var(--color-primary-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  font-size: 0.85rem;
-}
-
-.nota-input {
-  width: 5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background-color: transparent;
-  color: var(--color-text);
-  font-family: var(--font-body);
-  text-align: center;
-  
-  &:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
-  }
-}
-
-.theme-dark .nota-input {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.theme-light .nota-input {
-  background-color: white;
-}
-
-.nota-final {
-  display: block;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--color-text);
-  margin-bottom: 0.25rem;
-}
-
-.calificacion {
-  font-size: 0.85rem;
-  font-family: var(--font-body);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  display: inline-block;
-  font-weight: 500;
-}
-
-.calificacion-sobresaliente {
-  background-color: rgba(69, 161, 95, 0.15);
-  color: #45a15f;
-}
-
-.calificacion-notable {
-  background-color: rgba(var(--color-primary-rgb), 0.15);
-  color: var(--color-primary);
-}
-
-.calificacion-suficiente {
-  background-color: rgba(240, 173, 78, 0.15);
-  color: #f0ad4e;
-}
-
-.calificacion-insuficiente {
-  background-color: rgba(217, 83, 79, 0.15);
-  color: #d9534f;
 }
 
 .card-header-actions {
   display: flex;
-  gap: 0.75rem;
-  
-  button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    
+  gap: var(--spacing-sm);
+  button.action-button {
     mat-icon {
-      font-size: 1.1rem;
-      width: 1.1rem;
-      height: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-right: var(--spacing-xs);
     }
   }
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  padding: 1.25rem;
-  background-color: rgba(var(--color-primary-rgb), 0.05);
-  border-radius: 8px;
-  text-align: center;
-}
-
-.stat-title {
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.stat-value {
-  font-size: 1.75rem;
-  color: var(--color-text);
-}
-
 @media (max-width: 768px) {
   .filters-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .card-header {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    .filtro-field {
+      width: 100%;
+    }
+    .filter-button {
+      width: 100%;
+      margin-top: var(--spacing-sm);
+    }
   }
-  
-  .data-table {
-    display: block;
-    overflow-x: auto;
+
+  .data-table.notas-table {
+    // On smaller screens, you might want to reduce padding or font size
+    // or implement a card-based layout for rows if the table becomes too wide.
+    th.mat-header-cell,
+    td.mat-cell {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: 0.9rem;
+    }
+    .nota-input-field {
+      width: 60px;
+    }
   }
-  
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+  .page-header h1 { font-size: 1.5rem; }
 }
 
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
+:host ::ng-deep .snackbar-success {
+  background-color: var(--color-success) !important; // Or your theme's success color
+  color: var(--color-white) !important;
+}
+
+:host ::ng-deep .snackbar-error {
+  background-color: var(--color-error) !important;
+  color: var(--color-white) !important;
+}
+
+.mt-4 {
+  margin-top: var(--spacing-lg); /* Adjust as per your spacing scale */
 }

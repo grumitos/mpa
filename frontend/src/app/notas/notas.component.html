@@ -4,158 +4,190 @@
     <p>Registro y seguimiento del rendimiento académico</p>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      <h2 class="outfit-semibold">Filtros</h2>
-    </div>
-    <div class="card-content">
-      <div class="filters-container">
-        <div class="form-group">
-          <label for="curso">Curso</label>
-          <select id="curso" name="curso">
-            <option value="">Todos los cursos</option>
-            <option value="1">1° Primaria</option>
-            <option value="2">2° Primaria</option>
-            <option value="3">3° Primaria</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="asignatura">Asignatura</label>
-          <select id="asignatura" name="asignatura">
-            <option value="">Todas las asignaturas</option>
-            <option value="1">Matemáticas</option>
-            <option value="2">Lengua</option>
-            <option value="3">Ciencias</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="periodo">Periodo</label>
-          <select id="periodo" name="periodo">
-            <option value="1">Primer trimestre</option>
-            <option value="2">Segundo trimestre</option>
-            <option value="3">Tercer trimestre</option>
-            <option value="final">Nota final</option>
-          </select>
-        </div>
-        
-        <button class="primary">Buscar</button>
-      </div>
-    </div>
+  <mat-card class="filtros-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">Filtros</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="filtroForm" class="filters-container">
+        <mat-form-field appearance="outline" class="filtro-field">
+          <mat-label>Curso</mat-label>
+          <mat-select formControlName="curso">
+            <mat-option value="">Todos los cursos</mat-option>
+            <mat-option *ngFor="let curso of cursos" [value]="curso">{{curso}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-field">
+          <mat-label>Asignatura</mat-label>
+          <mat-select formControlName="asignatura">
+            <mat-option value="">Todas las asignaturas</mat-option>
+            <mat-option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filtro-field">
+          <mat-label>Periodo</mat-label>
+          <mat-select formControlName="periodo">
+            <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-stroked-button color="primary" (click)="aplicarFiltros()" class="filter-button">
+          <mat-icon>search</mat-icon> Buscar
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="cargando" class="loading-spinner-container">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <span>Cargando notas...</span>
   </div>
 
-  <div class="card mt-4">
-    <div class="card-header">
-      <h2 class="outfit-semibold">Calificaciones</h2>
+  <div *ngIf="mensajeError" class="error-message">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ mensajeError }}</span>
+  </div>
+
+  <mat-card class="mt-4 notas-table-card" *ngIf="!cargando">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">Calificaciones</mat-card-title>
       <div class="card-header-actions">
-        <button class="primary"><mat-icon>save</mat-icon> Guardar cambios</button>
-        <button><mat-icon>download</mat-icon> Exportar</button>
+        <!-- <button mat-flat-button color="primary" (click)="agregarNuevaNota()" class="action-button">
+          <mat-icon>add</mat-icon> Nueva Nota
+        </button> -->
+        <button mat-stroked-button (click)="exportarNotas()" class="action-button">
+          <mat-icon>download</mat-icon> Exportar CSV
+        </button>
       </div>
-    </div>
-    <div class="card-content">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Estudiante</th>
-            <th>Evaluación 1 (20%)</th>
-            <th>Evaluación 2 (30%)</th>
-            <th>Evaluación final (50%)</th>
-            <th>Nota Final</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="student-info">
-                <div class="student-avatar">JD</div>
-                <span class="outfit-medium">Juan Díaz</span>
-              </div>
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="8.5" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="7.8" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="9.2" class="nota-input">
-            </td>
-            <td>
-              <span class="nota-final">8.65</span>
-              <span class="calificacion calificacion-notable">Notable</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="student-info">
-                <div class="student-avatar">MP</div>
-                <span class="outfit-medium">María Pérez</span>
-              </div>
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="9.5" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="9.8" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="9.7" class="nota-input">
-            </td>
-            <td>
-              <span class="nota-final">9.68</span>
-              <span class="calificacion calificacion-sobresaliente">Sobresaliente</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="student-info">
-                <div class="student-avatar">RL</div>
-                <span class="outfit-medium">Roberto López</span>
-              </div>
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="6.2" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="5.5" class="nota-input">
-            </td>
-            <td>
-              <input type="number" min="0" max="10" step="0.1" value="4.8" class="nota-input">
-            </td>
-            <td>
-              <span class="nota-final">5.28</span>
-              <span class="calificacion calificacion-suficiente">Suficiente</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="table-responsive-wrapper">
+        <table mat-table [dataSource]="notas" class="data-table notas-table">
 
+          <!-- Columna Estudiante -->
+          <ng-container matColumnDef="estudiante_nombre">
+            <th mat-header-cell *matHeaderCellDef> Estudiante </th>
+            <td mat-cell *matCellDef="let nota"> {{nota.estudiante_nombre}} </td>
+          </ng-container>
+
+          <!-- Columna Evaluación 1 -->
+          <ng-container matColumnDef="evaluacion1">
+            <th mat-header-cell *matHeaderCellDef> Eval. 1 (20%) </th>
+            <td mat-cell *matCellDef="let nota">
+              <ng-container *ngIf="nota.editando">
+                <mat-form-field appearance="outline" class="nota-input-field">
+                  <input matInput type="number" [(ngModel)]="nota.evaluacion1" placeholder="0-10" min="0" max="10">
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="!nota.editando">
+                {{nota.evaluacion1 !== null && nota.evaluacion1 !== undefined ? nota.evaluacion1 : '-'}}
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <!-- Columna Evaluación 2 -->
+          <ng-container matColumnDef="evaluacion2">
+            <th mat-header-cell *matHeaderCellDef> Eval. 2 (30%) </th>
+            <td mat-cell *matCellDef="let nota">
+              <ng-container *ngIf="nota.editando">
+                <mat-form-field appearance="outline" class="nota-input-field">
+                  <input matInput type="number" [(ngModel)]="nota.evaluacion2" placeholder="0-10" min="0" max="10">
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="!nota.editando">
+                {{nota.evaluacion2 !== null && nota.evaluacion2 !== undefined ? nota.evaluacion2 : '-'}}
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <!-- Columna Evaluación Final Examen -->
+          <ng-container matColumnDef="evaluacion_final_examen">
+            <th mat-header-cell *matHeaderCellDef> Examen Final (50%) </th>
+            <td mat-cell *matCellDef="let nota">
+              <ng-container *ngIf="nota.editando">
+                <mat-form-field appearance="outline" class="nota-input-field">
+                  <input matInput type="number" [(ngModel)]="nota.evaluacion_final_examen" placeholder="0-10" min="0" max="10">
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="!nota.editando">
+                {{nota.evaluacion_final_examen !== null && nota.evaluacion_final_examen !== undefined ? nota.evaluacion_final_examen : '-'}}
+              </ng-container>
+            </td>
+          </ng-container>
+
+          <!-- Columna Nota Final Calculada -->
+          <ng-container matColumnDef="nota_final_calculada">
+            <th mat-header-cell *matHeaderCellDef> Nota Final </th>
+            <td mat-cell *matCellDef="let nota">
+              <span class="nota-final">{{calcularNotaFinal(nota) !== null ? calcularNotaFinal(nota) : 'N/A'}}</span>
+            </td>
+          </ng-container>
+
+          <!-- Columna Calificación (Texto) -->
+          <ng-container matColumnDef="calificacion">
+            <th mat-header-cell *matHeaderCellDef> Calificación </th>
+            <td mat-cell *matCellDef="let nota">
+              <span class="calificacion {{getCalificacionClase(calcularNotaFinal(nota))}}">
+                {{getCalificacionTexto(calcularNotaFinal(nota))}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Columna Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let nota" class="actions-cell">
+              <div class="actions-cell-wrapper">
+                <ng-container *ngIf="nota.editando">
+                  <button mat-icon-button color="primary" (click)="guardarCambios(nota)" matTooltip="Guardar Cambios">
+                    <mat-icon>save</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="cancelarEdicion(nota)" matTooltip="Cancelar Edición">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="!nota.editando">
+                  <button mat-icon-button color="accent" (click)="iniciarEdicion(nota)" matTooltip="Editar Nota">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <!-- <button mat-icon-button color="warn" (click)="eliminarNota(nota.id)" matTooltip="Eliminar Nota">
+                    <mat-icon>delete</mat-icon>
+                  </button> -->
+                </ng-container>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+              No hay notas para mostrar según los filtros seleccionados.
+            </td>
+          </tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Sección de Estadísticas (puede ser un componente separado o cargarse dinámicamente) -->
+  <!-- 
   <div class="card mt-4">
     <div class="card-header">
-      <h2 class="outfit-semibold">Estadísticas</h2>
+      <h2 class="outfit-semibold">Estadísticas (Ejemplo)</h2>
     </div>
     <div class="card-content">
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-title outfit-regular">Promedio de clase</div>
-          <div class="stat-value outfit-bold">7.87</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title outfit-regular">Nota más alta</div>
-          <div class="stat-value outfit-bold">9.68</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title outfit-regular">Nota más baja</div>
-          <div class="stat-value outfit-bold">5.28</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title outfit-regular">Porcentaje de aprobados</div>
-          <div class="stat-value outfit-bold">100%</div>
+          <div class="stat-value outfit-bold">--</div>
         </div>
       </div>
     </div>
-  </div>
+  </div> 
+  -->
 </div>
