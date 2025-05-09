@@ -35,7 +35,7 @@
         color: var(--color-white); /* #FFFFFF */
         padding: 0.2rem;
         font-size: 0.75rem;
-        border-radius: 3px;
+        border-radius: var(--border-radius-sm);
         z-index: 1;
       }
     }
@@ -45,23 +45,23 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
   }
 
   .form-card {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
   }
 
   .fila {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
   }
 
   .acciones {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
+    gap: var(--spacing-md);
   }
 
   table {

@@ -118,7 +118,7 @@
 }
 
 .role-admin {
-  background-color: rgba(201, 100, 66, 0.1);
+  background-color: rgba(var(--color-primary-rgb), 0.1);
   color: var(--color-primary);
 }
 

@@ -13,7 +13,7 @@
   overflow-x: hidden;
   z-index: 1000;
   font-family: var(--font-body);
-  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   
   &.collapsed {
     width: var(--sidebar-width-collapsed);
@@ -110,12 +110,12 @@
     }
     
     &.active {
-      background-color: var(--color-bg-lighter);
-      color: var(--color-primary);
+      background-color: var(--color-bg-muted); /* #E8E6DC */
+      color: var(--color-dark); /* #3D3D3A */
       font-weight: 500;
       
       &:hover {
-        background-color: var(--color-bg-lighter);
+        background-color: var(--color-bg-muted); /* #E8E6DC */
       }
     }
   }

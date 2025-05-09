@@ -21,7 +21,7 @@
   padding: 6px 10px;
   cursor: pointer;
   background-color: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
 }
 
 .btn-nuevo {
@@ -60,15 +60,15 @@
 }
 
 .aceptado {
-  color: var(--color-success); /* #45a15f */
+  color: var(--color-primary);
 }
 
 .rechazado {
-  color: var(--color-error); /* #d9534f */
+  color: var(--color-text-muted);
 }
 
 .pendiente {
-  color: var(--color-warning); /* #f0ad4e */
+  color: var(--color-dark-alt);
 }
 
 .resumen {

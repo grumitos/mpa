@@ -111,14 +111,14 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background-color: rgba(var(--color-error-rgb), 0.1);
-  color: var(--color-error);
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
   margin-bottom: var(--spacing-md);
-  border: 1px solid transparent; // Or var(--color-error) for a solid border
+  border: 1px solid transparent; // Or var(--color-primary) for a solid border
   mat-icon {
-    color: var(--color-error);
+    color: var(--color-primary);
   }
 }
 
