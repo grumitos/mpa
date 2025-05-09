@@ -7,17 +7,17 @@ import { Horario }    from '../horario/horario.component';
 // Define Nota interface for use within the service and by components
 export interface Nota {
   id?: number;
-  estudiante_id: string; // Keep as snake_case to match potential DB column
-  estudiante_nombre?: string; // To store/retrieve student's name
+  estudianteId: string; // Changed from estudiante_id
+  estudianteNombre?: string; // Was already camelCase
   curso: string;
   asignatura: string;
   periodo: string;
   evaluacion1?: number | null;
   evaluacion2?: number | null;
-  evaluacion_final_examen?: number | null;
-  nota_final_calculada?: number | null;
-  fecha_creacion?: Date; // Managed by Supabase (created_at)
-  fecha_modificacion?: Date; // Managed by Supabase (updated_at)
+  evaluacionFinalExamen?: number | null; // Changed from evaluacion_final_examen
+  notaFinalCalculada?: number | null; // Changed from nota_final_calculada
+  fechaCreacion?: Date; // Corresponds to created_at
+  fechaModificacion?: Date; // Corresponds to updated_at
 }
 
 @Injectable({ providedIn: 'root' })
@@ -201,38 +201,38 @@ export class SupabaseService {
   private mapRowToNota(row: any): Nota {
     return {
       id: row.id,
-      estudiante_id: row.estudiante_id,
-      estudiante_nombre: row.estudiante_nombre,
+      estudianteId: row.estudiante_id, // Map from snake_case
+      estudianteNombre: row.estudiante_nombre,
       curso: row.curso,
       asignatura: row.asignatura,
       periodo: row.periodo,
       evaluacion1: row.evaluacion1,
       evaluacion2: row.evaluacion2,
-      evaluacion_final_examen: row.evaluacion_final_examen,
-      nota_final_calculada: row.nota_final_calculada,
-      fecha_creacion: row.created_at ? new Date(row.created_at) : undefined, // Supabase uses 'created_at'
-      fecha_modificacion: row.updated_at ? new Date(row.updated_at) : undefined // Supabase uses 'updated_at'
+      evaluacionFinalExamen: row.evaluacion_final_examen, // Map from snake_case
+      notaFinalCalculada: row.nota_final_calculada, // Map from snake_case
+      fechaCreacion: row.created_at ? new Date(row.created_at) : undefined,
+      fechaModificacion: row.updated_at ? new Date(row.updated_at) : undefined
     };
   }
 
   // Maps a Nota object from the app (camelCase) to a row for Supabase (snake_case)
   private mapNotaToRow(nota: Nota): any {
     const row: any = {
-      estudiante_id: nota.estudiante_id,
-      estudiante_nombre: nota.estudiante_nombre,
+      estudiante_id: nota.estudianteId, // Map to snake_case
+      estudiante_nombre: nota.estudianteNombre,
       curso: nota.curso,
       asignatura: nota.asignatura,
       periodo: nota.periodo,
       evaluacion1: nota.evaluacion1,
       evaluacion2: nota.evaluacion2,
-      evaluacion_final_examen: nota.evaluacion_final_examen,
-      nota_final_calculada: nota.nota_final_calculada
+      evaluacion_final_examen: nota.evaluacionFinalExamen, // Map to snake_case
+      nota_final_calculada: nota.notaFinalCalculada, // Map to snake_case
       // id is not included for insert, handled by .eq for update
       // created_at and updated_at are managed by Supabase
     };
-    if (nota.id) {
-      row.id = nota.id; // Include ID for updates, but Supabase handles it in .eq()
-    }
+    // if (nota.id) { // id is not part of the row data for insert/update payload
+    //   row.id = nota.id;
+    // }
     return row;
   }
 
@@ -263,9 +263,9 @@ export class SupabaseService {
     return data ? this.mapRowToNota(data) : null;
   }
 
-  async createNota(nota: Omit<Nota, 'id' | 'fecha_creacion' | 'fecha_modificacion'>): Promise<Nota | null> {
+  async createNota(nota: Omit<Nota, 'id' | 'fechaCreacion' | 'fechaModificacion'>): Promise<Nota | null> {
     console.log('SupabaseService: createNota()', nota);
-    const row = this.mapNotaToRow(nota as Nota); // Cast because mapNotaToRow expects Nota
+    const row = this.mapNotaToRow(nota as Nota); // Cast because mapNotaToRow expects Nota with all fields
     delete row.id; // Ensure id is not sent for creation
 
     const { data, error } = await this.supabase

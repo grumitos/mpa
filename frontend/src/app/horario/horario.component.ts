@@ -117,7 +117,6 @@ export class HorarioComponent implements OnInit {
     this.mostrForm = false;
   }
 
-  // Calcula posición CSS para cada evento en la grilla
   getEventStyle(ev: Horario) {
     const diaIdx = this.dias.indexOf(
       ev.dia.charAt(0).toUpperCase() + ev.dia.slice(1,3).toLowerCase()

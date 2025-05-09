@@ -10,11 +10,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { SupabaseService, Nota } from '../services/supabase.service'; // Import SupabaseService and Nota interface
+import { Observable, of } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 // Interface for view-specific properties, like the editing flag
 interface NotaView extends Nota {
   editando?: boolean;
+  esNueva?: boolean; // Flag to identify a new row
 }
 
 @Component({
@@ -31,7 +36,9 @@ interface NotaView extends Nota {
     MatSelectModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatAutocompleteModule,
+    MatSortModule
   ],
   templateUrl: './notas.component.html',
   styleUrl: './notas.component.scss',
@@ -39,19 +46,17 @@ interface NotaView extends Nota {
 })
 export class NotasComponent implements OnInit {
   notas: NotaView[] = [];
-  displayedColumns: string[] = ['estudiante_nombre', 'evaluacion1', 'evaluacion2', 'evaluacion_final_examen', 'nota_final_calculada', 'calificacion', 'acciones'];
+  displayedColumns: string[] = ['estudianteNombre', 'evaluacion1', 'evaluacion2', 'evaluacionFinalExamen', 'notaFinalCalculada', 'calificacion', 'acciones'];
   cargando = false;
   mensajeError: string = '';
+  estudiantesFiltrados: Observable<string[]> = of([]);
+  todosLosEstudiantes: string[] = [];
 
-  // Filtros
   filtroForm: FormGroup;
-  cursos: string[] = []; // Populate from data or define statically
-  asignaturas: string[] = []; // Populate from data or define statically
+  cursos: string[] = [];
+  asignaturas: string[] = [];
   periodos: string[] = ['Primer trimestre', 'Segundo trimestre', 'Tercer trimestre', 'Nota final'];
-
-  // Formulario para nueva/editar nota (opcional, si se edita en línea o en un modal)
-  // notaForm: FormGroup; // Not using a separate form for now, inline editing directly modifies `NotaView` object properties
-  // editandoNota: Nota | null = null;
+  private notas_originales: NotaView[] = [];
 
   constructor(
     private supabaseService: SupabaseService,
@@ -62,20 +67,8 @@ export class NotasComponent implements OnInit {
     this.filtroForm = this.fb.group({
       curso: [''],
       asignatura: [''],
-      periodo: ['Primer trimestre'] // Default periodo
+      periodo: ['Primer trimestre']
     });
-
-    // this.notaForm = this.fb.group({ // Removed as we are doing inline editing
-    //   id: [null],
-    //   estudiante_id: ['', Validators.required],
-    //   estudiante_nombre: [{value: '', disabled: true}],
-    //   curso: ['', Validators.required],
-    //   asignatura: ['', Validators.required],
-    //   periodo: ['', Validators.required],
-    //   evaluacion1: [null, [Validators.min(0), Validators.max(10)]],
-    //   evaluacion2: [null, [Validators.min(0), Validators.max(10)]],
-    //   evaluacion_final_examen: [null, [Validators.min(0), Validators.max(10)]],
-    // });
   }
 
   ngOnInit(): void {
@@ -83,189 +76,285 @@ export class NotasComponent implements OnInit {
     this.filtroForm.valueChanges.subscribe(() => this.aplicarFiltros());
     this.cursos = ['1° Primaria', '2° Primaria', '3° Primaria', '1° ESO', '2° ESO', 'Otros'];
     this.asignaturas = ['Matemáticas', 'Lengua', 'Ciencias Naturales', 'Ciencias Sociales', 'Inglés', 'Música', 'Educación Física', 'Otra'];
+    
+    // Cargando la lista de nombres de estudiantes para el autocompletado
+    this.cargarNombresEstudiantes();
+  }
+  
+  cargarNombresEstudiantes(): void {
+    // En un sistema real, esto podría venir de una API
+    // Por ahora lo simulamos con un array estático
+    this.todosLosEstudiantes = [
+      'Estudiante Ejemplo 1', 'Estudiante Ejemplo 2', 'Estudiante Ejemplo 3', 
+      'Estudiante Ejemplo 4', 'Estudiante Ejemplo 5', 'Estudiante Ejemplo 6',
+      'Estudiante Ejemplo 7', 'Estudiante Ejemplo 8', 'Estudiante Ejemplo 9'
+    ];
+    
+    // Inicializar el observable para autocompletado
+    this.estudiantesFiltrados = of(this.todosLosEstudiantes);
+  }
+  
+  filtrarEstudiantes(valor: string): string[] {
+    if (!valor) return this.todosLosEstudiantes;
+    
+    const filterValue = valor.toLowerCase();
+    return this.todosLosEstudiantes.filter(estudiante => 
+      estudiante.toLowerCase().includes(filterValue)
+    );
   }
 
   async cargarNotas(aplicandoFiltros = false): Promise<void> {
-    if (!aplicandoFiltros) { // Avoid showing main spinner if filters are just being applied over existing data view
-        this.cargando = true;
+    if (!aplicandoFiltros) {
+      this.cargando = true;
     }
     this.mensajeError = '';
     try {
       const notasCargadas = await this.supabaseService.getAllNotas();
-      // Preserve edit state if a specific row was being edited and is still in the filtered list
-      const notasEditandoIds = this.notas.filter(n => n.editando).map(n => n.id);
-
-      this.notas = notasCargadas.map(n => ({
-        ...n,
-        editando: notasEditandoIds.includes(n.id)
-      }));
-      this.cdRef.detectChanges();
+      this.notas_originales = notasCargadas.map(n => ({ ...n, editando: false, esNueva: false }));
+      this.aplicarFiltros(); // Apply filters to the newly loaded original notes
     } catch (error) {
-      this.mensajeError = 'Error al cargar las notas. Inténtelo más tarde.';
-      console.error('Error cargando notas:', error);
-      this.mostrarMensaje(this.mensajeError, true);
+      console.error('Error al cargar notas:', error);
+      this.mensajeError = 'No se pudieron cargar las notas. Inténtelo más tarde.';
+      this.snackBar.open(this.mensajeError, 'Cerrar', { duration: 5000 });
     } finally {
       if (!aplicandoFiltros) {
+        this.cargando = false;
+      }
+      this.cdRef.detectChanges();
+    }
+  }
+
+  aplicarFiltros(): void {
+    const { curso, asignatura, periodo } = this.filtroForm.value;
+    let notasFiltradas = [...this.notas_originales];
+
+    if (curso) {
+      notasFiltradas = notasFiltradas.filter(n => n.curso === curso);
+    }
+    if (asignatura) {
+      notasFiltradas = notasFiltradas.filter(n => n.asignatura === asignatura);
+    }
+    if (periodo) {
+      notasFiltradas = notasFiltradas.filter(n => n.periodo === periodo);
+    }
+    // Preserve editing state for rows that are still visible after filtering
+    const notasEditandoMap = new Map(this.notas.filter(n => n.editando).map(n => [n.id, n]));
+
+    this.notas = notasFiltradas.map(n => {
+        const notaEditando = notasEditandoMap.get(n.id);
+        if (notaEditando) {
+            return notaEditando; // Keep the instance that is being edited
+        }
+        return {...n, editando: false}; // Ensure editando is false for others
+    });
+    this.cdRef.detectChanges();
+  }
+
+  agregarFilaParaNuevaNota(): void {
+    if (this.notas.some(n => n.esNueva && n.editando)) {
+      this.snackBar.open('Ya hay una nueva nota en proceso de creación.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+
+    const nuevaNota: NotaView = {
+      estudianteId: '',
+      estudianteNombre: '',
+      curso: this.filtroForm.value.curso || '',
+      asignatura: this.filtroForm.value.asignatura || '',
+      periodo: this.filtroForm.value.periodo || 'Primer trimestre',
+      evaluacion1: null,
+      evaluacion2: null,
+      evaluacionFinalExamen: null,
+      notaFinalCalculada: null,
+      editando: true,
+      esNueva: true
+    };
+    this.notas = [nuevaNota, ...this.notas];
+    this.cdRef.detectChanges();
+    this.snackBar.open('Nueva fila agregada. Complete los datos y guarde.', 'Cerrar', { duration: 3500 });
+  }
+
+  activarEdicion(nota: NotaView): void {
+    if (this.notas.some(n => n.esNueva && n.editando && n !== nota)) {
+      this.snackBar.open('Guarde o cancele la nueva nota antes de editar otra.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    const notaEnEdicion = this.notas.find(n => n.id === nota.id);
+    if (notaEnEdicion) {
+        notaEnEdicion.editando = true;
+    } else if (nota.esNueva) { // Handle new row that might not have an ID yet
+        nota.editando = true;
+    }
+    this.cdRef.detectChanges();
+  }
+
+  cancelarEdicion(nota: NotaView): void {
+    if (nota.esNueva) {
+      this.notas = this.notas.filter(n => n !== nota);
+      this.snackBar.open('Creación de nueva nota cancelada.', 'Cerrar', { duration: 3000 });
+    } else {
+      // Revert changes by reloading the original state for that note
+      const originalNota = this.notas_originales.find(n => n.id === nota.id);
+      if (originalNota) {
+        const index = this.notas.findIndex(n => n.id === nota.id);
+        if (index !== -1) {
+          this.notas[index] = { ...originalNota, editando: false };
+        }
+      } else {
+        // Fallback if original not found, just stop editing
+         nota.editando = false;
+      }
+       this.snackBar.open('Edición cancelada.', 'Cerrar', { duration: 3000 });
+    }
+    this.cdRef.detectChanges();
+  }
+
+  async guardarNota(nota: NotaView): Promise<void> {
+    if (!nota.estudianteNombre) { // Simplified validation: student name is key for new/edited entries
+      this.snackBar.open('El nombre del estudiante es requerido.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    if (!nota.curso || !nota.asignatura || !nota.periodo) {
+      this.snackBar.open('Curso, asignatura y periodo son requeridos.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+
+    nota.notaFinalCalculada = this.calcularNotaFinal(nota);
+    this.cargando = true;
+
+    try {
+      let resultado: Nota | null = null;
+      // Ensure estudianteId is set, using estudianteNombre as a fallback if necessary for new notes
+      // This logic might need adjustment based on how estudianteId is truly managed (e.g., selection from a list)
+      const finalEstudianteId = nota.estudianteId || nota.estudianteNombre || 'ID_TEMPORAL_' + Date.now();
+
+      const notaPayload: Omit<Nota, 'id' | 'fechaCreacion' | 'fechaModificacion'> | Nota = {
+        ...nota, // Spread the current state of nota (camelCase)
+        estudianteId: finalEstudianteId,
+      };
+
+      if (nota.esNueva && !nota.id) {
+        resultado = await this.supabaseService.createNota(notaPayload as Omit<Nota, 'id' | 'fechaCreacion' | 'fechaModificacion'>);
+      } else if (nota.id) {
+        resultado = await this.supabaseService.updateNota({ ...notaPayload, id: nota.id } as Nota);
+      }
+
+      if (resultado) {
+        this.snackBar.open('Nota guardada correctamente.', 'Cerrar', { duration: 3000 });
+        // Reload all notes to reflect changes and ensure `notas_originales` is up-to-date
+        await this.cargarNotas(true); // Pass true to indicate it's a refresh due to an action
+      } else {
+        this.snackBar.open('Error al guardar la nota. El servicio no devolvió un resultado.', 'Cerrar', { duration: 3000 });
+      }
+    } catch (error) {
+      console.error('Error al guardar nota:', error);
+      this.snackBar.open('Error crítico al guardar la nota. Verifique los datos o inténtelo más tarde.', 'Cerrar', { duration: 5000 });
+    } finally {
+      this.cargando = false;
+      // No need to call detectChanges here if cargarNotas does it or if view updates reactively
+    }
+  }
+
+  async confirmarEliminarNota(notaId: number | undefined): Promise<void> {
+    if (notaId === undefined) {
+      this.snackBar.open('No se puede eliminar una nota sin ID.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    if (confirm('¿Está seguro de que desea eliminar esta nota?')) {
+      this.cargando = true;
+      try {
+        const exito = await this.supabaseService.deleteNota(notaId);
+        if (exito) {
+          this.snackBar.open('Nota eliminada correctamente.', 'Cerrar', { duration: 3000 });
+          // Reload notes to reflect deletion
+          await this.cargarNotas(true);
+        } else {
+          this.snackBar.open('Error al eliminar la nota.', 'Cerrar', { duration: 3000 });
+        }
+      } catch (error) {
+        console.error('Error al eliminar nota:', error);
+        this.snackBar.open('Error crítico al eliminar la nota.', 'Cerrar', { duration: 5000 });
+      } finally {
         this.cargando = false;
       }
     }
   }
 
-  aplicarFiltros(): void {
-    // Set a small loading indicator for filter application if desired, or rely on table update
-    // this.cargando = true; // This might be too disruptive for quick filter changes
-    const { curso, asignatura, periodo } = this.filtroForm.value;
+  calcularNotaFinal(nota: NotaView): number | null {
+    const e1 = nota.evaluacion1 ?? 0;
+    const e2 = nota.evaluacion2 ?? 0;
+    const ef = nota.evaluacionFinalExamen ?? 0;
 
-    this.supabaseService.getAllNotas().then(todasLasNotas => {
-      let notasFiltradas = todasLasNotas;
-      if (curso) {
-        notasFiltradas = notasFiltradas.filter(n => n.curso === curso);
-      }
-      if (asignatura) {
-        notasFiltradas = notasFiltradas.filter(n => n.asignatura === asignatura);
-      }
-      if (periodo) {
-        notasFiltradas = notasFiltradas.filter(n => n.periodo === periodo);
-      }
+    if (nota.evaluacion1 === null && nota.evaluacion2 === null && nota.evaluacionFinalExamen === null) {
+      return null; // Si todas las notas son null, la final también es null
+    }
+    // Considerar 0 si alguna nota es null para el cálculo, pero solo si otras tienen valor.
+    return (e1 * 0.3) + (e2 * 0.3) + (ef * 0.4);
+  }
 
-      const notasEditandoIds = this.notas.filter(n => n.editando).map(n => n.id);
-      this.notas = notasFiltradas.map(n => ({
-        ...n,
-        editando: notasEditandoIds.includes(n.id)
-      }));
-      // this.cargando = false;
-      this.cdRef.detectChanges();
-    }).catch(error => {
-      this.mensajeError = 'Error al aplicar filtros.';
-      this.mostrarMensaje(this.mensajeError, true);
-      // this.cargando = false;
-      console.error('Error aplicando filtros:', error);
-    });
+  getCalificacionClase(notaFinal: number | null): string {
+    if (notaFinal === null) return '';
+    if (notaFinal >= 18) return 'sobresaliente';
+    if (notaFinal >= 14) return 'notable';
+    if (notaFinal >= 10) return 'aprobado';
+    return 'suspenso'; // For grades below 10, including Muy deficiente for simplicity in CSS class
+  }
+
+  getCalificacionTexto(notaFinal: number | null): string {
+    if (notaFinal === null) return 'N/A';
+    if (notaFinal >= 18) return 'Sobresaliente';
+    if (notaFinal >= 14) return 'Notable';
+    if (notaFinal >= 10) return 'Aprobado';
+    if (notaFinal >= 6) return 'Suspenso';
+    return 'Muy deficiente';
+  }
+
+  guardarCambios(nota: NotaView): void {
+    this.guardarNota(nota);
   }
 
   iniciarEdicion(nota: NotaView): void {
-    // Ensure only one row is editable at a time if that's the desired behavior
-    // this.notas.forEach(n => { if (n.id !== nota.id) n.editando = false; });
-    const notaEditable = this.notas.find(n => n.id === nota.id);
-    if (notaEditable) {
-      notaEditable.editando = true;
-      this.cdRef.detectChanges(); // Ensure the view updates to show input fields
-    }
+    this.activarEdicion(nota);
   }
 
-  async guardarCambios(nota: NotaView): Promise<void> {
-    if (!nota.id) {
-      this.mostrarMensaje('Error: ID de nota no encontrado.', true);
-      return;
-    }
-
-    const scores = [nota.evaluacion1, nota.evaluacion2, nota.evaluacion_final_examen];
-    for (const score of scores) {
-      if (score !== null && score !== undefined && (isNaN(Number(score)) || Number(score) < 0 || Number(score) > 10)) {
-        this.mostrarMensaje('Las calificaciones deben ser números entre 0 y 10.', true);
-        nota.editando = true; // Keep editing mode
-        this.cdRef.detectChanges();
-        return;
-      }
-    }
-    // Convert to numbers before saving if they are strings from input fields
-    nota.evaluacion1 = nota.evaluacion1 !== null && nota.evaluacion1 !== undefined ? Number(nota.evaluacion1) : null;
-    nota.evaluacion2 = nota.evaluacion2 !== null && nota.evaluacion2 !== undefined ? Number(nota.evaluacion2) : null;
-    nota.evaluacion_final_examen = nota.evaluacion_final_examen !== null && nota.evaluacion_final_examen !== undefined ? Number(nota.evaluacion_final_examen) : null;
-
-    this.cargando = true; // Show a global loader or a row-specific loader
-    nota.nota_final_calculada = this.calcularNotaFinal(nota);
-
-    // Create a plain Nota object without the 'editando' property for the service call
-    const { editando, ...notaToSave } = nota;
-
-    try {
-      const actualizada = await this.supabaseService.updateNota(notaToSave as Nota); // Cast to Nota
-      if (actualizada) {
-        const index = this.notas.findIndex(n => n.id === actualizada.id);
-        if (index > -1) {
-          this.notas[index] = { ...actualizada, editando: false };
-          this.cdRef.detectChanges();
-        }
-        this.mostrarMensaje('Nota actualizada correctamente.');
-      } else {
-        this.mostrarMensaje('Error al actualizar la nota. No se recibieron datos actualizados.', true);
-        nota.editando = true; // Keep editing if update failed
-      }
-    } catch (error) {
-      console.error('Error guardando nota:', error);
-      this.mostrarMensaje('Error crítico al actualizar la nota. Verifique la consola.', true);
-      nota.editando = true; // Keep editing on critical error
-    } finally {
-      this.cargando = false;
-      this.cdRef.detectChanges();
-    }
-  }
-
-  cancelarEdicion(nota: NotaView): void {
-    // To revert changes, we reload the notes or fetch the original state of the specific note.
-    // For simplicity, reloading all notes if a change was made and cancelled.
-    // A more sophisticated approach would be to store the original state of the row before editing.
-    this.cargarNotas(true); // Pass true to indicate it's part of an ongoing operation, not initial load
-    const notaEnLista = this.notas.find(n => n.id === nota.id);
-    if (notaEnLista) {
-        notaEnLista.editando = false;
-    }
-    this.cdRef.detectChanges();
-  }
-
-  calcularNotaFinal(nota: NotaView): number | null {
-    const ev1 = nota.evaluacion1 ?? null;
-    const ev2 = nota.evaluacion2 ?? null;
-    const evFinal = nota.evaluacion_final_examen ?? null;
-
-    // If any contributing score is null, the final grade cannot be calculated yet.
-    if (ev1 === null || ev2 === null || evFinal === null) {
-        return null;
-    }
-    // Weights: Eval1 (20%), Eval2 (30%), FinalExam (50%)
-    const finalScore = (Number(ev1) * 0.2) + (Number(ev2) * 0.3) + (Number(evFinal) * 0.5);
-    return parseFloat(finalScore.toFixed(2));
-  }
-
-  getCalificacionTexto(notaFinal: number | null | undefined): string {
-    if (notaFinal === null || notaFinal === undefined) return 'N/A';
-    if (notaFinal >= 9) return 'Sobresaliente';
-    if (notaFinal >= 7) return 'Notable';
-    if (notaFinal >= 5) return 'Suficiente';
-    return 'Insuficiente';
-  }
-
-  getCalificacionClase(notaFinal: number | null | undefined): string {
-    if (notaFinal === null || notaFinal === undefined) return 'calificacion-na'; // Added a class for N/A
-    if (notaFinal >= 9) return 'calificacion-sobresaliente';
-    if (notaFinal >= 7) return 'calificacion-notable';
-    if (notaFinal >= 5) return 'calificacion-suficiente';
-    return 'calificacion-insuficiente';
+  obtenerCalificacion(notaFinal: number | null | undefined): string {
+    if (notaFinal === null || notaFinal === undefined) return '-';
+    if (notaFinal >= 18) return 'Sobresaliente';
+    if (notaFinal >= 14) return 'Notable';
+    if (notaFinal >= 10) return 'Aprobado';
+    if (notaFinal >= 6) return 'Suspenso';
+    return 'Muy deficiente';
   }
 
   exportarNotas(): void {
-    if (this.notas.length === 0) {
-      this.mostrarMensaje('No hay notas para exportar.', true);
+    if (!this.notas || this.notas.length === 0) {
+      this.snackBar.open('No hay notas para exportar.', 'Cerrar', { duration: 3000 });
       return;
     }
-    this.cargando = true;
-    // Simple CSV export
-    const headers = ['Estudiante', 'Curso', 'Asignatura', 'Periodo', 'Eval1', 'Eval2', 'ExamenFinal', 'NotaFinal', 'Calificación'];
-    const rows = this.notas.map(nota => [
-      nota.estudiante_nombre,
-      nota.curso,
-      nota.asignatura,
-      nota.periodo,
-      nota.evaluacion1 ?? '',
-      nota.evaluacion2 ?? '',
-      nota.evaluacion_final_examen ?? '',
-      nota.nota_final_calculada ?? '',
-      this.getCalificacionTexto(nota.nota_final_calculada)
-    ].join(','));
 
-    const csvContent = headers.join(',') + '\n' + rows.join('\n');
-    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+    const dataAExportar = this.notas.map(nota => ({
+      Estudiante: nota.estudianteNombre || nota.estudianteId,
+      Curso: nota.curso,
+      Asignatura: nota.asignatura,
+      Periodo: nota.periodo,
+      'Eval. 1 (20%)': nota.evaluacion1,
+      'Eval. 2 (30%)': nota.evaluacion2,
+      'Examen Final (50%)': nota.evaluacionFinalExamen,
+      'Nota Final': this.calcularNotaFinal(nota),
+      Calificacion: this.obtenerCalificacion(this.calcularNotaFinal(nota))
+    }));
+
+    const csvHeader = Object.keys(dataAExportar[0]).join(',');
+    const csvRows = dataAExportar.map(row => 
+      Object.values(row).map(value => {
+        const stringValue = value === null || value === undefined ? '' : String(value);
+        // Escape commas and quotes in cell values
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }).join(',')
+    ).join('\n');
+    const csvContent = `${csvHeader}\n${csvRows}`;
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // Added BOM for Excel
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
@@ -274,51 +363,8 @@ export class NotasComponent implements OnInit {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    this.cargando = false;
-    this.mostrarMensaje('Notas exportadas correctamente.');
+    this.snackBar.open('Notas exportadas a CSV.', 'Cerrar', { duration: 3000 });
   }
-
-  // Placeholder for adding a new note - would typically involve a dialog or a separate form
-  // agregarNuevaNota(): void {
-  //   // Open a dialog or navigate to a form to create a new Nota
-  //   // For example, using MatDialog:
-  //   // const dialogRef = this.dialog.open(NotaFormDialogComponent, { width: '400px' });
-  //   // dialogRef.afterClosed().subscribe(result => {
-  //   //   if (result) { // result would be the new Nota object
-  //   //     this.supabaseService.createNota(result).then(nuevaNota => {
-  //   //       if (nuevaNota) {
-  //   //         this.notas.push({...nuevaNota, editando: false });
-  //   //         this.cdRef.detectChanges();
-  //   //         this.mostrarMensaje('Nota agregada correctamente.');
-  //   //       } else {
-  //   //         this.mostrarMensaje('Error al agregar la nota.', true);
-  //   //       }
-  //   //     });
-  //   //   }
-  //   // });
-  //   this.mostrarMensaje('Funcionalidad de agregar nueva nota no implementada en este ejemplo.');
-  // }
-
-  // Placeholder for deleting a note
-  // async eliminarNota(id: number): Promise<void> {
-  //   if (!confirm('¿Está seguro de que desea eliminar esta nota?')) return;
-  //   this.cargando = true;
-  //   try {
-  //     const success = await this.supabaseService.deleteNota(id);
-  //     if (success) {
-  //       this.notas = this.notas.filter(n => n.id !== id);
-  //       this.cdRef.detectChanges();
-  //       this.mostrarMensaje('Nota eliminada correctamente.');
-  //     } else {
-  //       this.mostrarMensaje('Error al eliminar la nota.', true);
-  //     }
-  //   } catch (error) {
-  //     this.mostrarMensaje('Error crítico al eliminar la nota.', true);
-  //     console.error('Error eliminando nota:', error);
-  //   } finally {
-  //     this.cargando = false;
-  //   }
-  // }
 
   mostrarMensaje(mensaje: string, esError: boolean = false): void {
     this.snackBar.open(mensaje, 'Cerrar', {
@@ -327,5 +373,95 @@ export class NotasComponent implements OnInit {
       horizontalPosition: 'center', // Or 'start', 'end'
       panelClass: esError ? ['snackbar-error'] : ['snackbar-success']
     });
+  }
+
+  sortData(sort: Sort): void {
+    const data = [...this.notas];
+    if (!sort.active || sort.direction === '') {
+      this.notas = data;
+      return;
+    }
+
+    this.notas = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'estudianteNombre': return this.compare(a.estudianteNombre || '', b.estudianteNombre || '', isAsc);
+        case 'evaluacion1': return this.compare(a.evaluacion1 || 0, b.evaluacion1 || 0, isAsc);
+        case 'evaluacion2': return this.compare(a.evaluacion2 || 0, b.evaluacion2 || 0, isAsc);
+        case 'evaluacionFinalExamen': return this.compare(a.evaluacionFinalExamen || 0, b.evaluacionFinalExamen || 0, isAsc);
+        case 'notaFinalCalculada': return this.compare(this.calcularNotaFinal(a) || 0, this.calcularNotaFinal(b) || 0, isAsc);
+        default: return 0;
+      }
+    });
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean): number {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+  
+  esNotaValida(nota: number | null | undefined): boolean {
+    if (nota === null || nota === undefined) return true; // Permitimos notas vacías
+    return nota >= 0 && nota <= 20;
+  }
+  
+  validarNota(nota: NotaView, campo: 'evaluacion1' | 'evaluacion2' | 'evaluacionFinalExamen'): void {
+    const valorNota = nota[campo];
+    if (valorNota !== null && valorNota !== undefined) {
+      // Si la nota está fuera del rango válido (0-20), ajustarla
+      if (valorNota < 0) nota[campo] = 0;
+      if (valorNota > 20) nota[campo] = 20;
+    }
+  }
+  
+  getNoteColorClass(nota: number | null | undefined): string {
+    if (nota === null || nota === undefined) return ''; // No specific class if note is not set
+    if (nota < 10) return 'nota-suspenso'; // Red for failing grades
+    if (nota < 14) return 'nota-aprobado'; // Orange for sufficient
+    if (nota < 18) return 'nota-notable'; // Blue for notable
+    return 'nota-sobresaliente'; // Green for excellent
+  }
+
+  limpiarFiltros(): void {
+    this.filtroForm.reset({
+      curso: '',
+      asignatura: '',
+      periodo: 'Primer trimestre'
+    });
+    this.cargarNotas(); // Recargar las notas con los filtros reseteados
+  }
+
+  calcularPromedioClase(): number | null {
+    if (!this.notas || this.notas.length === 0) {
+      return null;
+    }
+    const notasValidas = this.notas.map(n => this.calcularNotaFinal(n)).filter(nf => nf !== null) as number[];
+    if (notasValidas.length === 0) {
+      return null;
+    }
+    const suma = notasValidas.reduce((acc, curr) => acc + curr, 0);
+    return parseFloat((suma / notasValidas.length).toFixed(2));
+  }
+
+  calcularNotaMaxima(): number | null {
+    if (!this.notas || this.notas.length === 0) {
+      return null;
+    }
+    const notasFinales = this.notas.map(n => this.calcularNotaFinal(n)).filter(nf => nf !== null) as number[];
+    if (notasFinales.length === 0) {
+      return null;
+    }
+    return Math.max(...notasFinales);
+  }
+
+  calcularPorcentajeAprobados(): number | null {
+    if (!this.notas || this.notas.length === 0) {
+      return null;
+    }
+    const notasFinales = this.notas.map(n => this.calcularNotaFinal(n)).filter(nf => nf !== null) as number[];
+    if (notasFinales.length === 0) {
+      return null;
+    }
+    const aprobados = notasFinales.filter(nf => nf >= 10).length;
+    return parseFloat(((aprobados / notasFinales.length) * 100).toFixed(2));
   }
 }
