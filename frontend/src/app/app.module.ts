@@ -22,6 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 // Importamos los componentes standalone, pero no los declaramos
 import { AppComponent } from './app.component';
 import { IncidenciasComponent } from './incidencias/incidencias.component';
+import { PlanificadorComponent } from './planificador/planificador.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { IncidenciasComponent } from './incidencias/incidencias.component';
     
     // Importamos los componentes standalone aquí
     AppComponent,
-    IncidenciasComponent
+    IncidenciasComponent,
+    PlanificadorComponent
   ],
   providers: []
   // No incluimos bootstrap para componentes standalone

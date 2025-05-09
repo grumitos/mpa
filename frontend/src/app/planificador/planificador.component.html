@@ -1,1 +1,47 @@
-<p>planificador works!</p>
+<div class="contenedor-planificador">
+  <div class="encabezado">
+    <label>Mostrando</label>
+    <select class="selector" [(ngModel)]="displayedCount">
+      <option *ngFor="let num of [3,5,10]" [value]="num">{{ num }}</option>
+    </select>
+    <input type="text" class="busqueda" placeholder="Abril - 2025" [(ngModel)]="busqueda" />
+    <button class="btn-buscar" (click)="onSearch()">🔍</button>
+    <button class="btn-nuevo" (click)="onNew()">Nuevo ➕</button>
+  </div>
+  <table class="tabla-planificador">
+    <thead>
+      <tr>
+        <th>DNI</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>ID Profesor</th>
+        <th>Fecha Enviado</th>
+        <th>Fecha Recibido</th>
+        <th>Estado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let plan of filteredPlaneaciones">
+        <td>{{ plan.dni }}</td>
+        <td>{{ plan.nombre }}</td>
+        <td>{{ plan.apellido }}</td>
+        <td>{{ plan.idProfesor }}</td>
+        <td>{{ plan.fechaEnviado }}</td>
+        <td>{{ plan.fechaRecibido }}</td>
+        <td class="estado" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</td>
+        <td><a href="#">Ver más</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="resumen">
+    <div class="bloque">
+      <p>Total Profesores</p>
+      <h3>{{ resumen.totalProfesores }}</h3>
+    </div>
+    <div class="bloque">
+      <p>Miembros</p>
+      <h3>{{ resumen.miembros }}</h3>
+    </div>
+  </div>
+</div>

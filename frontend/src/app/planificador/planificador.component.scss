@@ -1,0 +1,86 @@
+// Se agregan estilos basados en cus08.css adaptados a Angular
+.contenedor-planificador {
+  padding: 20px;
+  background-color: #f5f6fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.selector, .busqueda {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.btn-buscar {
+  padding: 6px 10px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #ccc;
+}
+
+.btn-nuevo {
+  margin-left: auto;
+  padding: 6px 15px;
+  background-color: #ccc;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tabla-planificador {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.tabla-planificador thead {
+  background-color: #e0ecff;
+}
+
+.tabla-planificador th, .tabla-planificador td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.tabla-planificador tr:nth-child(even) {
+  background-color: #f0f8ff;
+}
+
+.estado {
+  font-weight: bold;
+}
+
+.aceptado {
+  color: green;
+}
+
+.rechazado {
+  color: red;
+}
+
+.pendiente {
+  color: orange;
+}
+
+.resumen {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+.bloque {
+  background: #e7f8f5;
+  padding: 15px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 8px #ccc;
+}
