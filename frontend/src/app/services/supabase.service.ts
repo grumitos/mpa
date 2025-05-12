@@ -205,6 +205,7 @@ export class SupabaseService {
   // --- Notas ---
   // Maps a row from Supabase (snake_case) to a Nota object for the app (camelCase)
   private mapRowToNota(row: any): Nota {
+    console.log('Mapeando fila de Supabase a objeto Nota:', row);
     return {
       id: row.id,
       estudianteId: row.estudiante_id, // Map from snake_case
@@ -212,10 +213,10 @@ export class SupabaseService {
       curso: row.curso,
       asignatura: row.asignatura,
       periodo: row.periodo,
-      evaluacion1: row.evaluacion1,
-      evaluacion2: row.evaluacion2,
-      evaluacionFinalExamen: row.evaluacion_final_examen, // Map from snake_case
-      notaFinalCalculada: row.nota_final_calculada, // Map from snake_case
+      evaluacion1: row.evaluacion1 !== undefined ? row.evaluacion1 : null,
+      evaluacion2: row.evaluacion2 !== undefined ? row.evaluacion2 : null,
+      evaluacionFinalExamen: row.evaluacion_final_examen !== undefined ? row.evaluacion_final_examen : null, // Map from snake_case
+      notaFinalCalculada: row.nota_final_calculada !== undefined ? row.nota_final_calculada : null, // Map from snake_case
       fechaCreacion: row.created_at ? new Date(row.created_at) : undefined,
       fechaModificacion: row.updated_at ? new Date(row.updated_at) : undefined
     };

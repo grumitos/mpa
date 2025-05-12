@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 // Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -56,7 +57,9 @@ import { PlanificadorComponent } from './planificador/planificador.component';
     IncidenciasComponent,
     PlanificadorComponent
   ],
-  providers: []
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }
+  ]
   // No incluimos bootstrap para componentes standalone
 })
 export class AppModule {}

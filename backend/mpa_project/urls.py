@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include # Asegúrate de importar include
 from rest_framework.authtoken.views import obtain_auth_token # Importar la vista de token
+from django.shortcuts import redirect
 
 urlpatterns = [
+    path('', lambda request: redirect('/admin/')),
     path('admin/', admin.site.urls),
     path('api/api-token-auth/', obtain_auth_token), # Ruta para obtener el token
     # path('api/', include('api.urls')), # Si tienes otras URLs en tu app 'api'

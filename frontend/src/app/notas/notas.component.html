@@ -21,38 +21,44 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="filtroForm" class="filters-container">
-        <mat-form-field appearance="outline" class="filtro-field compact-field">
-          <mat-label>Curso</mat-label>
-          <mat-select formControlName="curso">
-            <mat-option value="">Todos los cursos</mat-option>
-            <mat-option *ngFor="let curso of cursos" [value]="curso">{{curso}}</mat-option>
-          </mat-select>
-          <mat-icon matSuffix>class</mat-icon>
-        </mat-form-field>
+      <form [formGroup]="filtroForm" class="filtros-container">
+        <div class="filter-field-group">
+          <label class="field-label">Curso</label>
+          <div class="custom-select-container">
+            <mat-icon class="select-icon">class</mat-icon>
+            <select formControlName="curso" class="custom-select">
+              <option value="">Todos los cursos</option>
+              <option *ngFor="let curso of cursos" [value]="curso">{{curso}}</option>
+            </select>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="filtro-field compact-field">
-          <mat-label>Asignatura</mat-label>
-          <mat-select formControlName="asignatura">
-            <mat-option value="">Todas las asignaturas</mat-option>
-            <mat-option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</mat-option>
-          </mat-select>
-          <mat-icon matSuffix>book</mat-icon>
-        </mat-form-field>
+        <div class="filter-field-group">
+          <label class="field-label">Asignatura</label>
+          <div class="custom-select-container">
+            <mat-icon class="select-icon">book</mat-icon>
+            <select formControlName="asignatura" class="custom-select">
+              <option value="">Todas las asignaturas</option>
+              <option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</option>
+            </select>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="filtro-field compact-field">
-          <mat-label>Periodo</mat-label>
-          <mat-select formControlName="periodo">
-            <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</mat-option>
-          </mat-select>
-          <mat-icon matSuffix>date_range</mat-icon>
-        </mat-form-field>
+        <div class="filter-field-group">
+          <label class="field-label">Periodo</label>
+          <div class="custom-select-container">
+            <mat-icon class="select-icon">date_range</mat-icon>
+            <select formControlName="periodo" class="custom-select">
+              <option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</option>
+            </select>
+          </div>
+        </div>
 
         <div class="filter-actions">
-          <button mat-flat-button color="primary" (click)="aplicarFiltros()" class="filter-button">
+          <button class="custom-button primary-button" (click)="aplicarFiltros()">
             <mat-icon>search</mat-icon> Buscar
           </button>
-          <button mat-stroked-button (click)="limpiarFiltros()" class="filter-button">
+          <button class="custom-button secondary-button" (click)="limpiarFiltros()">
             <mat-icon>clear</mat-icon> Limpiar
           </button>
         </div>
@@ -87,19 +93,77 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estudiante </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <mat-form-field appearance="outline" class="estudiante-input-field compact-field">
-                  <input matInput 
-                         [(ngModel)]="nota.estudianteNombre" 
-                         placeholder="Nombre del estudiante" 
-                         [matAutocomplete]="auto"
-                         class="visible-input">
-                  <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let estudiante of estudiantesFiltrados | async" [value]="estudiante">
-                      {{estudiante}}
-                    </mat-option>
-                  </mat-autocomplete>
-                  <mat-error *ngIf="!nota.estudianteNombre">Estudiante requerido</mat-error>
-                </mat-form-field>
+                <div class="student-info-container">
+                  <div class="student-field-group">
+                    <label class="field-label">Nombre del estudiante</label>
+                    <div class="custom-input-container">
+                      <mat-icon class="input-icon">person</mat-icon>
+                      <input 
+                        [(ngModel)]="nota.estudianteNombre" 
+                        placeholder="Nombre del estudiante" 
+                        [matAutocomplete]="auto"
+                        required
+                        class="custom-input student-name-input">
+                      <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let estudiante of estudiantesFiltrados | async" [value]="estudiante">
+                          {{estudiante}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </div>
+                    <div *ngIf="!nota.estudianteNombre" class="field-error">Estudiante requerido</div>
+                  </div>
+                  
+                  <div class="student-field-group">
+                    <label class="field-label">ID Estudiante</label>
+                    <div class="custom-input-container">
+                      <mat-icon class="input-icon">badge</mat-icon>
+                      <input 
+                        [(ngModel)]="nota.estudianteId" 
+                        placeholder="ID del estudiante"
+                        required
+                        class="custom-input student-id-input">
+                    </div>
+                    <div *ngIf="!nota.estudianteId" class="field-error">ID requerido</div>
+                  </div>
+                </div>
+                
+                <div class="course-info-container">
+                  <div class="course-field-group">
+                    <label class="field-label">Curso</label>
+                    <div class="custom-select-container">
+                      <mat-icon class="select-icon">class</mat-icon>
+                      <select [(ngModel)]="nota.curso" required class="custom-select">
+                        <option value="" disabled selected>Seleccione curso</option>
+                        <option *ngFor="let curso of cursos" [value]="curso">{{curso}}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="!nota.curso" class="field-error">Curso requerido</div>
+                  </div>
+                  
+                  <div class="course-field-group">
+                    <label class="field-label">Asignatura</label>
+                    <div class="custom-select-container">
+                      <mat-icon class="select-icon">book</mat-icon>
+                      <select [(ngModel)]="nota.asignatura" required class="custom-select">
+                        <option value="" disabled selected>Seleccione asignatura</option>
+                        <option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="!nota.asignatura" class="field-error">Asignatura requerida</div>
+                  </div>
+                  
+                  <div class="course-field-group">
+                    <label class="field-label">Periodo</label>
+                    <div class="custom-select-container">
+                      <mat-icon class="select-icon">date_range</mat-icon>
+                      <select [(ngModel)]="nota.periodo" required class="custom-select">
+                        <option value="" disabled selected>Seleccione periodo</option>
+                        <option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="!nota.periodo" class="field-error">Periodo requerido</div>
+                  </div>
+                </div>
               </ng-container>
               <ng-container *ngIf="!nota.editando">
                 <div class="estudiante-nombre">{{nota.estudianteNombre}}</div>
@@ -116,22 +180,25 @@
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <mat-form-field appearance="outline" class="nota-input-field compact-field">
-                  <input matInput 
-                         type="number" 
-                         [(ngModel)]="nota.evaluacion1" 
-                         placeholder="0-20" 
-                         min="0" 
-                         max="20"
-                         step="0.5"
-                         (change)="validarNota(nota, 'evaluacion1')"
-                         class="visible-input">
-                  <mat-error *ngIf="!esNotaValida(nota.evaluacion1)">Nota inválida</mat-error>
-                </mat-form-field>
+                <div class="custom-grade-input">
+                  <input 
+                    [(ngModel)]="nota.evaluacion1" 
+                    (blur)="validarNota(nota, 'evaluacion1')"
+                    (keyup.enter)="validarNota(nota, 'evaluacion1')"
+                    placeholder="0-20"
+                    type="text"
+                    pattern="\d*(\.\d{0,2})?"
+                    class="grade-input"
+                    maxlength="5">
+                  <div class="grade-controls">
+                    <div class="grade-label">Evaluación 1</div>
+                    <div class="grade-weight">30%</div>
+                  </div>
+                </div>
               </ng-container>
               <ng-container *ngIf="!nota.editando">
                 <div [class]="getNoteColorClass(nota.evaluacion1)">
-                  {{nota.evaluacion1 !== null && nota.evaluacion1 !== undefined ? nota.evaluacion1 : '-'}}
+                  {{nota.evaluacion1 !== null && nota.evaluacion1 !== undefined ? (nota.evaluacion1 | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
             </td>
@@ -145,22 +212,25 @@
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <mat-form-field appearance="outline" class="nota-input-field compact-field">
-                  <input matInput 
-                         type="number" 
-                         [(ngModel)]="nota.evaluacion2" 
-                         placeholder="0-20" 
-                         min="0" 
-                         max="20" 
-                         step="0.5"
-                         (change)="validarNota(nota, 'evaluacion2')"
-                         class="visible-input">
-                  <mat-error *ngIf="!esNotaValida(nota.evaluacion2)">Nota inválida</mat-error>
-                </mat-form-field>
+                <div class="custom-grade-input">
+                  <input 
+                    [(ngModel)]="nota.evaluacion2" 
+                    (blur)="validarNota(nota, 'evaluacion2')"
+                    (keyup.enter)="validarNota(nota, 'evaluacion2')"
+                    placeholder="0-20"
+                    type="text"
+                    pattern="\d*(\.\d{0,2})?"
+                    class="grade-input"
+                    maxlength="5">
+                  <div class="grade-controls">
+                    <div class="grade-label">Evaluación 2</div>
+                    <div class="grade-weight">30%</div>
+                  </div>
+                </div>
               </ng-container>
               <ng-container *ngIf="!nota.editando">
                 <div [class]="getNoteColorClass(nota.evaluacion2)">
-                  {{nota.evaluacion2 !== null && nota.evaluacion2 !== undefined ? nota.evaluacion2 : '-'}}
+                  {{nota.evaluacion2 !== null && nota.evaluacion2 !== undefined ? (nota.evaluacion2 | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
             </td>
@@ -174,22 +244,25 @@
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <mat-form-field appearance="outline" class="nota-input-field compact-field">
-                  <input matInput 
-                         type="number" 
-                         [(ngModel)]="nota.evaluacionFinalExamen" 
-                         placeholder="0-20" 
-                         min="0" 
-                         max="20"
-                         step="0.5"
-                         (change)="validarNota(nota, 'evaluacionFinalExamen')"
-                         class="visible-input">
-                  <mat-error *ngIf="!esNotaValida(nota.evaluacionFinalExamen)">Nota inválida</mat-error>
-                </mat-form-field>
+                <div class="custom-grade-input">
+                  <input 
+                    [(ngModel)]="nota.evaluacionFinalExamen" 
+                    (blur)="validarNota(nota, 'evaluacionFinalExamen')"
+                    (keyup.enter)="validarNota(nota, 'evaluacionFinalExamen')"
+                    placeholder="0-20"
+                    type="text"
+                    pattern="\d*(\.\d{0,2})?"
+                    class="grade-input"
+                    maxlength="5">
+                  <div class="grade-controls">
+                    <div class="grade-label">Examen Final</div>
+                    <div class="grade-weight">40%</div>
+                  </div>
+                </div>
               </ng-container>
               <ng-container *ngIf="!nota.editando">
                 <div [class]="getNoteColorClass(nota.evaluacionFinalExamen)">
-                  {{nota.evaluacionFinalExamen !== null && nota.evaluacionFinalExamen !== undefined ? nota.evaluacionFinalExamen : '-'}}
+                  {{nota.evaluacionFinalExamen !== null && nota.evaluacionFinalExamen !== undefined ? (nota.evaluacionFinalExamen | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
             </td>
@@ -202,7 +275,7 @@
             </th>
             <td mat-cell *matCellDef="let nota">
               <span class="nota-final" [class]="getNoteColorClass(calcularNotaFinal(nota))">
-                {{calcularNotaFinal(nota) !== null ? calcularNotaFinal(nota) : 'N/A'}}
+                {{calcularNotaFinal(nota) !== null ? (calcularNotaFinal(nota) | number:'1.2-2') : 'N/A'}}
               </span>
             </td>
           </ng-container>
@@ -223,19 +296,19 @@
             <td mat-cell *matCellDef="let nota" class="actions-cell">
               <div class="actions-cell-wrapper">
                 <ng-container *ngIf="nota.editando">
-                  <button mat-mini-fab color="primary" (click)="guardarCambios(nota)" matTooltip="Guardar Cambios" class="action-mini-button save-button">
-                    <mat-icon>save</mat-icon>
+                  <button class="custom-button primary-button" (click)="guardarCambios(nota)" matTooltip="Guardar Cambios">
+                    <mat-icon>save</mat-icon> Guardar
                   </button>
-                  <button mat-mini-fab color="warn" (click)="cancelarEdicion(nota)" matTooltip="Cancelar Edición" class="action-mini-button">
-                    <mat-icon>close</mat-icon>
+                  <button class="custom-button secondary-button" (click)="cancelarEdicion(nota)" matTooltip="Cancelar Edición">
+                    <mat-icon>close</mat-icon> Cancelar
                   </button>
                 </ng-container>
                 <ng-container *ngIf="!nota.editando">
-                  <button mat-icon-button color="primary" (click)="iniciarEdicion(nota)" matTooltip="Editar Nota" class="action-icon-button">
+                  <button mat-icon-button (click)="iniciarEdicion(nota)" matTooltip="Editar Nota" class="action-icon-button">
                     <mat-icon>edit</mat-icon>
                   </button>
-                  <button mat-icon-button color="warn" (click)="confirmarEliminarNota(nota.id)" matTooltip="Eliminar Nota" class="action-icon-button">
-                    <mat-icon>delete</mat-icon>
+                  <button class="action-icon-button delete-button" (click)="confirmarEliminarNota(nota.id)" matTooltip="Eliminar Nota">
+                    <mat-icon class="delete-trash-icon">delete</mat-icon>
                   </button>
                 </ng-container>
               </div>
@@ -268,22 +341,32 @@
   <mat-card *ngIf="notas.length > 0" class="mt-4 stats-card">
     <mat-card-header>
       <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">bar_chart</mat-icon> Estadísticas del grupo
+        <mat-icon class="section-icon">insights</mat-icon> Estadísticas
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-title">Promedio de clase</div>
-          <div class="stat-value">{{ calcularPromedioClase() | number:'1.1-1' }}</div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <mat-icon>calculate</mat-icon>
+          </div>
+          <div class="stat-value">{{calcularPromedioClase() || '-'}}</div>
+          <p class="stat-label">Promedio de clase</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-title">Nota más alta</div>
-          <div class="stat-value">{{ calcularNotaMaxima() | number:'1.1-1' }}</div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <mat-icon>emoji_events</mat-icon>
+          </div>
+          <div class="stat-value">{{calcularNotaMaxima() || '-'}}</div>
+          <p class="stat-label">Nota más alta</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-title">Aprobados</div>
-          <div class="stat-value">{{ calcularPorcentajeAprobados() | percent:'1.0-0' }}</div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <mat-icon>trending_up</mat-icon>
+          </div>
+          <div class="stat-value">{{calcularPorcentajeAprobados() !== null ? (calcularPorcentajeAprobados() | number:'1.0-0') + '%' : '-'}}</div>
+          <p class="stat-label">Porcentaje de aprobados</p>
+          <div class="stat-label">Aprobados</div>
         </div>
       </div>
     </mat-card-content>

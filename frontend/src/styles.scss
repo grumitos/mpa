@@ -60,19 +60,19 @@ body {
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 
-  /* Paleta de colores homogeneizada */
-  --color-dark: #3D3D3A; /* Gris oscuro principal */
-  --color-darker: #141413; /* Negro/casi negro */
-  --color-dark-alt: #1F1E1D; /* Negro ligeramente más claro */
-  --color-bg-light: #F5F4ED; /* Blanco amarillento */
-  --color-bg-lighter: #F0EEE6; /* Beige más claro */
-  --color-bg-lightest: #FAF9F5; /* Casi blanco */
-  --color-text-muted: #73726C; /* Gris medio */
-  --color-bg-muted: #E8E6DC; /* Beige claro */
-  --color-primary: #C96442; /* Naranja/terracota */
+  /* Paleta de colores Claude.ai */
+  --color-dark: #3D3D3A; /* Gris oscuro principal - rgb(61, 61, 58) */
+  --color-darker: #141413; /* Negro/casi negro - rgb(20, 20, 19) */
+  --color-dark-alt: #1F1E1D; /* Negro ligeramente más claro - rgb(31, 30, 29) */
+  --color-bg-light: #F5F4ED; /* Blanco amarillento - rgb(245, 244, 237) */
+  --color-bg-lighter: #F0EEE6; /* Beige más claro - rgb(240, 238, 230) */
+  --color-bg-lightest: #FAF9F5; /* Casi blanco - rgb(250, 249, 245) */
+  --color-text-muted: #73726C; /* Gris medio - rgb(115, 114, 108) */
+  --color-bg-muted: #E8E6DC; /* Beige claro - rgb(232, 230, 220) */
+  --color-primary: #C96442; /* Naranja/terracota - rgb(201, 100, 66) */
   --color-primary-hover: #D97757; /* Naranja/terracota más claro */
   --color-primary-rgb: 201, 100, 66; /* Valores RGB de color primario */
-  --color-white: #FFFFFF; /* Blanco puro */
+  --color-white: #FFFFFF; /* Blanco puro - rgb(255, 255, 255) */
   
   /* Colores de texto y fondo para claridad */
   --color-text: var(--color-dark); /* #3D3D3A */
@@ -87,7 +87,7 @@ body {
   --color-sidebar-active-bg: var(--color-bg-muted); /* #E8E6DC */
   --color-primary-text: var(--color-white); /* #FFFFFF */
 
-  /* Variables para formularios y componentes de entrada */
+  /* Variables para formularios y componentes de entrada - Estilo Claude.ai */
   --form-control-height: 42px;
   --form-control-padding: 0.8rem 1rem;
   --form-field-margin: var(--spacing-md) 0;
@@ -97,18 +97,20 @@ body {
   --form-row-spacing: var(--spacing-md);
 
   /* Colores y estados para formularios */
-  --input-bg: transparent;
+  --input-bg: var(--color-white);
   --input-bg-disabled: var(--color-bg-light);
-  --input-border: var(--color-border);
+  --input-border: var(--color-border-light);
   --input-border-focus: var(--color-primary);
   --input-border-error: #D32F2F;
   --input-text: var(--color-text);
   --input-text-disabled: var(--color-text-muted);
   --input-placeholder: var(--color-text-muted);
   --form-error-color: #D32F2F;
+  --input-border-radius: var(--border-radius-lg);
   
   /* Sombras de estado */
-  --input-shadow-focus: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25);
+  --input-shadow-focus: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);
+  --input-shadow-hover: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.035);
 }
 
 /* Clases de tipografía Outfit */
@@ -165,36 +167,45 @@ body {
 
 /* Estilos de componentes básicos */
 
-/* Botones */
+/* Botones - Estilo Claude.ai */
 button {
   font-family: var(--font-body);
   font-weight: 500;
-  border-radius: var(--border-radius-md);
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  border-radius: var(--border-radius-lg);
+  border: 0.5px solid var(--color-border);
+  padding: 0.5em 1em;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.165, 0.85, 0.45, 1);
   line-height: 1.5;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background-color: var(--color-white);
-  color: var(--color-dark);
-  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  min-height: 2.25rem;
+  min-width: 5rem;
+  white-space: nowrap;
 }
 
 button:hover {
   background-color: var(--color-bg-light);
-  border-color: var(--color-text-muted);
-  color: var(--color-darker);
+  color: var(--color-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+button:active {
+  transform: scale(0.985);
+  box-shadow: none;
 }
 
 button.primary {
   background-color: var(--color-primary);
   color: var(--color-white);
-  border-color: var(--color-primary);
+  border-color: transparent;
+  font-weight: 500;
 }
 
 button.primary:hover {
@@ -406,6 +417,69 @@ textarea.mat-mdc-input-element {
   color: var(--color-dark);
 }
 
+/* Datepicker styles */
+.mat-datepicker-content {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  
+  .mat-calendar {
+    width: 280px;
+    height: auto;
+  }
+  
+  .mat-calendar-header {
+    padding: 12px 8px;
+    background-color: var(--color-bg-light);
+    display: flex;
+    align-items: center;
+  }
+  
+  .mat-calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 8px;
+  }
+  
+  .mat-calendar-body-label {
+    height: 0;
+    line-height: 0;
+    text-align: left;
+    padding-left: 4%;
+  }
+  
+  .mat-calendar-body-cell {
+    height: 36px;
+    width: 36px;
+  }
+  
+  .mat-calendar-body-cell-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 2px;
+    line-height: 1;
+  }
+  
+  .mat-calendar-body-selected {
+    background-color: var(--color-primary);
+    color: white;
+  }
+  
+  .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+    border-color: var(--color-primary);
+  }
+  
+  .mat-calendar-table-header th {
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
 /* Options */
 .mat-mdc-option {
   color: var(--color-dark);
@@ -438,6 +512,59 @@ textarea.mat-mdc-input-element {
   background-color: var(--color-white);
 }
 
+/* Botones de acción global */
+.action-icon-button, .mat-datepicker-toggle .mat-mdc-icon-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 36px;
+  min-height: 36px;
+  
+  &.delete-button, &.delete-icon, .mat-icon.delete-icon {
+    color: var(--color-text-muted);
+    
+    &:hover {
+      color: #d32f2f;
+      background-color: rgba(211, 47, 47, 0.1);
+    }
+  }
+  
+  mat-icon {
+    &.delete-icon {
+      color: var(--color-text-muted);
+      
+      &:hover {
+        color: #d32f2f;
+      }
+    }
+  }
+}
+
+/* Datepicker toggle buttons */
+.mat-datepicker-toggle {
+  vertical-align: middle;
+  
+  .mat-datepicker-toggle-default-icon {
+    color: var(--color-text-muted);
+  }
+  
+  .mat-mdc-icon-button {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
 .mat-mdc-outlined-button {
   border-color: var(--color-border);
 }
@@ -458,6 +585,30 @@ textarea.mat-mdc-input-element {
 .cdk-global-overlay-wrapper, 
 .cdk-overlay-container {
   z-index: 10000;
+}
+
+/* Targeted fix for delete-trash-icon class */
+.delete-trash-icon.mat-icon,
+.delete-trash-icon.mat-icon.mat-icon-no-color {
+  color: var(--color-text-muted) !important;
+}
+
+button:hover .delete-trash-icon.mat-icon,
+button:hover .delete-trash-icon.mat-icon.mat-icon-no-color {
+  color: #d32f2f !important;
+}
+
+/* Fallback for other delete buttons */
+button.delete-button .mat-icon.mat-icon-no-color,
+button.action-icon-button.delete-button .mat-icon.mat-icon-no-color,
+button[mattooltip="Eliminar Nota"] .mat-icon.mat-icon-no-color {
+  color: var(--color-text-muted) !important;
+}
+
+button.delete-button:hover .mat-icon.mat-icon-no-color,
+button.action-icon-button.delete-button:hover .mat-icon.mat-icon-no-color,
+button[mattooltip="Eliminar Nota"]:hover .mat-icon.mat-icon-no-color {
+  color: #d32f2f !important;
 }
 
 /* Media queries para diseño responsivo */
@@ -488,38 +639,107 @@ textarea.mat-mdc-input-element {
   }
 }
 
-/* Estilos comunes para formularios */
 .form-container {
   width: 100%;
 }
 
-.form-card {
-  background-color: var(--color-surface);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
+/* Cards - Estilo Claude.ai */
+.card {
+  background-color: var(--color-card);
+  border-radius: var(--border-radius-xl);
+  box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.035);
+  padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  border: 0.5px solid var(--color-border);
+  transition: all 0.2s ease;
 }
 
-.form-header {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border-light);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card:hover {
+  box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.075);
+  border-color: var(--color-border-light);
 }
 
-.form-title {
-  margin: 0;
+.card-header {
+  margin-bottom: var(--spacing-md);
+  border-bottom: 0.5px solid var(--color-border-light);
+  padding-bottom: var(--spacing-md);
+}
+
+.card-title {
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 1.25rem;
-  color: var(--color-text);
+  color: var(--color-dark);
+  margin: 0 0 var(--spacing-xs) 0;
+  letter-spacing: -0.01em;
 }
 
-.form-content {
-  padding: var(--spacing-lg);
+.card-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.card-body {
+  padding: var(--spacing-xs) 0;
+}
+
+.card-footer {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 0.5px solid var(--color-border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+/* Inputs y formularios - Estilo Claude.ai */
+input, select, textarea {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  border-radius: var(--input-border-radius);
+  border: 0.5px solid var(--input-border);
+  padding: var(--form-control-padding);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  transition: all 0.2s ease;
+  width: 100%;
+  height: var(--form-control-height);
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+input:hover, select:hover, textarea:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--input-shadow-hover);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+
+input::placeholder, select::placeholder, textarea::placeholder {
+  color: var(--input-placeholder);
+  opacity: 0.8;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+label {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: var(--form-label-margin);
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 .form-group {

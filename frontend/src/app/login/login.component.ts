@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, HttpClientModule],
+  imports: [FormsModule, CommonModule, HttpClientModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -18,8 +19,13 @@ export class LoginComponent {
   };
   rememberMe = false;
   loginError: string | null = null;
+  showPassword = false;
 
   constructor(private router: Router, private http: HttpClient) {}
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit() {
     console.log('Login attempt with:', this.credentials, 'Remember me:', this.rememberMe);

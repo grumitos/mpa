@@ -1,47 +1,161 @@
 <div class="contenedor-planificador">
-  <div class="encabezado">
-    <label>Mostrando</label>
-    <select class="selector" [(ngModel)]="displayedCount">
-      <option *ngFor="let num of [3,5,10]" [value]="num">{{ num }}</option>
-    </select>
-    <input type="text" class="busqueda" placeholder="Abril - 2025" [(ngModel)]="busqueda" />
-    <button class="btn-buscar" (click)="onSearch()">🔍</button>
-    <button class="btn-nuevo" (click)="onNew()">Nuevo ➕</button>
-  </div>
-  <table class="tabla-planificador">
-    <thead>
-      <tr>
-        <th>DNI</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>ID Profesor</th>
-        <th>Fecha Enviado</th>
-        <th>Fecha Recibido</th>
-        <th>Estado</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let plan of filteredPlaneaciones">
-        <td>{{ plan.dni }}</td>
-        <td>{{ plan.nombre }}</td>
-        <td>{{ plan.apellido }}</td>
-        <td>{{ plan.idProfesor }}</td>
-        <td>{{ plan.fechaEnviado }}</td>
-        <td>{{ plan.fechaRecibido }}</td>
-        <td class="estado" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</td>
-        <td><a href="#">Ver más</a></td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="resumen">
-    <div class="bloque">
-      <p>Total Profesores</p>
-      <h3>{{ resumen.totalProfesores }}</h3>
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="outfit-bold">Planificador</h1>
+      <p>Gestión de planificaciones y seguimiento de profesores</p>
     </div>
-    <div class="bloque">
-      <p>Miembros</p>
-      <h3>{{ resumen.miembros }}</h3>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" (click)="onNew()" class="action-button">
+        <mat-icon>add</mat-icon> Nueva Planificación
+      </button>
     </div>
   </div>
+  
+  <mat-card class="filtros-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">filter_list</mat-icon> Filtros
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="filtros-container">
+        <div class="filter-field-group">
+          <label class="field-label">Mostrar registros</label>
+          <div class="custom-select-container">
+            <mat-icon class="select-icon">format_list_numbered</mat-icon>
+            <select [(ngModel)]="displayedCount" class="custom-select">
+              <option *ngFor="let num of [3,5,10]" [value]="num">{{ num }}</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filter-field-group">
+          <label class="field-label">Búsqueda</label>
+          <div class="custom-input-container">
+            <mat-icon class="input-icon">search</mat-icon>
+            <input 
+              [(ngModel)]="busqueda" 
+              placeholder="Abril - 2025"
+              class="custom-input">
+          </div>
+        </div>
+        
+        <div class="filter-actions">
+          <button class="custom-button primary-button" (click)="onSearch()">
+            <mat-icon>search</mat-icon> Buscar
+          </button>
+          <button class="custom-button secondary-button" (click)="busqueda = ''; onSearch()">
+            <mat-icon>clear</mat-icon> Limpiar
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="tabla-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">assignment</mat-icon> Planificaciones
+      </mat-card-title>
+      <div class="card-header-info" *ngIf="filteredPlaneaciones.length > 0">
+        <span class="card-header-count">{{ filteredPlaneaciones.length }} registros</span>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="table-responsive-wrapper">
+        <table mat-table [dataSource]="filteredPlaneaciones" class="data-table planificador-table">
+          <!-- DNI Column -->
+          <ng-container matColumnDef="dni">
+            <th mat-header-cell *matHeaderCellDef>DNI</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.dni }}</td>
+          </ng-container>
+          
+          <!-- Nombre Column -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.nombre }}</td>
+          </ng-container>
+          
+          <!-- Apellido Column -->
+          <ng-container matColumnDef="apellido">
+            <th mat-header-cell *matHeaderCellDef>Apellido</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.apellido }}</td>
+          </ng-container>
+          
+          <!-- ID Profesor Column -->
+          <ng-container matColumnDef="idProfesor">
+            <th mat-header-cell *matHeaderCellDef>ID Profesor</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.idProfesor }}</td>
+          </ng-container>
+          
+          <!-- Fecha Enviado Column -->
+          <ng-container matColumnDef="fechaEnviado">
+            <th mat-header-cell *matHeaderCellDef>Fecha Enviado</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.fechaEnviado }}</td>
+          </ng-container>
+          
+          <!-- Fecha Recibido Column -->
+          <ng-container matColumnDef="fechaRecibido">
+            <th mat-header-cell *matHeaderCellDef>Fecha Recibido</th>
+            <td mat-cell *matCellDef="let plan">{{ plan.fechaRecibido }}</td>
+          </ng-container>
+          
+          <!-- Estado Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let plan">
+              <span class="estado-badge" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</span>
+            </td>
+          </ng-container>
+          
+          <!-- Acciones Column -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let plan">
+              <div class="actions-cell-wrapper">
+                <button class="action-icon-button" (click)="onEdit(plan)" matTooltip="Editar planificación">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button class="action-icon-button delete-button" (click)="onDelete(plan.id)" matTooltip="Eliminar planificación">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones'];"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+    <mat-card-footer *ngIf="filteredPlaneaciones.length > 0" class="table-footer">
+      <div class="pagination-info">
+        Mostrando {{ filteredPlaneaciones.length }} registros
+      </div>
+    </mat-card-footer>
+  </mat-card>
+  <mat-card class="resumen-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">analytics</mat-icon> Resumen
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="resumen">
+        <div class="bloque">
+          <mat-icon class="bloque-icon">people</mat-icon>
+          <div class="bloque-content">
+            <p>Total Profesores</p>
+            <h3>{{ resumen.totalProfesores }}</h3>
+          </div>
+        </div>
+        <div class="bloque">
+          <mat-icon class="bloque-icon">group</mat-icon>
+          <div class="bloque-content">
+            <p>Miembros</p>
+            <h3>{{ resumen.miembros }}</h3>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

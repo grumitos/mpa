@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -24,6 +24,7 @@ interface NotaView extends Nota {
 
 @Component({
   selector: 'app-notas',
+  encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
     FormsModule,
@@ -109,9 +110,19 @@ export class NotasComponent implements OnInit {
     }
     this.mensajeError = '';
     try {
+      console.log('Cargando notas desde Supabase...');
       const notasCargadas = await this.supabaseService.getAllNotas();
+      console.log('Notas cargadas:', notasCargadas);
+      
       this.notas_originales = notasCargadas.map(n => ({ ...n, editando: false, esNueva: false }));
-      this.aplicarFiltros(); // Apply filters to the newly loaded original notes
+      
+      // Si no hay filtros activos, mostrar todas las notas directamente
+      if (!this.filtroForm.value.curso && !this.filtroForm.value.asignatura) {
+        this.notas = [...this.notas_originales];
+        console.log('Mostrando todas las notas sin filtrar:', this.notas);
+      } else {
+        this.aplicarFiltros(); // Apply filters to the newly loaded original notes
+      }
     } catch (error) {
       console.error('Error al cargar notas:', error);
       this.mensajeError = 'No se pudieron cargar las notas. Inténtelo más tarde.';

@@ -300,6 +300,21 @@ export class IncidenciasComponent implements OnInit {
     // Para ver detalles seguimos usando el modal
     this.formularioVisible = true;
   }
+    verDetalles(incidencia: Incidencia): void {
+    this.modoFormulario = 'ver';
+    this.incidenciaSeleccionada = { ...incidencia };
+    this.formularioIncidencia.patchValue(incidencia);
+    this.formularioIncidencia.disable(); // Deshabilitar campos para solo lectura
+    // Usar el formulario integrado en lugar del modal
+    this.mostrarFormularioIntegrado = true;
+    // Hacer scroll suave hacia el formulario
+    setTimeout(() => {
+      const elemento = document.querySelector('.formulario-integrado-card');
+      if (elemento) {
+        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
     editarIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'editar';
     this.incidenciaSeleccionada = { ...incidencia };

@@ -22,6 +22,7 @@ export interface Horario {
   horaFin: string;
   materia: string;
   aula: string;
+  colorClass?: string;
 }
 
 @Component({
@@ -49,8 +50,20 @@ export class HorarioComponent implements OnInit {
   editando: Horario | null = null;
 
   // Para la grilla tipo calendario
-  dias = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  horas = Array.from({ length: 9 }, (_, i) => `${15 + i}:00`);
+  dias = ['L','M','X','J','V','S']; // Iniciales estándar en español: L M X J V S D
+  diasCompletos = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  horas = Array.from({ length: 15 }, (_, i) => `${8 + i}:00`);
+  
+  // Paleta de colores para eventos
+  colorClasses = [
+    'color-primary',   // Terracota - Principal
+    'color-indigo',    // Azul indigo
+    'color-teal',      // Verde azulado
+    'color-amber',     // Ámbar
+    'color-purple',    // Púrpura
+    'color-green',     // Verde
+    'color-brown'      // Marrón
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -118,17 +131,53 @@ export class HorarioComponent implements OnInit {
   }
 
   getEventStyle(ev: Horario) {
-    const diaIdx = this.dias.indexOf(
-      ev.dia.charAt(0).toUpperCase() + ev.dia.slice(1,3).toLowerCase()
-    );
+    let diaIdx;
+    
+    // Primero intentamos encontrar el día por su nombre completo
+    diaIdx = this.diasCompletos.indexOf(ev.dia);
+    
+    // Si no se encuentra, intentamos con la normalización de abreviaturas
+    if (diaIdx === -1) {
+      const diaNormalizado = ev.dia.charAt(0).toUpperCase() + ev.dia.slice(1,3).toLowerCase();
+      diaIdx = this.dias.indexOf(diaNormalizado);
+    }
+    
+    // Si todavía no se encuentra, registramos un warning y ocultamos el evento
+    if (diaIdx === -1) {
+      console.warn(`Día no encontrado: ${ev.dia}. Formatos esperados: ${this.diasCompletos.join(', ')} o ${this.dias.join(', ')}`);
+      return { 'display': 'none' };
+    }
+    
     const startH = +ev.horaInicio.split(':')[0];
     const endH   = +ev.horaFin.split(':')[0];
-    const rowStart = startH - 15 + 2; // +2 porque fila 1 es cabecera, fila 2 corresponde a 15:00
-    const rowEnd   = endH   - 15 + 2;
-    const col = diaIdx + 2;           // columna 1 es la de horas, columnas 2–8 los días
+    
+    // Calculamos la posición absoluta del evento
+    // Posición inicial: fila 1 (40px de encabezado) + (n-8) filas de 65px
+    const top = 40 + (startH - 8) * 65 + 2; // +2px para evitar solapamiento con líneas de cuadrícula
+    
+    // La altura es el número de horas * 65px - 4px para el espacio de los bordes
+    const height = (endH - startH) * 65 - 4;
+    
+    // Asignamos un color basado en la materia para que sea consistente
+    // Usamos una técnica de hashing simple para mapear materias a colores
+    let colorIndex = 0;
+    if (ev.materia) {
+      // Sumamos los códigos ASCII de los primeros caracteres de la materia
+      for (let i = 0; i < Math.min(ev.materia.length, 5); i++) {
+        colorIndex += ev.materia.charCodeAt(i);
+      }
+      colorIndex = colorIndex % this.colorClasses.length;
+    }
+    
     return {
-      'grid-column':      `${col}`,
-      'grid-row':         `${rowStart} / ${rowEnd}`
+      'position': 'absolute',
+      'top': `${top}px`,
+      'left': `calc(60px + ${diaIdx} * ((100% - 60px) / 6) + 2px)`, // +2px margen izquierdo
+      'height': `${height}px`,
+      'width': `calc(((100% - 60px) / 6) - 4px)`, // -4px para margen en ambos lados
+      'z-index': '10',
+      'box-sizing': 'border-box',
+      'class': this.colorClasses[colorIndex] // No funcionará directamente, necesitamos usar ngClass
     };
   }
 }

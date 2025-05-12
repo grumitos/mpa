@@ -1,46 +1,132 @@
 <div class="horario">
-  <div class="header">
-    <h2>Horario</h2>
-    <button mat-raised-button (click)="nuevo()">
-      <mat-icon>add</mat-icon> Nuevo
-    </button>
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="outfit-bold">Horario</h1>
+      <p>Gestión de horarios y clases</p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" (click)="nuevo()" class="action-button">
+        <mat-icon>add</mat-icon> Nuevo Horario
+      </button>
+    </div>
   </div>
 
   <mat-card *ngIf="mostrForm" class="form-card">
-    <form [formGroup]="formulario">
-      <div class="fila">
-        <mat-form-field appearance="outline">
-          <mat-label>Día</mat-label>
-          <input matInput formControlName="dia">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Inicio</mat-label>
-          <input matInput type="time" formControlName="horaInicio">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Fin</mat-label>
-          <input matInput type="time" formControlName="horaFin">
-        </mat-form-field>
-      </div>
-      <div class="fila">
-        <mat-form-field appearance="outline">
-          <mat-label>Curso</mat-label>
-          <input matInput formControlName="materia">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Aula</mat-label>
-          <input matInput formControlName="aula">
-        </mat-form-field>
-      </div>
-      <div class="acciones">
-        <button mat-button (click)="cancelar()">Cancelar</button>
-        <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
-      </div>
-    </form>
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">event_note</mat-icon> Nuevo Horario
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="formulario" class="custom-form">
+        <div class="form-section">
+          <div class="form-row">
+            <div class="form-field-group">
+              <label class="field-label">Día</label>
+              <div class="custom-select-container">
+                <mat-icon class="select-icon">calendar_today</mat-icon>
+                <select formControlName="dia" class="custom-select">
+                  <option value="" disabled selected>Seleccione día</option>
+                  <option value="Lunes">Lunes</option>
+                  <option value="Martes">Martes</option>
+                  <option value="Miércoles">Miércoles</option>
+                  <option value="Jueves">Jueves</option>
+                  <option value="Viernes">Viernes</option>
+                  <option value="Sábado">Sábado</option>
+                  <option value="Domingo">Domingo</option>
+                </select>
+              </div>
+              <div *ngIf="formulario.get('dia')?.invalid && formulario.get('dia')?.touched" class="field-error">
+                Día requerido
+              </div>
+            </div>
+            
+            <div class="form-field-group">
+              <label class="field-label">Hora de inicio</label>
+              <div class="custom-input-container">
+                <mat-icon class="input-icon">schedule</mat-icon>
+                <input 
+                  class="custom-input time-input"
+                  type="time" 
+                  formControlName="horaInicio">
+              </div>
+              <div *ngIf="formulario.get('horaInicio')?.invalid && formulario.get('horaInicio')?.touched" class="field-error">
+                Hora de inicio requerida
+              </div>
+            </div>
+            
+            <div class="form-field-group">
+              <label class="field-label">Hora de fin</label>
+              <div class="custom-input-container">
+                <mat-icon class="input-icon">schedule</mat-icon>
+                <input 
+                  class="custom-input time-input"
+                  type="time" 
+                  formControlName="horaFin">
+              </div>
+              <div *ngIf="formulario.get('horaFin')?.invalid && formulario.get('horaFin')?.touched" class="field-error">
+                Hora de fin requerida
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <div class="form-row">
+            <div class="form-field-group">
+              <label class="field-label">Curso/Materia</label>
+              <div class="custom-input-container">
+                <mat-icon class="input-icon">class</mat-icon>
+                <input 
+                  class="custom-input"
+                  formControlName="materia"
+                  placeholder="Nombre del curso">
+              </div>
+              <div *ngIf="formulario.get('materia')?.invalid && formulario.get('materia')?.touched" class="field-error">
+                Curso requerido
+              </div>
+            </div>
+            
+            <div class="form-field-group">
+              <label class="field-label">Aula</label>
+              <div class="custom-input-container">
+                <mat-icon class="input-icon">meeting_room</mat-icon>
+                <input 
+                  class="custom-input"
+                  formControlName="aula"
+                  placeholder="Número o nombre de aula">
+              </div>
+              <div *ngIf="formulario.get('aula')?.invalid && formulario.get('aula')?.touched" class="field-error">
+                Aula requerida
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button class="custom-button secondary-button" (click)="cancelar()">
+            <mat-icon>close</mat-icon> Cancelar
+          </button>
+          <button class="custom-button primary-button" (click)="guardar()" [disabled]="formulario.invalid">
+            <mat-icon>save</mat-icon> Guardar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
   </mat-card>
 
-  <mat-card>
-    <table mat-table [dataSource]="horarios" class="mat-elevation-z4">
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">view_timeline</mat-icon> Horarios Registrados
+      </mat-card-title>
+      <div class="card-header-info" *ngIf="horarios.length > 0">
+        <span class="card-header-count">{{ horarios.length }} registros</span>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="table-responsive-wrapper">
+        <table mat-table [dataSource]="horarios" class="data-table horario-table">
       <ng-container matColumnDef="dia">
         <th mat-header-cell *matHeaderCellDef>Día</th>
         <td mat-cell *matCellDef="let h">{{ h.dia }}</td>
@@ -64,32 +150,65 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let h">
-          <button mat-icon-button (click)="editar(h)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="eliminar(h.id)">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="actions-cell-wrapper">
+            <button class="action-icon-button" (click)="editar(h)" matTooltip="Editar horario">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="action-icon-button delete-button" (click)="eliminar(h.id)" matTooltip="Eliminar horario">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="columnas"></tr>
       <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
     </table>
+      </div>
+    </mat-card-content>
+    <mat-card-footer *ngIf="horarios.length > 0" class="table-footer">
+      <div class="pagination-info">
+        Mostrando {{ horarios.length }} registros
+      </div>
+    </mat-card-footer>
   </mat-card>
 
-   <div class="schedule-container">
-    <div class="schedule-header">
-      <div class="time-column"></div>
-      <div class="day-column" *ngFor="let d of dias">{{ d }}</div>
-    </div>
-    <div class="schedule-body">
-      <div class="time-slot" *ngFor="let h of horas">{{ h }}</div>
-      <ng-container *ngFor="let ev of horarios">
-        <div class="event" [ngStyle]="getEventStyle(ev)">
-          {{ ev.materia }}<br><small>{{ ev.aula }}</small>
-        </div>
-      </ng-container>
-    </div>
-  </div>
+  <mat-card class="schedule-card">
+    <mat-card-header>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">calendar_view_week</mat-icon> Vista de Calendario
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="schedule-container">
+        <!-- Encabezado vacío y días de la semana -->
+        <div class="header-cell empty-header"></div>
+        <div class="header-cell" *ngFor="let d of dias">{{ d }}</div>
+        
+        <!-- Grid principal con horas y eventos -->
+        <ng-container *ngFor="let hora of horas; let i = index">
+          <!-- Celda de hora en la primera columna -->
+          <div class="hour-cell">{{ 8 + i }}:00</div>
+          
+          <!-- Celdas vacías para cada día (creando el fondo) -->
+          <div class="day-cell" *ngFor="let dia of dias; let j = index"></div>
+        </ng-container>
+        
+        <!-- Eventos que se posicionan encima de la cuadrícula -->
+        <ng-container *ngFor="let ev of horarios; let i = index">
+          <div class="event" 
+               [ngStyle]="getEventStyle(ev)" 
+               [ngClass]="colorClasses[i % colorClasses.length]">
+            <div class="event-title">{{ ev.materia }}</div>
+            <div class="event-location">
+              <mat-icon class="location-icon">room</mat-icon> {{ ev.aula }}
+            </div>
+            <div class="event-time">
+              <mat-icon class="time-icon">access_time</mat-icon> {{ ev.horaInicio }} - {{ ev.horaFin }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

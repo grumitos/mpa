@@ -7,82 +7,113 @@
   </div>
 
   <!-- Sección de Filtros -->
-  <mat-card class="filtros-card claude-theme">
+  <mat-card class="filtros-card">
     <mat-card-header>
-      <mat-card-title>Filtros</mat-card-title>
+      <mat-card-title class="outfit-semibold">
+        <mat-icon class="section-icon">filter_list</mat-icon> Filtros
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="filtros-container">
         <div class="filtro-row">
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Estado</mat-label>
-            <mat-select [(ngModel)]="filtros.estado">
-              <mat-option value="">Todos</mat-option>
-              <mat-option *ngFor="let estado of estadosIncidencia" [value]="estado">
-                {{ estado }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Estado</label>
+            <div class="custom-select-container">
+              <mat-icon class="select-icon">assignment_turned_in</mat-icon>
+              <select [(ngModel)]="filtros.estado" class="custom-select">
+                <option value="">Todos</option>
+                <option *ngFor="let estado of estadosIncidencia" [value]="estado">
+                  {{ estado }}
+                </option>
+              </select>
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Tipo de incidencia</mat-label>
-            <mat-select [(ngModel)]="filtros.tipoIncidencia">
-              <mat-option value="">Todos</mat-option>
-              <mat-option *ngFor="let tipo of tiposIncidencia" [value]="tipo">
-                {{ tipo }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Tipo de incidencia</label>
+            <div class="custom-select-container">
+              <mat-icon class="select-icon">category</mat-icon>
+              <select [(ngModel)]="filtros.tipoIncidencia" class="custom-select">
+                <option value="">Todos</option>
+                <option *ngFor="let tipo of tiposIncidencia" [value]="tipo">
+                  {{ tipo }}
+                </option>
+              </select>
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Alumno implicado</mat-label>
-            <input matInput [(ngModel)]="filtros.alumno" placeholder="Nombre del alumno">
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Alumno implicado</label>
+            <div class="custom-input-container">
+              <mat-icon class="input-icon">person</mat-icon>
+              <input [(ngModel)]="filtros.alumno" 
+                    placeholder="Nombre del alumno"
+                    class="custom-input">
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Nivel de urgencia</mat-label>
-            <mat-select [(ngModel)]="filtros.nivelUrgencia">
-              <mat-option value="">Todos</mat-option>
-              <mat-option *ngFor="let nivel of nivelesUrgencia" [value]="nivel">
-                {{ nivel }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Nivel de urgencia</label>
+            <div class="custom-select-container">
+              <mat-icon class="select-icon">priority_high</mat-icon>
+              <select [(ngModel)]="filtros.nivelUrgencia" class="custom-select">
+                <option value="">Todos</option>
+                <option *ngFor="let nivel of nivelesUrgencia" [value]="nivel">
+                  {{ nivel }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div class="filtro-row">
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Fecha inicio</mat-label>
-            <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="filtros.fechaInicio">
-            <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
-            <mat-datepicker #pickerInicio></mat-datepicker>
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Fecha inicio</label>
+            <div class="custom-input-container">
+              <mat-icon class="input-icon">event</mat-icon>
+              <input [matDatepicker]="pickerInicio" 
+                    [(ngModel)]="filtros.fechaInicio"
+                    class="custom-input"
+                    placeholder="DD/MM/AAAA">
+              <mat-datepicker-toggle class="date-toggle" [for]="pickerInicio"></mat-datepicker-toggle>
+              <mat-datepicker #pickerInicio></mat-datepicker>
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="filtro-field claude-theme">
-            <mat-label>Fecha fin</mat-label>
-            <input matInput [matDatepicker]="pickerFin" [(ngModel)]="filtros.fechaFin">
-            <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
-            <mat-datepicker #pickerFin></mat-datepicker>
-          </mat-form-field>
+          <div class="filter-field-group">
+            <label class="field-label">Fecha fin</label>
+            <div class="custom-input-container">
+              <mat-icon class="input-icon">event</mat-icon>
+              <input [matDatepicker]="pickerFin" 
+                    [(ngModel)]="filtros.fechaFin"
+                    class="custom-input"
+                    placeholder="DD/MM/AAAA">
+              <mat-datepicker-toggle class="date-toggle" [for]="pickerFin"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFin></mat-datepicker>
+            </div>
+          </div>
 
-          <mat-form-field appearance="outline" class="filtro-field busqueda claude-theme">
-            <mat-label>Búsqueda</mat-label>
-            <input matInput [(ngModel)]="filtros.terminoBusqueda" placeholder="Buscar por título, descripción, alumno...">
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
+          <div class="filter-field-group busqueda">
+            <label class="field-label">Búsqueda</label>
+            <div class="custom-input-container">
+              <mat-icon class="input-icon">search</mat-icon>
+              <input [(ngModel)]="filtros.terminoBusqueda" 
+                    placeholder="Buscar por título, descripción, alumno..."
+                    class="custom-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="custom-button primary-button" (click)="aplicarFiltros()">
+            <mat-icon>filter_list</mat-icon> Aplicar Filtros
+          </button>
+          <button class="custom-button secondary-button" (click)="limpiarFiltros()">
+            <mat-icon>clear_all</mat-icon> Limpiar Filtros
+          </button>
         </div>
       </div>
     </mat-card-content>
-    <mat-card-actions>
-      <div class="claude-form-actions">
-        <button mat-raised-button class="claude-theme-primary" (click)="aplicarFiltros()">
-          <mat-icon>filter_list</mat-icon> Aplicar Filtros
-        </button>
-        <button mat-button class="claude-theme" (click)="limpiarFiltros()">
-          <mat-icon>clear_all</mat-icon> Limpiar Filtros
-        </button>
-      </div>
-    </mat-card-actions>
   </mat-card>
 
   <!-- Mensaje de Error -->
@@ -306,13 +337,13 @@
         <th mat-header-cell *matHeaderCellDef>Acciones</th>
         <td mat-cell *matCellDef="let incidencia" class="actions-cell">
           <div class="actions-cell-wrapper">
-            <button mat-icon-button class="claude-theme action-button" matTooltip="Ver detalles" (click)="verIncidencia(incidencia)">
+            <button class="action-icon-button" (click)="verDetalles(incidencia)" matTooltip="Ver detalles">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-icon-button class="claude-theme action-button" matTooltip="Editar" (click)="editarIncidencia(incidencia)">
+            <button class="action-icon-button" (click)="editarIncidencia(incidencia)" matTooltip="Editar incidencia">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button class="claude-theme action-button" matTooltip="Eliminar" (click)="eliminarIncidencia(incidencia)">
+            <button class="action-icon-button delete-button" (click)="eliminarIncidencia(incidencia.id)" matTooltip="Eliminar incidencia">
               <mat-icon>delete</mat-icon>
             </button>
           </div>

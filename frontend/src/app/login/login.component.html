@@ -24,15 +24,20 @@
 
     <div class="form-group">
       <label for="password" class="form-label outfit-medium">Contraseña:</label>
-      <input type="password"
-             id="password"
-             name="password"
-             class="form-control"
-             [(ngModel)]="credentials.password"
-             required
-             #password="ngModel"
-             [ngClass]="{ 'is-invalid': loginForm.submitted && password.invalid }"
-             placeholder="Ingrese su contraseña">
+      <div class="password-input-container">
+        <input [type]="showPassword ? 'text' : 'password'"
+               id="password"
+               name="password"
+               class="form-control"
+               [(ngModel)]="credentials.password"
+               required
+               #password="ngModel"
+               [ngClass]="{ 'is-invalid': loginForm.submitted && password.invalid }"
+               placeholder="Ingrese su contraseña">
+        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
       <div *ngIf="loginForm.submitted && password.invalid" class="form-error">
         <div *ngIf="password.errors?.['required']">La contraseña es requerida.</div>
       </div>
