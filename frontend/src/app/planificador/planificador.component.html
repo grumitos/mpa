@@ -1,161 +1,389 @@
-<div class="contenedor-planificador">
-  <div class="page-header">
+<div class="planificador-container">
+  <!-- Cabecera de página con diseño mejorado -->
+  <header class="page-header">
     <div class="header-content">
-      <h1 class="outfit-bold">Planificador</h1>
-      <p>Gestión de planificaciones y seguimiento de profesores</p>
+      <h1 class="page-title">Planificador</h1>
+      <p class="page-subtitle">Gestión de planificaciones y seguimiento de profesores</p>
     </div>
     <div class="header-actions">
-      <button mat-flat-button color="primary" (click)="onNew()" class="action-button">
-        <mat-icon>add</mat-icon> Nueva Planificación
+      <button mat-flat-button color="primary" (click)="onNew()" class="btn-accent">
+        <mat-icon>add</mat-icon>
+        <span>Nueva Planificación</span>
       </button>
     </div>
-  </div>
-  
-  <mat-card class="filtros-card">
+  </header>
+
+  <!-- Tarjeta de filtros rediseñada -->
+  <mat-card class="card filter-card" appearance="outlined">
     <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">filter_list</mat-icon> Filtros
-      </mat-card-title>
+      <div class="card-header-title">
+        <mat-icon>filter_list</mat-icon>
+        <h2>Filtros</h2>
+      </div>
+      <button mat-icon-button class="card-collapse-btn" (click)="toggleFiltros()">
+        <mat-icon>{{ filtrosColapsados ? 'expand_more' : 'expand_less' }}</mat-icon>
+      </button>
     </mat-card-header>
-    <mat-card-content>
-      <div class="filtros-container">
-        <div class="filter-field-group">
-          <label class="field-label">Mostrar registros</label>
-          <div class="custom-select-container">
-            <mat-icon class="select-icon">format_list_numbered</mat-icon>
-            <select [(ngModel)]="displayedCount" class="custom-select">
-              <option *ngFor="let num of [3,5,10]" [value]="num">{{ num }}</option>
-            </select>
+    
+    <mat-card-content [class.collapsed]="filtrosColapsados">
+      <div class="filters-form">
+        <div class="filter-group">
+          <div class="filter-field">
+            <label>Mostrar registros</label>
+            <mat-form-field appearance="outline">
+              <mat-select [(ngModel)]="displayedCount">
+                <mat-option *ngFor="let num of [3,5,10]" [value]="num">{{ num }}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>format_list_numbered</mat-icon>
+            </mat-form-field>
           </div>
-        </div>
-        
-        <div class="filter-field-group">
-          <label class="field-label">Búsqueda</label>
-          <div class="custom-input-container">
-            <mat-icon class="input-icon">search</mat-icon>
-            <input 
-              [(ngModel)]="busqueda" 
-              placeholder="Abril - 2025"
-              class="custom-input">
+          
+          <div class="filter-field">
+            <label>Búsqueda</label>
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="busqueda" placeholder="Abril - 2025">
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
           </div>
-        </div>
-        
-        <div class="filter-actions">
-          <button class="custom-button primary-button" (click)="onSearch()">
-            <mat-icon>search</mat-icon> Buscar
-          </button>
-          <button class="custom-button secondary-button" (click)="busqueda = ''; onSearch()">
-            <mat-icon>clear</mat-icon> Limpiar
-          </button>
+          
+          <div class="filter-actions">
+            <button mat-flat-button color="primary" (click)="onSearch()">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+            <button mat-stroked-button (click)="busqueda = ''; onSearch()">
+              <mat-icon>clear</mat-icon>
+              <span>Limpiar</span>
+            </button>
+          </div>
         </div>
       </div>
     </mat-card-content>
   </mat-card>
-  <mat-card class="tabla-card">
-    <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">assignment</mat-icon> Planificaciones
-      </mat-card-title>
-      <div class="card-header-info" *ngIf="filteredPlaneaciones.length > 0">
-        <span class="card-header-count">{{ filteredPlaneaciones.length }} registros</span>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="table-responsive-wrapper">
-        <table mat-table [dataSource]="filteredPlaneaciones" class="data-table planificador-table">
-          <!-- DNI Column -->
-          <ng-container matColumnDef="dni">
-            <th mat-header-cell *matHeaderCellDef>DNI</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.dni }}</td>
-          </ng-container>
-          
-          <!-- Nombre Column -->
-          <ng-container matColumnDef="nombre">
-            <th mat-header-cell *matHeaderCellDef>Nombre</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.nombre }}</td>
-          </ng-container>
-          
-          <!-- Apellido Column -->
-          <ng-container matColumnDef="apellido">
-            <th mat-header-cell *matHeaderCellDef>Apellido</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.apellido }}</td>
-          </ng-container>
-          
-          <!-- ID Profesor Column -->
-          <ng-container matColumnDef="idProfesor">
-            <th mat-header-cell *matHeaderCellDef>ID Profesor</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.idProfesor }}</td>
-          </ng-container>
-          
-          <!-- Fecha Enviado Column -->
-          <ng-container matColumnDef="fechaEnviado">
-            <th mat-header-cell *matHeaderCellDef>Fecha Enviado</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.fechaEnviado }}</td>
-          </ng-container>
-          
-          <!-- Fecha Recibido Column -->
-          <ng-container matColumnDef="fechaRecibido">
-            <th mat-header-cell *matHeaderCellDef>Fecha Recibido</th>
-            <td mat-cell *matCellDef="let plan">{{ plan.fechaRecibido }}</td>
-          </ng-container>
-          
-          <!-- Estado Column -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let plan">
-              <span class="estado-badge" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</span>
-            </td>
-          </ng-container>
-          
-          <!-- Acciones Column -->
-          <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let plan">
-              <div class="actions-cell-wrapper">
-                <button class="action-icon-button" (click)="onEdit(plan)" matTooltip="Editar planificación">
+
+  <!-- Contenedor principal de datos -->
+  <div class="content-layout">
+    <!-- Tarjeta de tabla rediseñada -->
+    <mat-card class="card data-card" appearance="outlined">
+      <mat-card-header>
+        <div class="card-header-title">
+          <mat-icon>assignment</mat-icon>
+          <h2>Planificaciones</h2>
+        </div>
+        <div class="card-header-actions" *ngIf="filteredPlaneaciones.length > 0">
+          <span class="results-count">{{ filteredPlaneaciones.length }} registros</span>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="filteredPlaneaciones" class="mat-elevation-z0">
+            <!-- DNI Column -->
+            <ng-container matColumnDef="dni">
+              <th mat-header-cell *matHeaderCellDef>DNI</th>
+              <td mat-cell *matCellDef="let plan">
+                <span class="id-badge">{{ plan.dni }}</span>
+              </td>
+            </ng-container>
+            
+            <!-- Nombre Column -->
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let plan">
+                <div class="name-cell">{{ plan.nombre }}</div>
+              </td>
+            </ng-container>
+            
+            <!-- Apellido Column -->
+            <ng-container matColumnDef="apellido">
+              <th mat-header-cell *matHeaderCellDef>Apellido</th>
+              <td mat-cell *matCellDef="let plan">
+                <div class="name-cell">{{ plan.apellido }}</div>
+              </td>
+            </ng-container>
+            
+            <!-- ID Profesor Column -->
+            <ng-container matColumnDef="idProfesor">
+              <th mat-header-cell *matHeaderCellDef>ID Profesor</th>
+              <td mat-cell *matCellDef="let plan">
+                <span class="id-badge secondary">{{ plan.idProfesor }}</span>
+              </td>
+            </ng-container>
+            
+            <!-- Fecha Enviado Column -->
+            <ng-container matColumnDef="fechaEnviado">
+              <th mat-header-cell *matHeaderCellDef>Fecha Enviado</th>
+              <td mat-cell *matCellDef="let plan">
+                <div class="date-cell">
+                  <mat-icon>event</mat-icon>
+                  <span>{{ plan.fechaEnviado }}</span>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Fecha Recibido Column -->
+            <ng-container matColumnDef="fechaRecibido">
+              <th mat-header-cell *matHeaderCellDef>Fecha Recibido</th>
+              <td mat-cell *matCellDef="let plan">
+                <div class="date-cell">
+                  <mat-icon>event_available</mat-icon>
+                  <span>{{ plan.fechaRecibido }}</span>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Estado Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let plan">
+                <span class="status-badge" [ngClass]="plan.status.toLowerCase()">{{ plan.status }}</span>
+              </td>
+            </ng-container>
+            
+            <!-- Acciones Column -->
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef class="actions-column">Acciones</th>
+              <td mat-cell *matCellDef="let plan" class="actions-cell">
+                <button mat-icon-button color="primary" (click)="onEdit(plan)" matTooltip="Editar planificación">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button class="action-icon-button delete-button" (click)="onDelete(plan.id)" matTooltip="Eliminar planificación">
+                <button mat-icon-button color="warn" (click)="onDelete(plan.id)" matTooltip="Eliminar planificación">
                   <mat-icon>delete</mat-icon>
                 </button>
+              </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones']; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones'];"></tr>
+            
+            <!-- Fila para cuando no hay datos -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell empty-table" [attr.colspan]="8">
+                <div class="no-data-message">
+                  <mat-icon>assignment_late</mat-icon>
+                  <span>No se encontraron planificaciones.</span>
+                  <button mat-flat-button color="primary" (click)="onNew()">Crear nueva planificación</button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+      
+      <mat-card-footer *ngIf="filteredPlaneaciones.length > 0" class="card-footer">
+        <div class="pagination-info">
+          Mostrando {{ filteredPlaneaciones.length }} registros
+        </div>
+      </mat-card-footer>
+    </mat-card>
+
+    <!-- Tarjeta de resumen rediseñada -->
+    <div class="stats-grid">
+      <mat-card class="card stats-card" appearance="outlined">
+        <mat-card-header>
+          <div class="card-header-title">
+            <mat-icon>analytics</mat-icon>
+            <h2>Resumen</h2>
+          </div>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="stats-container">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <mat-icon>people</mat-icon>
               </div>
-            </td>
-          </ng-container>
+              <div class="stat-content">
+                <h3>Total Profesores</h3>
+                <div class="stat-value">{{ resumen.totalProfesores }}</div>
+              </div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-icon">
+                <mat-icon>group</mat-icon>
+              </div>
+              <div class="stat-content">
+                <h3>Miembros</h3>
+                <div class="stat-value">{{ resumen.miembros }}</div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <!-- Tarjeta de estado de planificaciones -->
+      <mat-card class="card stats-card" appearance="outlined">
+        <mat-card-header>
+          <div class="card-header-title">
+            <mat-icon>pie_chart</mat-icon>
+            <h2>Estado de Planificaciones</h2>
+          </div>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="status-overview">
+            <div class="status-overview-item" [ngStyle]="{'--status-color': '#4CAF50'}">
+              <div class="status-icon">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+              <div class="status-content">
+                <h4>Completadas</h4>
+                <div class="status-value">{{ getStatusCount('Completada') }}</div>
+              </div>
+            </div>
+            
+            <div class="status-overview-item" [ngStyle]="{'--status-color': '#FFC107'}">
+              <div class="status-icon">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <div class="status-content">
+                <h4>Pendientes</h4>
+                <div class="status-value">{{ getStatusCount('Pendiente') }}</div>
+              </div>
+            </div>
+            
+            <div class="status-overview-item" [ngStyle]="{'--status-color': '#2196F3'}">
+              <div class="status-icon">
+                <mat-icon>sync</mat-icon>
+              </div>
+              <div class="status-content">
+                <h4>En proceso</h4>
+                <div class="status-value">{{ getStatusCount('En proceso') }}</div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Formulario modal (se mostrará con un overlay cuando sea necesario) -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModalOnBackdrop($event)">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ modalMode === 'new' ? 'Nueva Planificación' : 'Editar Planificación' }}</h2>
+        <button mat-icon-button (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form [formGroup]="planForm" class="plan-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label>DNI</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="dni" placeholder="DNI del profesor">
+                <mat-icon matPrefix>badge</mat-icon>
+                <mat-error *ngIf="planForm.get('dni')?.hasError('required')">
+                  DNI requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>ID Profesor</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="idProfesor" placeholder="ID de identificación">
+                <mat-icon matPrefix>fingerprint</mat-icon>
+                <mat-error *ngIf="planForm.get('idProfesor')?.hasError('required')">
+                  ID de profesor requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
           
-          <tr mat-header-row *matHeaderRowDef="['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['dni', 'nombre', 'apellido', 'idProfesor', 'fechaEnviado', 'fechaRecibido', 'status', 'acciones'];"></tr>
-        </table>
-      </div>
-    </mat-card-content>
-    <mat-card-footer *ngIf="filteredPlaneaciones.length > 0" class="table-footer">
-      <div class="pagination-info">
-        Mostrando {{ filteredPlaneaciones.length }} registros
-      </div>
-    </mat-card-footer>
-  </mat-card>
-  <mat-card class="resumen-card">
-    <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">analytics</mat-icon> Resumen
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="resumen">
-        <div class="bloque">
-          <mat-icon class="bloque-icon">people</mat-icon>
-          <div class="bloque-content">
-            <p>Total Profesores</p>
-            <h3>{{ resumen.totalProfesores }}</h3>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Nombre</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="nombre" placeholder="Nombre del profesor">
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error *ngIf="planForm.get('nombre')?.hasError('required')">
+                  Nombre requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Apellido</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="apellido" placeholder="Apellido del profesor">
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error *ngIf="planForm.get('apellido')?.hasError('required')">
+                  Apellido requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-        <div class="bloque">
-          <mat-icon class="bloque-icon">group</mat-icon>
-          <div class="bloque-content">
-            <p>Miembros</p>
-            <h3>{{ resumen.miembros }}</h3>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <label>Fecha de envío</label>
+              <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="pickerEnvio" formControlName="fechaEnviado"
+                      placeholder="Fecha de envío">
+                <mat-datepicker-toggle matSuffix [for]="pickerEnvio"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEnvio></mat-datepicker>
+                <mat-icon matPrefix>event</mat-icon>
+                <mat-error *ngIf="planForm.get('fechaEnviado')?.hasError('required')">
+                  Fecha de envío requerida
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Fecha de recepción</label>
+              <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="pickerRecibo" formControlName="fechaRecibido"
+                      placeholder="Fecha de recepción">
+                <mat-datepicker-toggle matSuffix [for]="pickerRecibo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerRecibo></mat-datepicker>
+                <mat-icon matPrefix>event_available</mat-icon>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <label>Estado</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="status">
+                  <mat-option value="Pendiente">Pendiente</mat-option>
+                  <mat-option value="En proceso">En proceso</mat-option>
+                  <mat-option value="Completada">Completada</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>assignment_turned_in</mat-icon>
+                <mat-error *ngIf="planForm.get('status')?.hasError('required')">
+                  Estado requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-field full-width">
+              <label>Comentarios</label>
+              <mat-form-field appearance="outline">
+                <textarea matInput formControlName="comentarios" placeholder="Comentarios adicionales" rows="3"></textarea>
+                <mat-icon matPrefix>comment</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
       </div>
-    </mat-card-content>
-  </mat-card>
+      
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+          <span>Cancelar</span>
+        </button>
+        <button mat-flat-button color="primary" (click)="savePlan()" [disabled]="planForm.invalid">
+          <mat-icon>save</mat-icon>
+          <span>Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

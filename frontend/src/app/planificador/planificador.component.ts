@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-planificador',
@@ -16,6 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule, 
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -23,12 +26,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatSelectModule,
     MatTableModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   templateUrl: './planificador.component.html',
   styleUrls: ['./planificador.component.scss']
 })
-export class PlanificadorComponent {
+export class PlanificadorComponent implements OnInit {
   displayedCount = 3;
   busqueda = '';
   selectedPlan: any = null;
@@ -39,6 +44,31 @@ export class PlanificadorComponent {
   ];
   filteredPlaneaciones = [...this.planeaciones];
   resumen = { totalProfesores: 16, miembros: 55 };
+  
+  // Properties referenced in template that were missing
+  filtrosColapsados = false;
+  showModal = false;
+  modalMode: 'new' | 'edit' = 'new';
+  planForm!: FormGroup;
+  
+  constructor(private fb: FormBuilder) {}
+  
+  ngOnInit(): void {
+    this.initForm();
+  }
+  
+  initForm(): void {
+    this.planForm = this.fb.group({
+      dni: ['', Validators.required],
+      idProfesor: ['', Validators.required],
+      nombre: ['', Validators.required],
+      apellido: ['', Validators.required],
+      fechaEnviado: ['', Validators.required],
+      fechaRecibido: [''],
+      status: ['Pendiente', Validators.required],
+      comentarios: ['']
+    });
+  }
 
   onSearch() {
     this.filteredPlaneaciones = this.planeaciones
@@ -73,6 +103,55 @@ export class PlanificadorComponent {
         return 'estado-en-revision';
       default:
         return '';
+    }
+  }
+  
+  // Methods referenced in template that were missing
+  toggleFiltros(): void {
+    this.filtrosColapsados = !this.filtrosColapsados;
+  }
+  
+  getStatusCount(status: string): number {
+    return this.planeaciones.filter(p => p.status === status).length;
+  }
+  
+  closeModalOnBackdrop(event: Event): void {
+    if (event.target === event.currentTarget) {
+      this.closeModal();
+    }
+  }
+  
+  closeModal(): void {
+    this.showModal = false;
+  }
+  
+  savePlan(): void {
+    if (this.planForm.valid) {
+      const planData = this.planForm.value;
+      
+      if (this.modalMode === 'new') {
+        // Add new plan
+        const newId = Math.max(...this.planeaciones.map(p => p.id)) + 1;
+        const newPlan = {
+          id: newId,
+          ...planData,
+          fecha: new Date()
+        };
+        this.planeaciones.push(newPlan);
+        this.filteredPlaneaciones = [...this.planeaciones];
+      } else {
+        // Update existing plan
+        const index = this.planeaciones.findIndex(p => p.id === this.selectedPlan.id);
+        if (index !== -1) {
+          this.planeaciones[index] = {
+            ...this.planeaciones[index],
+            ...planData
+          };
+          this.filteredPlaneaciones = [...this.planeaciones];
+        }
+      }
+      
+      this.closeModal();
     }
   }
 }

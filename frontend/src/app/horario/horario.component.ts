@@ -13,6 +13,7 @@ import { MatFormFieldModule }  from '@angular/material/form-field';
 import { MatInputModule }      from '@angular/material/input';
 import { MatButtonModule }     from '@angular/material/button';
 import { MatIconModule }       from '@angular/material/icon';
+import { MatSelectModule }     from '@angular/material/select';
 import { SupabaseService }     from '../services/supabase.service';
 
 export interface Horario {
@@ -37,7 +38,8 @@ export interface Horario {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSelectModule
   ],
   templateUrl: './horario.component.html',
   styleUrls: ['./horario.component.scss']
@@ -48,6 +50,7 @@ export class HorarioComponent implements OnInit {
   columnas = ['dia','horaInicio','horaFin','materia','aula','acciones'];
   mostrForm = false;
   editando: Horario | null = null;
+  modoEdicion = false;
 
   // Para la grilla tipo calendario
   dias = ['L','M','X','J','V','S']; // Iniciales estándar en español: L M X J V S D
@@ -92,12 +95,14 @@ export class HorarioComponent implements OnInit {
     this.editando = null;
     this.formulario.reset();
     this.mostrForm = true;
+    this.modoEdicion = false;
   }
 
   editar(h: Horario) {
     this.editando = h;
     this.formulario.patchValue(h);
     this.mostrForm = true;
+    this.modoEdicion = true;
   }
 
   async guardar() {
@@ -128,8 +133,26 @@ export class HorarioComponent implements OnInit {
 
   cancelar() {
     this.mostrForm = false;
+    this.modoEdicion = false;
   }
 
+  getDayClass(dia: string): string {
+    // Normaliza el día para usarlo en clases CSS
+    const dayMap: {[key: string]: string} = {
+      'lunes': 'lun',
+      'martes': 'mar',
+      'miércoles': 'mie',
+      'miercoles': 'mie',
+      'jueves': 'jue',
+      'viernes': 'vie',
+      'sábado': 'sab',
+      'sabado': 'sab',
+      'domingo': 'dom'
+    };
+    
+    return dayMap[dia.toLowerCase()] || 'unknown';
+  }
+  
   getEventStyle(ev: Horario) {
     let diaIdx;
     

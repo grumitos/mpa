@@ -52,6 +52,15 @@ export class NotasComponent implements OnInit {
   mensajeError: string = '';
   estudiantesFiltrados: Observable<string[]> = of([]);
   todosLosEstudiantes: string[] = [];
+  
+  // Propiedades faltantes que se usan en la plantilla
+  filtrosColapsados = false;
+  columnas = ['estudianteNombre', 'evaluacion1', 'evaluacion2', 'evaluacionFinalExamen', 'notaFinalCalculada', 'calificacion', 'acciones'];
+  
+  // Método para alternar la visibilidad de los filtros
+  toggleFiltros(): void {
+    this.filtrosColapsados = !this.filtrosColapsados;
+  }
 
   filtroForm: FormGroup;
   cursos: string[] = [];
@@ -327,6 +336,16 @@ export class NotasComponent implements OnInit {
   iniciarEdicion(nota: NotaView): void {
     this.activarEdicion(nota);
   }
+  
+  // Alias para iniciarEdicion para mantener compatibilidad con la plantilla
+  editarNota(nota: NotaView): void {
+    this.iniciarEdicion(nota);
+  }
+  
+  // Alias para confirmarEliminarNota para mantener compatibilidad con la plantilla
+  eliminarNota(id: number): void {
+    this.confirmarEliminarNota(id);
+  }
 
   obtenerCalificacion(notaFinal: number | null | undefined): string {
     if (notaFinal === null || notaFinal === undefined) return '-';
@@ -335,6 +354,10 @@ export class NotasComponent implements OnInit {
     if (notaFinal >= 10) return 'Aprobado';
     if (notaFinal >= 6) return 'Suspenso';
     return 'Muy deficiente';
+  }
+
+  getCalificacion(notaFinal: number | null | undefined): string {
+    return this.obtenerCalificacion(notaFinal);
   }
 
   exportarNotas(): void {
@@ -452,6 +475,11 @@ export class NotasComponent implements OnInit {
     const suma = notasValidas.reduce((acc, curr) => acc + curr, 0);
     return parseFloat((suma / notasValidas.length).toFixed(2));
   }
+  
+  // Alias para calcularPromedioClase para mantener compatibilidad con la plantilla
+  calcularPromedioGeneral(): number {
+    return this.calcularPromedioClase() || 0;
+  }
 
   calcularNotaMaxima(): number | null {
     if (!this.notas || this.notas.length === 0) {
@@ -462,6 +490,17 @@ export class NotasComponent implements OnInit {
       return null;
     }
     return Math.max(...notasFinales);
+  }
+  
+  calcularNotaMinima(): number {
+    if (!this.notas || this.notas.length === 0) {
+      return 0;
+    }
+    const notasFinales = this.notas.map(n => this.calcularNotaFinal(n)).filter(nf => nf !== null) as number[];
+    if (notasFinales.length === 0) {
+      return 0;
+    }
+    return Math.min(...notasFinales);
   }
 
   calcularPorcentajeAprobados(): number | null {

@@ -30,6 +30,9 @@ export interface Incidencia {
   adjuntos?: string[];
   fechaCreacion: Date;
   fechaModificacion?: Date;
+  lugar?: string;
+  profesorResponsable?: string;
+  medidasAdoptadas?: string;
 }
 
 @Component({
@@ -72,6 +75,9 @@ export class IncidenciasComponent implements OnInit {
   mensajeError: string = '';
   
   formularioIncidencia: FormGroup;
+  
+  filtrosColapsados = false;
+  detallesVisibles = false;
   
   filtros = {
     estado: '',
@@ -314,6 +320,74 @@ export class IncidenciasComponent implements OnInit {
         elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 100);
+  }
+  
+  // Métodos faltantes que se usan en la plantilla
+  toggleFiltros(): void {
+    this.filtrosColapsados = !this.filtrosColapsados;
+  }
+  
+  getUrgencyClass(nivelUrgencia: string | undefined): string {
+    if (!nivelUrgencia) return 'urgency-medium';
+    
+    const urgencyMap: {[key: string]: string} = {
+      'baja': 'urgency-low',
+      'media-baja': 'urgency-medium-low',
+      'media': 'urgency-medium',
+      'media-alta': 'urgency-medium-high',
+      'alta': 'urgency-high',
+      'urgente': 'urgency-urgent',
+      'crítica': 'urgency-critical'
+    };
+    
+    return urgencyMap[nivelUrgencia.toLowerCase()] || 'urgency-medium';
+  }
+  
+  getShortStudentsList(alumnos: string): string {
+    if (!alumnos) return 'No especificado';
+    
+    const listaAlumnos = alumnos.split(',').map(a => a.trim());
+    if (listaAlumnos.length <= 2) return alumnos;
+    
+    return `${listaAlumnos[0]}, ${listaAlumnos[1]} y ${listaAlumnos.length - 2} más`;
+  }
+  
+  getStatusClass(estado: string | undefined): string {
+    if (!estado) return 'status-pending';
+    
+    const statusMap: {[key: string]: string} = {
+      'pendiente': 'status-pending',
+      'en proceso': 'status-in-progress',
+      'en investigación': 'status-investigating',
+      'esperando información': 'status-waiting',
+      'derivado a dirección': 'status-forwarded',
+      'derivado a orientación': 'status-forwarded-guidance',
+      'citada familia': 'status-family-meeting',
+      'medidas aplicadas': 'status-measures-applied',
+      'resuelta': 'status-resolved',
+      'desestimada': 'status-dismissed',
+      'archivada': 'status-archived'
+    };
+    
+    return statusMap[estado.toLowerCase()] || 'status-pending';
+  }
+  
+  verDetallesRow(incidencia: Incidencia, event: Event): void {
+    event.stopPropagation();
+    this.incidenciaSeleccionada = { ...incidencia };
+    this.detallesVisibles = true;
+  }
+  
+  cerrarDetalles(): void {
+    this.detallesVisibles = false;
+    this.incidenciaSeleccionada = null;
+  }
+  
+  editarIncidenciaDesdeDetalles(): void {
+    if (this.incidenciaSeleccionada) {
+      this.cerrarDetalles();
+      this.editarIncidencia(this.incidenciaSeleccionada);
+    }
   }
     editarIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'editar';

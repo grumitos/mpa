@@ -1,173 +1,179 @@
 <div class="notas-container">
-  <div class="page-header">
+  <!-- Encabezado de página con diseño mejorado -->
+  <header class="page-header">
     <div class="header-content">
-      <h1 class="outfit-bold">Gestión de Notas</h1>
-      <p>Registro y seguimiento del rendimiento académico</p>
+      <h1 class="page-title">Gestión de Notas</h1>
+      <p class="page-subtitle">Registro y seguimiento del rendimiento académico</p>
     </div>
     <div class="header-actions">
-      <button mat-flat-button color="primary" (click)="agregarFilaParaNuevaNota()" class="action-button add-note-btn">
-        <mat-icon>add</mat-icon> Nueva Nota
+      <button mat-flat-button color="primary" (click)="agregarFilaParaNuevaNota()" class="btn-accent">
+        <mat-icon>add</mat-icon>
+        <span>Nueva Nota</span>
       </button>
-      <button mat-stroked-button (click)="exportarNotas()" class="action-button">
-        <mat-icon>download</mat-icon> Exportar CSV
+      <button mat-stroked-button (click)="exportarNotas()" class="btn-outline">
+        <mat-icon>download</mat-icon>
+        <span>Exportar CSV</span>
       </button>
     </div>
-  </div>
+  </header>
 
-  <mat-card class="filtros-card">
+  <!-- Tarjeta de filtros rediseñada -->
+  <mat-card class="card filter-card" appearance="outlined">
     <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">filter_list</mat-icon> Filtros
-      </mat-card-title>
+      <div class="card-header-title">
+        <mat-icon>filter_list</mat-icon>
+        <h2>Filtros</h2>
+      </div>
+      <button mat-icon-button class="card-collapse-btn" (click)="toggleFiltros()">
+        <mat-icon>{{ filtrosColapsados ? 'expand_more' : 'expand_less' }}</mat-icon>
+      </button>
     </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="filtroForm" class="filtros-container">
-        <div class="filter-field-group">
-          <label class="field-label">Curso</label>
-          <div class="custom-select-container">
-            <mat-icon class="select-icon">class</mat-icon>
-            <select formControlName="curso" class="custom-select">
-              <option value="">Todos los cursos</option>
-              <option *ngFor="let curso of cursos" [value]="curso">{{curso}}</option>
-            </select>
+    
+    <mat-card-content [class.collapsed]="filtrosColapsados">
+      <form [formGroup]="filtroForm" class="filters-form">
+        <div class="filter-group">
+          <div class="filter-field">
+            <label>Curso</label>
+            <mat-form-field appearance="outline">
+              <mat-select formControlName="curso" placeholder="Todos los cursos">
+                <mat-option value="">Todos los cursos</mat-option>
+                <mat-option *ngFor="let curso of cursos" [value]="curso">{{curso}}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>class</mat-icon>
+            </mat-form-field>
           </div>
-        </div>
 
-        <div class="filter-field-group">
-          <label class="field-label">Asignatura</label>
-          <div class="custom-select-container">
-            <mat-icon class="select-icon">book</mat-icon>
-            <select formControlName="asignatura" class="custom-select">
-              <option value="">Todas las asignaturas</option>
-              <option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</option>
-            </select>
+          <div class="filter-field">
+            <label>Asignatura</label>
+            <mat-form-field appearance="outline">
+              <mat-select formControlName="asignatura" placeholder="Todas las asignaturas">
+                <mat-option value="">Todas las asignaturas</mat-option>
+                <mat-option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>book</mat-icon>
+            </mat-form-field>
           </div>
-        </div>
 
-        <div class="filter-field-group">
-          <label class="field-label">Periodo</label>
-          <div class="custom-select-container">
-            <mat-icon class="select-icon">date_range</mat-icon>
-            <select formControlName="periodo" class="custom-select">
-              <option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</option>
-            </select>
+          <div class="filter-field">
+            <label>Periodo</label>
+            <mat-form-field appearance="outline">
+              <mat-select formControlName="periodo">
+                <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>date_range</mat-icon>
+            </mat-form-field>
           </div>
-        </div>
 
-        <div class="filter-actions">
-          <button class="custom-button primary-button" (click)="aplicarFiltros()">
-            <mat-icon>search</mat-icon> Buscar
-          </button>
-          <button class="custom-button secondary-button" (click)="limpiarFiltros()">
-            <mat-icon>clear</mat-icon> Limpiar
-          </button>
+          <div class="filter-actions">
+            <button mat-flat-button color="primary" (click)="aplicarFiltros()">
+              <mat-icon>search</mat-icon>
+              <span>Buscar</span>
+            </button>
+            <button mat-stroked-button (click)="limpiarFiltros()">
+              <mat-icon>clear</mat-icon>
+              <span>Limpiar</span>
+            </button>
+          </div>
         </div>
       </form>
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="cargando" class="loading-spinner-container">
-    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+  <!-- Indicador de carga con estilo mejorado -->
+  <div *ngIf="cargando" class="loading-state">
+    <mat-progress-spinner color="accent" mode="indeterminate" diameter="40"></mat-progress-spinner>
     <span>Cargando notas...</span>
   </div>
 
+  <!-- Mensaje de error con estilo consistente -->
   <div *ngIf="mensajeError" class="error-message">
     <mat-icon>error_outline</mat-icon>
     <span>{{ mensajeError }}</span>
   </div>
-  <mat-card class="mt-4 notas-table-card" *ngIf="!cargando">    
+
+  <!-- Tarjeta de tabla de calificaciones rediseñada -->
+  <mat-card class="card data-card" appearance="outlined" *ngIf="!cargando">
     <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">grade</mat-icon> Calificaciones
-      </mat-card-title>
-      <div class="card-header-info" *ngIf="notas.length > 0">
-        <span class="card-header-count">{{ notas.length }} registros</span>
+      <div class="card-header-title">
+        <mat-icon>grade</mat-icon>
+        <h2>Calificaciones</h2>
+      </div>
+      <div class="card-header-actions">
+        <span class="results-count" *ngIf="notas.length > 0">{{ notas.length }} registros</span>
       </div>
     </mat-card-header>
     
     <mat-card-content>
-      <div class="table-responsive-wrapper">
-        <table mat-table [dataSource]="notas" matSort (matSortChange)="sortData($event)" class="data-table notas-table">
+      <div class="table-container">
+        <table mat-table [dataSource]="notas" matSort (matSortChange)="sortData($event)" class="mat-elevation-z0">
           <!-- Columna Estudiante -->
           <ng-container matColumnDef="estudianteNombre">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estudiante </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <div class="student-info-container">
-                  <div class="student-field-group">
-                    <label class="field-label">Nombre del estudiante</label>
-                    <div class="custom-input-container">
-                      <mat-icon class="input-icon">person</mat-icon>
-                      <input 
-                        [(ngModel)]="nota.estudianteNombre" 
-                        placeholder="Nombre del estudiante" 
-                        [matAutocomplete]="auto"
-                        required
-                        class="custom-input student-name-input">
-                      <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let estudiante of estudiantesFiltrados | async" [value]="estudiante">
-                          {{estudiante}}
-                        </mat-option>
-                      </mat-autocomplete>
-                    </div>
-                    <div *ngIf="!nota.estudianteNombre" class="field-error">Estudiante requerido</div>
-                  </div>
+                <div class="edit-student-container">
+                  <!-- Nombre del estudiante -->
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nombre del estudiante</mat-label>
+                    <input matInput [(ngModel)]="nota.estudianteNombre" 
+                           [matAutocomplete]="auto" required>
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let estudiante of estudiantesFiltrados | async" [value]="estudiante">
+                        {{estudiante}}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-error *ngIf="!nota.estudianteNombre">Estudiante requerido</mat-error>
+                  </mat-form-field>
                   
-                  <div class="student-field-group">
-                    <label class="field-label">ID Estudiante</label>
-                    <div class="custom-input-container">
-                      <mat-icon class="input-icon">badge</mat-icon>
-                      <input 
-                        [(ngModel)]="nota.estudianteId" 
-                        placeholder="ID del estudiante"
-                        required
-                        class="custom-input student-id-input">
-                    </div>
-                    <div *ngIf="!nota.estudianteId" class="field-error">ID requerido</div>
-                  </div>
-                </div>
-                
-                <div class="course-info-container">
-                  <div class="course-field-group">
-                    <label class="field-label">Curso</label>
-                    <div class="custom-select-container">
-                      <mat-icon class="select-icon">class</mat-icon>
-                      <select [(ngModel)]="nota.curso" required class="custom-select">
-                        <option value="" disabled selected>Seleccione curso</option>
-                        <option *ngFor="let curso of cursos" [value]="curso">{{curso}}</option>
-                      </select>
-                    </div>
-                    <div *ngIf="!nota.curso" class="field-error">Curso requerido</div>
-                  </div>
+                  <!-- ID del estudiante -->
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>ID Estudiante</mat-label>
+                    <input matInput [(ngModel)]="nota.estudianteId" required>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <mat-error *ngIf="!nota.estudianteId">ID requerido</mat-error>
+                  </mat-form-field>
                   
-                  <div class="course-field-group">
-                    <label class="field-label">Asignatura</label>
-                    <div class="custom-select-container">
-                      <mat-icon class="select-icon">book</mat-icon>
-                      <select [(ngModel)]="nota.asignatura" required class="custom-select">
-                        <option value="" disabled selected>Seleccione asignatura</option>
-                        <option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</option>
-                      </select>
-                    </div>
-                    <div *ngIf="!nota.asignatura" class="field-error">Asignatura requerida</div>
-                  </div>
+                  <!-- Curso -->
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Curso</mat-label>
+                    <mat-select [(ngModel)]="nota.curso" required>
+                      <mat-option value="" disabled>Seleccione curso</mat-option>
+                      <mat-option *ngFor="let curso of cursos" [value]="curso">{{curso}}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>class</mat-icon>
+                    <mat-error *ngIf="!nota.curso">Curso requerido</mat-error>
+                  </mat-form-field>
                   
-                  <div class="course-field-group">
-                    <label class="field-label">Periodo</label>
-                    <div class="custom-select-container">
-                      <mat-icon class="select-icon">date_range</mat-icon>
-                      <select [(ngModel)]="nota.periodo" required class="custom-select">
-                        <option value="" disabled selected>Seleccione periodo</option>
-                        <option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</option>
-                      </select>
-                    </div>
-                    <div *ngIf="!nota.periodo" class="field-error">Periodo requerido</div>
-                  </div>
+                  <!-- Asignatura -->
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Asignatura</mat-label>
+                    <mat-select [(ngModel)]="nota.asignatura" required>
+                      <mat-option value="" disabled>Seleccione asignatura</mat-option>
+                      <mat-option *ngFor="let asignatura of asignaturas" [value]="asignatura">{{asignatura}}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>book</mat-icon>
+                    <mat-error *ngIf="!nota.asignatura">Asignatura requerida</mat-error>
+                  </mat-form-field>
+                  
+                  <!-- Periodo -->
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Periodo</mat-label>
+                    <mat-select [(ngModel)]="nota.periodo" required>
+                      <mat-option value="" disabled>Seleccione periodo</mat-option>
+                      <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{periodo}}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>date_range</mat-icon>
+                    <mat-error *ngIf="!nota.periodo">Periodo requerido</mat-error>
+                  </mat-form-field>
                 </div>
               </ng-container>
+              
               <ng-container *ngIf="!nota.editando">
-                <div class="estudiante-nombre">{{nota.estudianteNombre}}</div>
-                <div class="estudiante-info" *ngIf="nota.curso">{{nota.curso}}</div>
+                <div class="student-info">
+                  <span class="student-name">{{nota.estudianteNombre}}</span>
+                  <span class="student-course" *ngIf="nota.curso">{{nota.curso}}</span>
+                </div>
               </ng-container>
             </td>
           </ng-container>
@@ -175,29 +181,24 @@
           <!-- Columna Evaluación 1 -->
           <ng-container matColumnDef="evaluacion1">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <span class="eval-header">Eval. 1</span>
-              <span class="eval-percent">30%</span>
+              <div class="eval-header">
+                <span>Eval. 1</span>
+                <small>30%</small>
+              </div>
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <div class="custom-grade-input">
-                  <input 
-                    [(ngModel)]="nota.evaluacion1" 
-                    (blur)="validarNota(nota, 'evaluacion1')"
-                    (keyup.enter)="validarNota(nota, 'evaluacion1')"
-                    placeholder="0-20"
-                    type="text"
-                    pattern="\d*(\.\d{0,2})?"
-                    class="grade-input"
-                    maxlength="5">
-                  <div class="grade-controls">
-                    <div class="grade-label">Evaluación 1</div>
-                    <div class="grade-weight">30%</div>
-                  </div>
-                </div>
+                <mat-form-field appearance="outline" class="grade-input">
+                  <mat-label>Evaluación 1 (30%)</mat-label>
+                  <input matInput [(ngModel)]="nota.evaluacion1" 
+                         (blur)="validarNota(nota, 'evaluacion1')"
+                         placeholder="0-20" type="text"
+                         pattern="\d*(\.\d{0,2})?" maxlength="5">
+                </mat-form-field>
               </ng-container>
+              
               <ng-container *ngIf="!nota.editando">
-                <div [class]="getNoteColorClass(nota.evaluacion1)">
+                <div [class]="'grade-value ' + getNoteColorClass(nota.evaluacion1)">
                   {{nota.evaluacion1 !== null && nota.evaluacion1 !== undefined ? (nota.evaluacion1 | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
@@ -207,236 +208,175 @@
           <!-- Columna Evaluación 2 -->
           <ng-container matColumnDef="evaluacion2">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <span class="eval-header">Eval. 2</span>
-              <span class="eval-percent">30%</span>
+              <div class="eval-header">
+                <span>Eval. 2</span>
+                <small>30%</small>
+              </div>
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <div class="custom-grade-input">
-                  <input 
-                    [(ngModel)]="nota.evaluacion2" 
-                    (blur)="validarNota(nota, 'evaluacion2')"
-                    (keyup.enter)="validarNota(nota, 'evaluacion2')"
-                    placeholder="0-20"
-                    type="text"
-                    pattern="\d*(\.\d{0,2})?"
-                    class="grade-input"
-                    maxlength="5">
-                  <div class="grade-controls">
-                    <div class="grade-label">Evaluación 2</div>
-                    <div class="grade-weight">30%</div>
-                  </div>
-                </div>
+                <mat-form-field appearance="outline" class="grade-input">
+                  <mat-label>Evaluación 2 (30%)</mat-label>
+                  <input matInput [(ngModel)]="nota.evaluacion2" 
+                         (blur)="validarNota(nota, 'evaluacion2')"
+                         placeholder="0-20" type="text"
+                         pattern="\d*(\.\d{0,2})?" maxlength="5">
+                </mat-form-field>
               </ng-container>
+              
               <ng-container *ngIf="!nota.editando">
-                <div [class]="getNoteColorClass(nota.evaluacion2)">
+                <div [class]="'grade-value ' + getNoteColorClass(nota.evaluacion2)">
                   {{nota.evaluacion2 !== null && nota.evaluacion2 !== undefined ? (nota.evaluacion2 | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
             </td>
           </ng-container>
           
-          <!-- Columna Evaluación Final Examen -->
-          <ng-container matColumnDef="evaluacionFinalExamen">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>
-              <span class="eval-header">Examen Final</span>
-              <span class="eval-percent">40%</span>
+          <!-- Columna Evaluación Final -->
+          <ng-container matColumnDef="evaluacionFinal">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+              <div class="eval-header">
+                <span>Eval. Final</span>
+                <small>40%</small>
+              </div>
             </th>
             <td mat-cell *matCellDef="let nota">
               <ng-container *ngIf="nota.editando">
-                <div class="custom-grade-input">
-                  <input 
-                    [(ngModel)]="nota.evaluacionFinalExamen" 
-                    (blur)="validarNota(nota, 'evaluacionFinalExamen')"
-                    (keyup.enter)="validarNota(nota, 'evaluacionFinalExamen')"
-                    placeholder="0-20"
-                    type="text"
-                    pattern="\d*(\.\d{0,2})?"
-                    class="grade-input"
-                    maxlength="5">
-                  <div class="grade-controls">
-                    <div class="grade-label">Examen Final</div>
-                    <div class="grade-weight">40%</div>
-                  </div>
-                </div>
+                <mat-form-field appearance="outline" class="grade-input">
+                  <mat-label>Evaluación Final (40%)</mat-label>
+                  <input matInput [(ngModel)]="nota.evaluacionFinalExamen" 
+                         (blur)="validarNota(nota, 'evaluacionFinalExamen')"
+                         placeholder="0-20" type="text"
+                         pattern="\d*(\.[\d]{0,2})?" maxlength="5">
+                </mat-form-field>
               </ng-container>
+              
               <ng-container *ngIf="!nota.editando">
-                <div [class]="getNoteColorClass(nota.evaluacionFinalExamen)">
+                <div [class]="'grade-value ' + getNoteColorClass(nota.evaluacionFinalExamen)">
                   {{nota.evaluacionFinalExamen !== null && nota.evaluacionFinalExamen !== undefined ? (nota.evaluacionFinalExamen | number:'1.2-2') : '-'}}
                 </div>
               </ng-container>
             </td>
           </ng-container>
           
-          <!-- Columna Nota Final Calculada -->
-          <ng-container matColumnDef="notaFinalCalculada">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <span class="eval-header">Nota Final</span>
-            </th>
+          <!-- Columna Promedio -->
+          <ng-container matColumnDef="promedio">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Promedio </th>
             <td mat-cell *matCellDef="let nota">
-              <span class="nota-final" [class]="getNoteColorClass(calcularNotaFinal(nota))">
-                {{calcularNotaFinal(nota) !== null ? (calcularNotaFinal(nota) | number:'1.2-2') : 'N/A'}}
-              </span>
+              <div class="grade-value final-grade" [class]="getNoteColorClass(calcularNotaFinal(nota))">
+                {{ calcularNotaFinal(nota) | number:'1.2-2' }}
+              </div>
             </td>
           </ng-container>
-
+          
           <!-- Columna Calificación (Texto) -->
           <ng-container matColumnDef="calificacion">
             <th mat-header-cell *matHeaderCellDef> Calificación </th>
             <td mat-cell *matCellDef="let nota">
-              <span class="calificacion {{getCalificacionClase(calcularNotaFinal(nota))}}">
-                {{getCalificacionTexto(calcularNotaFinal(nota))}}
+              <span class="qualification-badge" [class]="getCalificacionClase(calcularNotaFinal(nota))">
+                {{ getCalificacion(calcularNotaFinal(nota)) }}
               </span>
             </td>
           </ng-container>
-
+          
           <!-- Columna Acciones -->
           <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <th mat-header-cell *matHeaderCellDef class="actions-column"> Acciones </th>
             <td mat-cell *matCellDef="let nota" class="actions-cell">
-              <div class="actions-cell-wrapper">
-                <ng-container *ngIf="nota.editando">
-                  <button class="custom-button primary-button" (click)="guardarCambios(nota)" matTooltip="Guardar Cambios">
-                    <mat-icon>save</mat-icon> Guardar
-                  </button>
-                  <button class="custom-button secondary-button" (click)="cancelarEdicion(nota)" matTooltip="Cancelar Edición">
-                    <mat-icon>close</mat-icon> Cancelar
-                  </button>
-                </ng-container>
-                <ng-container *ngIf="!nota.editando">
-                  <button mat-icon-button (click)="iniciarEdicion(nota)" matTooltip="Editar Nota" class="action-icon-button">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button class="action-icon-button delete-button" (click)="confirmarEliminarNota(nota.id)" matTooltip="Eliminar Nota">
-                    <mat-icon class="delete-trash-icon">delete</mat-icon>
-                  </button>
-                </ng-container>
-              </div>
-            </td>
-          </ng-container>          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.highlight-row]="row.editando"></tr>
-
-          <!-- Row shown when there is no data. -->
-          <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
-              <div class="empty-state">
-                <mat-icon class="empty-icon">assignment</mat-icon>
-                <p>No hay notas para mostrar según los filtros seleccionados.</p>
-                <button mat-stroked-button color="primary" (click)="limpiarFiltros()">
-                  <mat-icon>filter_list_off</mat-icon> Limpiar filtros
+              <ng-container *ngIf="nota.editando">
+                <button mat-icon-button color="primary" (click)="guardarNota(nota)" [disabled]="!esNotaValida(nota)" matTooltip="Guardar nota">
+                  <mat-icon>save</mat-icon>
                 </button>
+                <button mat-icon-button (click)="cancelarEdicion(nota)" matTooltip="Cancelar">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </ng-container>
+              
+              <ng-container *ngIf="!nota.editando">
+                <button mat-icon-button color="primary" (click)="editarNota(nota)" matTooltip="Editar nota">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarNota(nota.id)" matTooltip="Eliminar nota">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-container>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnas;" [class.editing-row]="row.editando"></tr>
+          
+          <!-- Fila para cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell empty-table" [attr.colspan]="columnas.length">
+              <div class="no-data-message">
+                <mat-icon>info</mat-icon>
+                <span>No se encontraron registros de notas.</span>
               </div>
             </td>
           </tr>
         </table>
       </div>
     </mat-card-content>
-    <mat-card-footer *ngIf="notas.length > 0" class="notas-footer">
+    
+    <mat-card-footer *ngIf="notas.length > 0" class="card-footer">
       <div class="pagination-info">
         Mostrando {{ notas.length }} registros
       </div>
     </mat-card-footer>
   </mat-card>
 
-  <mat-card *ngIf="notas.length > 0" class="mt-4 stats-card">
+  <!-- Tarjeta de estadísticas rediseñada -->
+  <mat-card class="card stats-card" appearance="outlined" *ngIf="notas.length > 0">
     <mat-card-header>
-      <mat-card-title class="outfit-semibold">
-        <mat-icon class="section-icon">insights</mat-icon> Estadísticas
-      </mat-card-title>
+      <div class="card-header-title">
+        <mat-icon>analytics</mat-icon>
+        <h2>Estadísticas</h2>
+      </div>
     </mat-card-header>
+    
     <mat-card-content>
       <div class="stats-grid">
-        <div class="stat-item">
+        <div class="stat-card">
           <div class="stat-icon">
-            <mat-icon>calculate</mat-icon>
+            <mat-icon>bar_chart</mat-icon>
           </div>
-          <div class="stat-value">{{calcularPromedioClase() || '-'}}</div>
-          <p class="stat-label">Promedio de clase</p>
-        </div>
-        <div class="stat-item">
-          <div class="stat-icon">
-            <mat-icon>emoji_events</mat-icon>
+          <div class="stat-content">
+            <h3>Promedio General</h3>
+            <div class="stat-value">{{ calcularPromedioGeneral() | number:'1.2-2' }}</div>
           </div>
-          <div class="stat-value">{{calcularNotaMaxima() || '-'}}</div>
-          <p class="stat-label">Nota más alta</p>
         </div>
-        <div class="stat-item">
+        
+        <div class="stat-card">
           <div class="stat-icon">
             <mat-icon>trending_up</mat-icon>
           </div>
-          <div class="stat-value">{{calcularPorcentajeAprobados() !== null ? (calcularPorcentajeAprobados() | number:'1.0-0') + '%' : '-'}}</div>
-          <p class="stat-label">Porcentaje de aprobados</p>
-          <div class="stat-label">Aprobados</div>
+          <div class="stat-content">
+            <h3>Nota Máxima</h3>
+            <div class="stat-value">{{ calcularNotaMaxima() | number:'1.2-2' }}</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <mat-icon>trending_down</mat-icon>
+          </div>
+          <div class="stat-content">
+            <h3>Nota Mínima</h3>
+            <div class="stat-value">{{ calcularNotaMinima() | number:'1.2-2' }}</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="stat-content">
+            <h3>Total Estudiantes</h3>
+            <div class="stat-value">{{ notas.length }}</div>
+          </div>
         </div>
       </div>
     </mat-card-content>
   </mat-card>
 </div>
-
-<style>
-  /* Estilos para reducir el tamaño de los campos y mejorar la visualización */
-  .compact-field {
-    margin-bottom: 8px !important;
-    width: 100%;
-  }
-  
-  .compact-field .mat-form-field-wrapper {
-    padding-bottom: 0.8em;
-  }
-  
-  .compact-field .mat-form-field-infix {
-    padding: 0.5em 0 !important;
-    width: auto;
-  }
-  
-  .compact-field .mat-form-field-label-wrapper {
-    top: -1em;
-  }
-  
-  .visible-input {
-    color: rgba(0, 0, 0, 0.87) !important;
-    font-weight: normal;
-  }
-  
-  /* Ajustes para las filas en edición */
-  .highlight-row .compact-field {
-    margin: 0;
-  }
-  
-  .nota-input-field {
-    max-width: 80px;
-  }
-  
-  .estudiante-input-field {
-    min-width: 150px;
-  }
-  
-  /* Mejoras en la tabla */
-  .notas-table td.mat-cell {
-    padding: 8px 16px;
-  }
-  
-  .actions-cell-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    gap: 4px;
-  }
-  
-  /* Ajustes para los filtros */
-  .filters-container {
-    gap: 12px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  
-  @media (max-width: 768px) {
-    .filters-container {
-      flex-direction: column;
-    }
-    
-    .filter-actions {
-      margin-top: 8px;
-    }
-  }
-</style>
