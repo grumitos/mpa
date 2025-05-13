@@ -248,7 +248,7 @@ export class SupabaseService {
     const { data, error } = await this.supabase
       .from(this.TABLE_NOTAS)
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: false }); // Cambiado de 'created_at' a 'id' ya que es una columna que seguro existe
     if (error) {
       console.error('Error fetching notas:', error);
       return [];

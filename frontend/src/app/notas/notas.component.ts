@@ -47,7 +47,7 @@ interface NotaView extends Nota {
 })
 export class NotasComponent implements OnInit {
   notas: NotaView[] = [];
-  displayedColumns: string[] = ['estudianteNombre', 'evaluacion1', 'evaluacion2', 'evaluacionFinalExamen', 'notaFinalCalculada', 'calificacion', 'acciones'];
+  // Array de columnas que se muestran en la tabla
   cargando = false;
   mensajeError: string = '';
   estudiantesFiltrados: Observable<string[]> = of([]);
@@ -55,7 +55,7 @@ export class NotasComponent implements OnInit {
   
   // Propiedades faltantes que se usan en la plantilla
   filtrosColapsados = false;
-  columnas = ['estudianteNombre', 'evaluacion1', 'evaluacion2', 'evaluacionFinalExamen', 'notaFinalCalculada', 'calificacion', 'acciones'];
+  columnas = ['estudianteNombre', 'evaluacion1', 'evaluacion2', 'evaluacionFinalExamen', 'promedio', 'calificacion', 'acciones'];
   
   // Método para alternar la visibilidad de los filtros
   toggleFiltros(): void {
