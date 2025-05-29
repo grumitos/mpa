@@ -15,6 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SupabaseService } from '../services/supabase.service';
+import * as XLSX from 'xlsx';
 
 export interface Incidencia {
   id?: number;
@@ -556,12 +557,98 @@ export class IncidenciasComponent implements OnInit {
         return '';
     }
   }
-
   debugSelector(selectorName: string): void {
     console.log(`Click en selector ${selectorName}`);
     console.log(`Valores disponibles:`, this[selectorName as keyof IncidenciasComponent]);
     console.log(`Valor actual:`, this.formularioIncidencia.get(selectorName)?.value);
     console.log(`¿Selector deshabilitado?:`, this.formularioIncidencia.get(selectorName)?.disabled);
     console.log(`Estado del formulario:`, this.formularioIncidencia.status);
+  }
+
+  exportarExcel(): void {
+    if (!this.incidencias || this.incidencias.length === 0) {
+      this.mostrarMensaje('No hay datos para exportar');
+      return;
+    }
+
+    try {
+      // Preparar los datos para exportar
+      const datosExport = this.incidencias.map(incidencia => ({
+        'ID': incidencia.id || '',
+        'Título': incidencia.titulo || '',
+        'Tipo de Incidencia': incidencia.tipoIncidencia || '',
+        'Nivel de Urgencia': incidencia.nivelUrgencia || '',
+        'Estado': incidencia.estado || '',
+        'Fecha y Hora': incidencia.fechaHora ? new Date(incidencia.fechaHora).toLocaleString('es-ES', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : '',
+        'Alumnos Implicados': incidencia.alumnosImplicados || '',
+        'Profesor Reporta': incidencia.profesorReporta || '',
+        'Profesor Responsable': incidencia.profesorResponsable || '',
+        'Lugar del Suceso': incidencia.lugarSuceso || '',
+        'Lugar': incidencia.lugar || '',
+        'Descripción': incidencia.descripcion || '',
+        'Medidas Adoptadas': incidencia.medidasAdoptadas || '',
+        'Fecha de Creación': incidencia.fechaCreacion ? new Date(incidencia.fechaCreacion).toLocaleString('es-ES', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : '',
+        'Fecha de Modificación': incidencia.fechaModificacion ? new Date(incidencia.fechaModificacion).toLocaleString('es-ES', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : ''
+      }));
+
+      // Crear el workbook y worksheet
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExport);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      
+      // Agregar el worksheet al workbook
+      XLSX.utils.book_append_sheet(wb, ws, 'Incidencias');
+
+      // Configurar el ancho de las columnas
+      const colWidths = [
+        { wch: 8 },   // ID
+        { wch: 30 },  // Título
+        { wch: 20 },  // Tipo de Incidencia
+        { wch: 15 },  // Nivel de Urgencia
+        { wch: 15 },  // Estado
+        { wch: 18 },  // Fecha y Hora
+        { wch: 25 },  // Alumnos Implicados
+        { wch: 20 },  // Profesor Reporta
+        { wch: 20 },  // Profesor Responsable
+        { wch: 20 },  // Lugar del Suceso
+        { wch: 15 },  // Lugar
+        { wch: 40 },  // Descripción
+        { wch: 30 },  // Medidas Adoptadas
+        { wch: 18 },  // Fecha de Creación
+        { wch: 18 }   // Fecha de Modificación
+      ];
+      ws['!cols'] = colWidths;
+
+      // Generar el nombre del archivo con la fecha actual
+      const fechaActual = new Date();
+      const fechaFormato = fechaActual.toISOString().split('T')[0].replace(/-/g, '');
+      const nombreArchivo = `incidencias_${fechaFormato}.xlsx`;
+
+      // Escribir el archivo
+      XLSX.writeFile(wb, nombreArchivo);
+      
+      this.mostrarMensaje(`Archivo exportado exitosamente: ${nombreArchivo}`);
+      
+    } catch (error) {
+      console.error('Error al exportar a Excel:', error);
+      this.mostrarMensaje('Error al exportar el archivo. Por favor, inténtelo de nuevo.');
+    }
   }
 }

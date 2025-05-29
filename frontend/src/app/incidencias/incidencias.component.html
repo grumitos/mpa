@@ -304,8 +304,11 @@
       <div class="card-header-title">
         <mat-icon>report_problem</mat-icon>
         <h2>Incidencias</h2>
-      </div>
-      <div class="card-header-actions" *ngIf="incidencias.length > 0">
+      </div>      <div class="card-header-actions" *ngIf="incidencias.length > 0">
+        <button mat-stroked-button (click)="exportarExcel()" class="export-btn" matTooltip="Exportar a Excel">
+          <mat-icon>download</mat-icon>
+          <span>Exportar Excel</span>
+        </button>
         <span class="results-count">{{ incidencias.length }} registros</span>
       </div>
     </mat-card-header>

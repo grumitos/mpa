@@ -116,12 +116,40 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
         color: var(--color-dark);
       }
     }
-    
-    .card-header-actions {
+      .card-header-actions {
       margin-left: auto;
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
+      
+      .export-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border: 1px solid var(--color-primary);
+        color: var(--color-primary);
+        border-radius: var(--border-radius);
+        transition: all $transition-standard;
+        font-weight: 500;
+        
+        &:hover {
+          background-color: var(--color-primary);
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+        
+        span {
+          font-size: 0.875rem;
+        }
+      }
       
       .results-count {
         font-size: 0.875rem;
