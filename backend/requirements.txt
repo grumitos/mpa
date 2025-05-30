@@ -5,4 +5,4 @@ djangorestframework==3.16.0
 sqlparse==0.5.3
 tzdata==2025.2
 whitenoise==6.8.2
-gunicorn==24.0.0
+gunicorn==23.0.0
