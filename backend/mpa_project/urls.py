@@ -23,5 +23,5 @@ urlpatterns = [
     path('', lambda request: redirect('/admin/')),
     path('admin/', admin.site.urls),
     path('api/api-token-auth/', obtain_auth_token), # Ruta para obtener el token
-    # path('api/', include('api.urls')), # Si tienes otras URLs en tu app 'api'
+    path('api/', include('api.urls')), # URLs de la app api
 ]
