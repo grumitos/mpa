@@ -1,4 +1,6 @@
 {
+  "buildCommand": "ng build mpa",
+  "outputDirectory": "dist/mpa",
   "routes": [
     {
       "src": "/(.*)",

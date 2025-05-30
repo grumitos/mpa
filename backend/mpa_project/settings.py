@@ -133,7 +133,7 @@ AUTH_USER_MODEL = 'api.Usuario'
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'https://mpa-two.vercel.app/',  # Añade tu URL de Vercel aquí cuando la tengas
+    'https://mpa-two.vercel.app',  # URL real de Vercel (sin barra final)
 ]
 
 # Para Vercel, también puedes permitir todos los orígenes de Vercel (opcional):
