@@ -4,21 +4,20 @@
       <div class="app-logo outfit-bold">M</div>
     </div>
     
-    <h2 class="outfit-bold">Iniciar Sesión</h2>
-
-    <div class="form-group">
-      <label for="username" class="form-label outfit-medium">Usuario:</label>
-      <input type="text"
-             id="username"
-             name="username"
+    <h2 class="outfit-bold">Iniciar Sesión</h2>    <div class="form-group">
+      <label for="email" class="form-label outfit-medium">Email:</label>
+      <input type="email"
+             id="email"
+             name="email"
              class="form-control"
-             [(ngModel)]="credentials.username"
+             [(ngModel)]="credentials.email"
              required
-             #username="ngModel"
-             [ngClass]="{ 'is-invalid': loginForm.submitted && username.invalid }"
-             placeholder="Ingrese su nombre de usuario">
-      <div *ngIf="loginForm.submitted && username.invalid" class="form-error">
-        <div *ngIf="username.errors?.['required']">El nombre de usuario es requerido.</div>
+             #email="ngModel"
+             [ngClass]="{ 'is-invalid': loginForm.submitted && email.invalid }"
+             placeholder="Ingrese su email">
+      <div *ngIf="loginForm.submitted && email.invalid" class="form-error">
+        <div *ngIf="email.errors?.['required']">El email es requerido.</div>
+        <div *ngIf="email.errors?.['email']">Ingrese un email válido.</div>
       </div>
     </div>
 
@@ -55,6 +54,9 @@
       {{ loginError }}
     </div>
 
-    <button type="submit" class="btn-submit outfit-semibold">Entrar</button>
+    <button type="submit" class="btn-submit outfit-semibold" [disabled]="isLoading">
+      <span *ngIf="isLoading">Iniciando sesión...</span>
+      <span *ngIf="!isLoading">Entrar</span>
+    </button>
   </form>
 </div>

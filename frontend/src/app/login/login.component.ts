@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
-import { environment } from '../../environments/environment';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,39 +15,44 @@ import { environment } from '../../environments/environment';
 })
 export class LoginComponent {
   credentials = {
-    username: '',
+    email: '',
     password: ''
   };
   rememberMe = false;
   loginError: string | null = null;
   showPassword = false;
+  isLoading = false;
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
-    console.log('Login attempt with:', this.credentials, 'Remember me:', this.rememberMe);
-    this.http.post<{ token: string }>(`${environment.apiUrl}/api-token-auth/`, this.credentials)
+    if (!this.credentials.email || !this.credentials.password) {
+      this.loginError = 'Email y contraseña son requeridos';
+      return;
+    }
+
+    this.isLoading = true;
+    this.loginError = null;
+
+    this.authService.login(this.credentials.email, this.credentials.password, this.rememberMe)
       .subscribe({
-        next: res => {
-          this.loginError = null;
-          if (this.rememberMe) {
-            // guardar en localStorage (persistente)
-            localStorage.setItem('authToken', res.token);
-            sessionStorage.removeItem('authToken');
-          } else {
-            sessionStorage.setItem('authToken', res.token);
-            localStorage.removeItem('authToken');
-          }
+        next: (response) => {
+          console.log('Login exitoso:', response);
+          this.isLoading = false;
           this.router.navigateByUrl('/dashboard');
         },
-        error: () => {
-          this.loginError = 'Credenciales incorrectas. Inténtalo de nuevo.';
-          localStorage.removeItem('authToken');
-          sessionStorage.removeItem('authToken');
+        error: (error) => {
+          console.error('Error en login:', error);
+          this.isLoading = false;
+          if (error.error && error.error.error) {
+            this.loginError = error.error.error;
+          } else {
+            this.loginError = 'Error de conexión. Inténtalo de nuevo.';
+          }
         }
       });
   }

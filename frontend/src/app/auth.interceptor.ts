@@ -6,8 +6,10 @@ import { environment } from '../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('authToken');
+    // Buscar token en ambos storages
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const apiUrl = environment.apiUrl; // Usar environment
+    
     if (token && req.url.startsWith(apiUrl)) {
       const authReq = req.clone({
         setHeaders: {
