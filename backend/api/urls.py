@@ -8,5 +8,6 @@ router.register(r'usuarios', views.UsuarioViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('api-token-auth/', views.CustomAuthToken.as_view(), name='api_token_auth'),
+    path('test-auth/', views.test_auth, name='test_auth'),
 ]
