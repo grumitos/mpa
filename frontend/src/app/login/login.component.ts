@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,7 @@ export class LoginComponent {
 
   onSubmit() {
     console.log('Login attempt with:', this.credentials, 'Remember me:', this.rememberMe);
-    this.http.post<{ token: string }>('http://localhost:8000/api/api-token-auth/', this.credentials)
+    this.http.post<{ token: string }>(`${environment.apiUrl}/api-token-auth/`, this.credentials)
       .subscribe({
         next: res => {
           this.loginError = null;

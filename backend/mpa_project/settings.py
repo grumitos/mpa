@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'REDACTED_DJANGO_SECRET_KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mpa-5lha.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -121,6 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -129,6 +130,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api.Usuario'
 
+# CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
+    'https://mpa-two.vercel.app/',  # Añade tu URL de Vercel aquí cuando la tengas
 ]
+
+# Para Vercel, también puedes permitir todos los orígenes de Vercel (opcional):
+CORS_ALLOW_ALL_ORIGINS = False  # Cambia a True solo si es necesario
+
+# Configuraciones de seguridad para producción
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # Render maneja SSL automáticamente
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
