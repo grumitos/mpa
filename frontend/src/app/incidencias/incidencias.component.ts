@@ -15,7 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SupabaseService } from '../services/supabase.service';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 
 export interface Incidencia {
   id?: number;
@@ -564,7 +564,6 @@ export class IncidenciasComponent implements OnInit {
     console.log(`¿Selector deshabilitado?:`, this.formularioIncidencia.get(selectorName)?.disabled);
     console.log(`Estado del formulario:`, this.formularioIncidencia.status);
   }
-
   exportarExcel(): void {
     if (!this.incidencias || this.incidencias.length === 0) {
       this.mostrarMensaje('No hay datos para exportar');
@@ -572,69 +571,75 @@ export class IncidenciasComponent implements OnInit {
     }
 
     try {
-      // Preparar los datos para exportar
-      const datosExport = this.incidencias.map(incidencia => ({
-        'ID': incidencia.id || '',
-        'Título': incidencia.titulo || '',
-        'Tipo de Incidencia': incidencia.tipoIncidencia || '',
-        'Nivel de Urgencia': incidencia.nivelUrgencia || '',
-        'Estado': incidencia.estado || '',
-        'Fecha y Hora': incidencia.fechaHora ? new Date(incidencia.fechaHora).toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : '',
-        'Alumnos Implicados': incidencia.alumnosImplicados || '',
-        'Profesor Reporta': incidencia.profesorReporta || '',
-        'Profesor Responsable': incidencia.profesorResponsable || '',
-        'Lugar del Suceso': incidencia.lugarSuceso || '',
-        'Lugar': incidencia.lugar || '',
-        'Descripción': incidencia.descripcion || '',
-        'Medidas Adoptadas': incidencia.medidasAdoptadas || '',
-        'Fecha de Creación': incidencia.fechaCreacion ? new Date(incidencia.fechaCreacion).toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : '',
-        'Fecha de Modificación': incidencia.fechaModificacion ? new Date(incidencia.fechaModificacion).toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : ''
-      }));
+      // Crear el workbook y worksheet con ExcelJS
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Incidencias');
 
-      // Crear el workbook y worksheet
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExport);
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      
-      // Agregar el worksheet al workbook
-      XLSX.utils.book_append_sheet(wb, ws, 'Incidencias');
-
-      // Configurar el ancho de las columnas
-      const colWidths = [
-        { wch: 8 },   // ID
-        { wch: 30 },  // Título
-        { wch: 20 },  // Tipo de Incidencia
-        { wch: 15 },  // Nivel de Urgencia
-        { wch: 15 },  // Estado
-        { wch: 18 },  // Fecha y Hora
-        { wch: 25 },  // Alumnos Implicados
-        { wch: 20 },  // Profesor Reporta
-        { wch: 20 },  // Profesor Responsable
-        { wch: 20 },  // Lugar del Suceso
-        { wch: 15 },  // Lugar
-        { wch: 40 },  // Descripción
-        { wch: 30 },  // Medidas Adoptadas
-        { wch: 18 },  // Fecha de Creación
-        { wch: 18 }   // Fecha de Modificación
+      // Definir las columnas con sus headers
+      worksheet.columns = [
+        { header: 'ID', key: 'id', width: 8 },
+        { header: 'Título', key: 'titulo', width: 30 },
+        { header: 'Tipo de Incidencia', key: 'tipoIncidencia', width: 20 },
+        { header: 'Nivel de Urgencia', key: 'nivelUrgencia', width: 15 },
+        { header: 'Estado', key: 'estado', width: 15 },
+        { header: 'Fecha y Hora', key: 'fechaHora', width: 18 },
+        { header: 'Alumnos Implicados', key: 'alumnosImplicados', width: 25 },
+        { header: 'Profesor Reporta', key: 'profesorReporta', width: 20 },
+        { header: 'Profesor Responsable', key: 'profesorResponsable', width: 20 },
+        { header: 'Lugar del Suceso', key: 'lugarSuceso', width: 20 },
+        { header: 'Lugar', key: 'lugar', width: 15 },
+        { header: 'Descripción', key: 'descripcion', width: 40 },
+        { header: 'Medidas Adoptadas', key: 'medidasAdoptadas', width: 30 },
+        { header: 'Fecha de Creación', key: 'fechaCreacion', width: 18 },
+        { header: 'Fecha de Modificación', key: 'fechaModificacion', width: 18 }
       ];
-      ws['!cols'] = colWidths;
+
+      // Agregar los datos
+      this.incidencias.forEach(incidencia => {
+        worksheet.addRow({
+          id: incidencia.id || '',
+          titulo: incidencia.titulo || '',
+          tipoIncidencia: incidencia.tipoIncidencia || '',
+          nivelUrgencia: incidencia.nivelUrgencia || '',
+          estado: incidencia.estado || '',
+          fechaHora: incidencia.fechaHora ? new Date(incidencia.fechaHora).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : '',
+          alumnosImplicados: incidencia.alumnosImplicados || '',
+          profesorReporta: incidencia.profesorReporta || '',
+          profesorResponsable: incidencia.profesorResponsable || '',
+          lugarSuceso: incidencia.lugarSuceso || '',
+          lugar: incidencia.lugar || '',
+          descripcion: incidencia.descripcion || '',
+          medidasAdoptadas: incidencia.medidasAdoptadas || '',
+          fechaCreacion: incidencia.fechaCreacion ? new Date(incidencia.fechaCreacion).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : '',
+          fechaModificacion: incidencia.fechaModificacion ? new Date(incidencia.fechaModificacion).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : ''
+        });
+      });
+
+      // Estilizar el header
+      worksheet.getRow(1).font = { bold: true };
+      worksheet.getRow(1).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' }
+      };
 
       // Generar el nombre del archivo con la fecha actual
       const fechaActual = new Date();
@@ -642,7 +647,15 @@ export class IncidenciasComponent implements OnInit {
       const nombreArchivo = `incidencias_${fechaFormato}.xlsx`;
 
       // Escribir el archivo
-      XLSX.writeFile(wb, nombreArchivo);
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombreArchivo;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
       
       this.mostrarMensaje(`Archivo exportado exitosamente: ${nombreArchivo}`);
       

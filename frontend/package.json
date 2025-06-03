@@ -1,6 +1,7 @@
 {
   "name": "frontend",
-  "version": "0.0.0",  "scripts": {
+  "version": "0.0.0",
+  "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build mpa",
@@ -23,9 +24,9 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@supabase/supabase-js": "^2.49.4",
+    "exceljs": "^4.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
