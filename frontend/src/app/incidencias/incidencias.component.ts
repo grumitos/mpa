@@ -15,7 +15,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SupabaseService } from '../services/supabase.service';
-import * as ExcelJS from 'exceljs';
 
 export interface Incidencia {
   id?: number;
@@ -563,99 +562,135 @@ export class IncidenciasComponent implements OnInit {
     console.log(`Valor actual:`, this.formularioIncidencia.get(selectorName)?.value);
     console.log(`¿Selector deshabilitado?:`, this.formularioIncidencia.get(selectorName)?.disabled);
     console.log(`Estado del formulario:`, this.formularioIncidencia.status);
-  }
-  exportarExcel(): void {
+  }  async exportarExcel(): Promise<void> {
     if (!this.incidencias || this.incidencias.length === 0) {
       this.mostrarMensaje('No hay datos para exportar');
       return;
-    }
-
-    try {
-      // Crear el workbook y worksheet con ExcelJS
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Incidencias');
-
-      // Definir las columnas con sus headers
-      worksheet.columns = [
-        { header: 'ID', key: 'id', width: 8 },
-        { header: 'Título', key: 'titulo', width: 30 },
-        { header: 'Tipo de Incidencia', key: 'tipoIncidencia', width: 20 },
-        { header: 'Nivel de Urgencia', key: 'nivelUrgencia', width: 15 },
-        { header: 'Estado', key: 'estado', width: 15 },
-        { header: 'Fecha y Hora', key: 'fechaHora', width: 18 },
-        { header: 'Alumnos Implicados', key: 'alumnosImplicados', width: 25 },
-        { header: 'Profesor Reporta', key: 'profesorReporta', width: 20 },
-        { header: 'Profesor Responsable', key: 'profesorResponsable', width: 20 },
-        { header: 'Lugar del Suceso', key: 'lugarSuceso', width: 20 },
-        { header: 'Lugar', key: 'lugar', width: 15 },
-        { header: 'Descripción', key: 'descripcion', width: 40 },
-        { header: 'Medidas Adoptadas', key: 'medidasAdoptadas', width: 30 },
-        { header: 'Fecha de Creación', key: 'fechaCreacion', width: 18 },
-        { header: 'Fecha de Modificación', key: 'fechaModificacion', width: 18 }
+    }    try {
+      // Usar dynamic import para lazy loading
+      const XLSX = await import('xlsx-js-style');
+      
+      // Preparar los datos para xlsx-js-style
+      const headers = [
+        'ID', 'Título', 'Tipo de Incidencia', 'Nivel de Urgencia', 'Estado', 
+        'Fecha y Hora', 'Alumnos Implicados', 'Profesor Reporta', 'Profesor Responsable',
+        'Lugar del Suceso', 'Lugar', 'Descripción', 'Medidas Adoptadas', 
+        'Fecha de Creación', 'Fecha de Modificación'
       ];
 
-      // Agregar los datos
+      // Crear array de datos con headers
+      const data = [headers];      // Agregar los datos de las incidencias
       this.incidencias.forEach(incidencia => {
-        worksheet.addRow({
-          id: incidencia.id || '',
-          titulo: incidencia.titulo || '',
-          tipoIncidencia: incidencia.tipoIncidencia || '',
-          nivelUrgencia: incidencia.nivelUrgencia || '',
-          estado: incidencia.estado || '',
-          fechaHora: incidencia.fechaHora ? new Date(incidencia.fechaHora).toLocaleString('es-ES', {
+        data.push([
+          incidencia.id?.toString() || '',
+          incidencia.titulo || '',
+          incidencia.tipoIncidencia || '',
+          incidencia.nivelUrgencia || '',
+          incidencia.estado || '',
+          incidencia.fechaHora ? new Date(incidencia.fechaHora).toLocaleString('es-ES', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
           }) : '',
-          alumnosImplicados: incidencia.alumnosImplicados || '',
-          profesorReporta: incidencia.profesorReporta || '',
-          profesorResponsable: incidencia.profesorResponsable || '',
-          lugarSuceso: incidencia.lugarSuceso || '',
-          lugar: incidencia.lugar || '',
-          descripcion: incidencia.descripcion || '',
-          medidasAdoptadas: incidencia.medidasAdoptadas || '',
-          fechaCreacion: incidencia.fechaCreacion ? new Date(incidencia.fechaCreacion).toLocaleString('es-ES', {
+          incidencia.alumnosImplicados || '',
+          incidencia.profesorReporta || '',
+          incidencia.profesorResponsable || '',
+          incidencia.lugarSuceso || '',
+          incidencia.lugar || '',
+          incidencia.descripcion || '',
+          incidencia.medidasAdoptadas || '',
+          incidencia.fechaCreacion ? new Date(incidencia.fechaCreacion).toLocaleString('es-ES', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
           }) : '',
-          fechaModificacion: incidencia.fechaModificacion ? new Date(incidencia.fechaModificacion).toLocaleString('es-ES', {
+          incidencia.fechaModificacion ? new Date(incidencia.fechaModificacion).toLocaleString('es-ES', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
           }) : ''
-        });
+        ]);
       });
 
-      // Estilizar el header
-      worksheet.getRow(1).font = { bold: true };
-      worksheet.getRow(1).fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FFE0E0E0' }
-      };
+      // Crear workbook y worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+      // Definir anchos de columnas
+      const columnWidths = [
+        { wch: 8 },   // ID
+        { wch: 30 },  // Título
+        { wch: 20 },  // Tipo de Incidencia
+        { wch: 15 },  // Nivel de Urgencia
+        { wch: 15 },  // Estado
+        { wch: 18 },  // Fecha y Hora
+        { wch: 25 },  // Alumnos Implicados
+        { wch: 20 },  // Profesor Reporta
+        { wch: 20 },  // Profesor Responsable
+        { wch: 20 },  // Lugar del Suceso
+        { wch: 15 },  // Lugar
+        { wch: 40 },  // Descripción
+        { wch: 30 },  // Medidas Adoptadas
+        { wch: 18 },  // Fecha de Creación
+        { wch: 18 }   // Fecha de Modificación
+      ];
+      worksheet['!cols'] = columnWidths;
+
+      // Estilizar el encabezado (primera fila)
+      const headerRange = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:O1');
+      for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!worksheet[cellAddress]) continue;
+        
+        worksheet[cellAddress].s = {
+          font: { bold: true, color: { rgb: "000000" } },
+          fill: { fgColor: { rgb: "E0E0E0" } },
+          alignment: { horizontal: "center", vertical: "center" },
+          border: {
+            top: { style: "thin", color: { rgb: "000000" } },
+            bottom: { style: "thin", color: { rgb: "000000" } },
+            left: { style: "thin", color: { rgb: "000000" } },
+            right: { style: "thin", color: { rgb: "000000" } }
+          }
+        };
+      }
+
+      // Aplicar bordes a todas las celdas con datos
+      const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:O1');
+      for (let row = range.s.r; row <= range.e.r; row++) {
+        for (let col = range.s.c; col <= range.e.c; col++) {
+          const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+          if (!worksheet[cellAddress]) continue;
+          
+          if (!worksheet[cellAddress].s) {
+            worksheet[cellAddress].s = {};
+          }
+          
+          worksheet[cellAddress].s.border = {
+            top: { style: "thin", color: { rgb: "CCCCCC" } },
+            bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+            left: { style: "thin", color: { rgb: "CCCCCC" } },
+            right: { style: "thin", color: { rgb: "CCCCCC" } }
+          };
+        }
+      }
+
+      // Agregar hoja al workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Incidencias');
 
       // Generar el nombre del archivo con la fecha actual
       const fechaActual = new Date();
       const fechaFormato = fechaActual.toISOString().split('T')[0].replace(/-/g, '');
       const nombreArchivo = `incidencias_${fechaFormato}.xlsx`;
 
-      // Escribir el archivo
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = nombreArchivo;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+      // Escribir y descargar el archivo
+      XLSX.writeFile(workbook, nombreArchivo);
       
       this.mostrarMensaje(`Archivo exportado exitosamente: ${nombreArchivo}`);
       
