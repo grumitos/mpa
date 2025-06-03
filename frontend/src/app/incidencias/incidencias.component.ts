@@ -679,66 +679,10 @@ export class IncidenciasComponent implements OnInit {
       XLSX.writeFile(workbook, nombreArchivo);
       
       this.mostrarMensaje(`Archivo exportado exitosamente: ${nombreArchivo}`);
-        } catch (error) {
+      
+    } catch (error) {
       console.error('Error al exportar a Excel:', error);
       this.mostrarMensaje('Error al exportar el archivo. Por favor, inténtelo de nuevo.');
     }
-  }
-
-  // Métodos helper para el nuevo diseño de tarjetas
-  getTypeIcon(tipo: string): string {
-    const iconMap: { [key: string]: string } = {
-      'Académica': 'school',
-      'Conducta disruptiva': 'warning',
-      'Agresión física': 'pan_tool',
-      'Agresión verbal': 'record_voice_over',
-      'Acoso escolar (Bullying)': 'group_off',
-      'Ciberacoso': 'security',
-      'Absentismo': 'event_busy',
-      'Médica/Salud': 'local_hospital',
-      'Accidente escolar': 'emergency',
-      'Daños materiales': 'build',
-      'Material escolar dañado': 'inventory',
-      'Uso indebido de dispositivos': 'smartphone',
-      'Rendimiento académico': 'trending_down',
-      'Necesidades educativas especiales': 'accessibility',
-      'Conflictos entre alumnos': 'group',
-      'Conflicto alumno-profesor': 'supervisor_account',
-      'Situación familiar': 'home',
-      'Retraso escolar continuado': 'schedule',
-      'Uso de sustancias prohibidas': 'block',
-      'Alimentos/Alergias': 'restaurant',
-      'Robo/Hurto': 'security',
-      'Problemas de socialización': 'group_work',
-      'Otra': 'help_outline'
-    };
-    return iconMap[tipo] || 'report_problem';
-  }
-
-  getStatusIcon(estado: string): string {
-    const iconMap: { [key: string]: string } = {
-      'Pendiente': 'schedule',
-      'En proceso': 'hourglass_empty',
-      'En investigación': 'search',
-      'Esperando información': 'info',
-      'Derivado a dirección': 'admin_panel_settings',
-      'Derivado a orientación': 'psychology',
-      'Citada familia': 'family_restroom',
-      'Medidas aplicadas': 'rule',
-      'Resuelta': 'check_circle',
-      'Desestimada': 'cancel',
-      'Archivada': 'archive'
-    };
-    return iconMap[estado] || 'help_outline';
-  }
-
-  getShortDescription(descripcion: string): string {
-    if (!descripcion) return '';
-    return descripcion.length > 120 ? descripcion.substring(0, 120) + '...' : descripcion;
-  }
-
-  getStudentsList(alumnos: string): string[] {
-    if (!alumnos) return [];
-    return alumnos.split(',').map(a => a.trim()).filter(a => a.length > 0);
   }
 }
