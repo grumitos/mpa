@@ -307,4 +307,148 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Formulario para Nueva Incidencia o Edición -->
+  <div class="modal-overlay" *ngIf="mostrarFormularioModal" (click)="cerrarFormularioModal()">
+    <div class="modal-container form-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-content">
+          <mat-icon>{{ modoFormulario === 'nueva' ? 'add_circle' : 'edit' }}</mat-icon>
+          <h2>{{ modoFormulario === 'nueva' ? 'Nueva Incidencia' : 'Editar Incidencia' }}</h2>
+        </div>
+        <button mat-icon-button (click)="cerrarFormularioModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <form [formGroup]="formularioIncidencia" class="incidencia-form">
+          <!-- Primera fila del formulario -->
+          <div class="form-row">
+            <div class="form-field">
+              <label>Título</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="titulo" placeholder="Título de la incidencia" maxlength="100">
+                <mat-icon matPrefix>title</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('titulo')?.hasError('required')">El título es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Tipo de Incidencia</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="tipoIncidencia" placeholder="Seleccione un tipo">
+                  <mat-option *ngFor="let tipo of tiposIncidencia" [value]="tipo">{{ tipo }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>category</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('tipoIncidencia')?.hasError('required')">El tipo de incidencia es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Segunda fila del formulario -->
+          <div class="form-row">
+            <div class="form-field">
+              <label>Alumnos Implicados</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="alumnosImplicados" placeholder="Nombre(s) de alumno(s)">
+                <mat-icon matPrefix>people</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('alumnosImplicados')?.hasError('required')">Los alumnos implicados son obligatorios</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Profesor que reporta</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="profesorReporta" placeholder="Nombre del profesor">
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('profesorReporta')?.hasError('required')">El profesor que reporta es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Tercera fila del formulario -->
+          <div class="form-row">
+            <div class="form-field">
+              <label>Nivel de Urgencia</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="nivelUrgencia" placeholder="Seleccione el nivel">
+                  <mat-option *ngFor="let nivel of nivelesUrgencia" [value]="nivel">{{ nivel }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>priority_high</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('nivelUrgencia')?.hasError('required')">El nivel de urgencia es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Lugar</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="lugarSuceso" placeholder="Seleccione un lugar">
+                  <mat-option *ngFor="let lugar of lugaresSuceso" [value]="lugar">{{ lugar }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>place</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('lugarSuceso')?.hasError('required')">El lugar del suceso es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field">
+              <label>Fecha y Hora</label>
+              <mat-form-field appearance="outline">
+                <input matInput [matDatepicker]="fechaHoraPicker" formControlName="fechaHora" placeholder="DD/MM/AAAA">
+                <mat-datepicker-toggle matSuffix [for]="fechaHoraPicker"></mat-datepicker-toggle>
+                <mat-datepicker #fechaHoraPicker></mat-datepicker>
+                <mat-icon matPrefix>event</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('fechaHora')?.hasError('required')">La fecha es obligatoria</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Cuarta fila del formulario -->
+          <div class="form-row">
+            <div class="form-field full-width">
+              <label>Descripción</label>
+              <mat-form-field appearance="outline">
+                <textarea matInput formControlName="descripcion" placeholder="Describa la incidencia con detalle" rows="4" maxlength="1000"></textarea>
+                <mat-icon matPrefix>description</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('descripcion')?.hasError('required')">La descripción es obligatoria</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <!-- Quinta fila del formulario (para edición) -->
+          <div class="form-row" *ngIf="modoFormulario === 'editar'">
+            <div class="form-field">
+              <label>Estado</label>
+              <mat-form-field appearance="outline">
+                <mat-select formControlName="estado" placeholder="Seleccione un estado">
+                  <mat-option *ngFor="let estado of estadosIncidencia" [value]="estado">{{ estado }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix>assignment_turned_in</mat-icon>
+                <mat-error *ngIf="formularioIncidencia.get('estado')?.hasError('required')">El estado es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-field full-width">
+              <label>Medidas Adoptadas</label>
+              <mat-form-field appearance="outline">
+                <textarea matInput formControlName="medidasAdoptadas" placeholder="Describa las medidas adoptadas" rows="2"></textarea>
+                <mat-icon matPrefix>gavel</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button mat-stroked-button (click)="cerrarFormularioModal()">
+          <mat-icon>close</mat-icon>
+          <span>Cancelar</span>
+        </button>
+        <button mat-flat-button color="primary" (click)="guardarIncidencia()" [disabled]="formularioIncidencia.invalid">
+          <mat-icon>save</mat-icon>
+          <span>Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
