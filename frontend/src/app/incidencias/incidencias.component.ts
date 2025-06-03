@@ -63,10 +63,9 @@ export class IncidenciasComponent implements OnInit {
 
   incidencias: Incidencia[] = [];
   
-  incidenciaSeleccionada: Incidencia | null = null;
-  
+  incidenciaSeleccionada: Incidencia | null = null;  
   formularioVisible = false;
-  mostrarFormularioIntegrado = false;
+  mostrarFormularioModal = false;
   
   modoFormulario: 'nueva' | 'ver' | 'editar' = 'nueva';
   
@@ -168,8 +167,7 @@ export class IncidenciasComponent implements OnInit {
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private supabaseService: SupabaseService
-  ) {
-    this.formularioIncidencia = this.formBuilder.group({
+  ) {    this.formularioIncidencia = this.formBuilder.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
       tipoIncidencia: ['', Validators.required],
       alumnosImplicados: ['', Validators.required],
@@ -179,6 +177,7 @@ export class IncidenciasComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.maxLength(1000)]],
       fechaHora: [new Date(), Validators.required],
       estado: ['Pendiente', Validators.required],
+      medidasAdoptadas: [''],
       adjuntos: [[]]
     });
   }
@@ -201,10 +200,8 @@ export class IncidenciasComponent implements OnInit {
       })
       .finally(() => this.cargando = false);
   }
-    aplicarFiltros(): void {
+  aplicarFiltros(): void {
     this.cargando = true;
-    // Al aplicar filtros, cerramos el formulario integrado si está abierto
-    this.mostrarFormularioIntegrado = false;
     
     let incidenciasFiltradas = [...this.allIncidencias];
     
@@ -264,14 +261,11 @@ export class IncidenciasComponent implements OnInit {
       nivelUrgencia: '',
       fechaInicio: null,
       fechaFin: null,
-      terminoBusqueda: ''
-    };
+      terminoBusqueda: ''    };
     
-    // Ocultamos el formulario integrado al limpiar filtros
-    this.mostrarFormularioIntegrado = false;
     this.aplicarFiltros();
   }
-    nuevaIncidencia(): void {
+  nuevaIncidencia(): void {
     this.modoFormulario = 'nueva';
     this.incidenciaSeleccionada = null;
     
@@ -280,23 +274,17 @@ export class IncidenciasComponent implements OnInit {
       tipoIncidencia: this.tiposIncidencia[0],
       alumnosImplicados: '',
       profesorReporta: '',
-      nivelUrgencia: this.nivelesUrgencia[0],
+      nivelUrgencia: this.nivelesUrgencia[2], // Media como default
       lugarSuceso: this.lugaresSuceso[0],
       descripcion: '',
       fechaHora: new Date(),
       estado: 'Pendiente',
+      medidasAdoptadas: '',
       adjuntos: []
     });
     
-    // En lugar de mostrar el modal, mostrar el formulario integrado
-    this.mostrarFormularioIntegrado = true;
-    // Hacer scroll suave hacia el formulario
-    setTimeout(() => {
-      const elemento = document.querySelector('.formulario-integrado-card');
-      if (elemento) {
-        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+    this.formularioIncidencia.enable();
+    this.mostrarFormularioModal = true;
   }
     verIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'ver';
@@ -306,20 +294,13 @@ export class IncidenciasComponent implements OnInit {
     // Para ver detalles seguimos usando el modal
     this.formularioVisible = true;
   }
-    verDetalles(incidencia: Incidencia): void {
+  verDetalles(incidencia: Incidencia): void {
     this.modoFormulario = 'ver';
     this.incidenciaSeleccionada = { ...incidencia };
     this.formularioIncidencia.patchValue(incidencia);
     this.formularioIncidencia.disable(); // Deshabilitar campos para solo lectura
-    // Usar el formulario integrado en lugar del modal
-    this.mostrarFormularioIntegrado = true;
-    // Hacer scroll suave hacia el formulario
-    setTimeout(() => {
-      const elemento = document.querySelector('.formulario-integrado-card');
-      if (elemento) {
-        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+    // Usar el modal para ver detalles
+    this.mostrarFormularioModal = true;
   }
   
   // Métodos faltantes que se usan en la plantilla
@@ -389,20 +370,13 @@ export class IncidenciasComponent implements OnInit {
       this.editarIncidencia(this.incidenciaSeleccionada);
     }
   }
-    editarIncidencia(incidencia: Incidencia): void {
+  editarIncidencia(incidencia: Incidencia): void {
     this.modoFormulario = 'editar';
     this.incidenciaSeleccionada = { ...incidencia };
     this.formularioIncidencia.patchValue(incidencia);
     this.formularioIncidencia.enable();
-    // Usar el formulario integrado en lugar del modal
-    this.mostrarFormularioIntegrado = true;
-    // Hacer scroll suave hacia el formulario
-    setTimeout(() => {
-      const elemento = document.querySelector('.formulario-integrado-card');
-      if (elemento) {
-        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
+    // Usar el modal para editar
+    this.mostrarFormularioModal = true;
   }
     guardarIncidencia(): void {
     if (this.formularioIncidencia.invalid) {
@@ -416,16 +390,11 @@ export class IncidenciasComponent implements OnInit {
     
     if (this.modoFormulario === 'editar' && this.incidenciaSeleccionada?.id) {
       datos.id = this.incidenciaSeleccionada.id;
-      this.supabaseService.update(datos)
-        .then(updated => {
+      this.supabaseService.update(datos)        .then(updated => {
           this.allIncidencias = this.allIncidencias.map(inc => inc.id === updated.id ? updated : inc);
           this.mostrarMensaje('Incidencia actualizada correctamente');
-          // Cerrar formulario según dónde estemos
-          if (this.formularioVisible) {
-            this.cerrarFormulario();
-          } else if (this.mostrarFormularioIntegrado) {
-            this.cerrarFormularioIntegrado();
-          }
+          // Cerrar modal
+          this.cerrarFormularioModal();
           this.aplicarFiltros();
         })
         .catch(err => {
@@ -434,16 +403,11 @@ export class IncidenciasComponent implements OnInit {
         })
         .finally(() => this.cargando = false);
     } else {
-      this.supabaseService.create(datos)
-        .then(created => {
+      this.supabaseService.create(datos)        .then(created => {
           this.allIncidencias.unshift(created);
           this.mostrarMensaje('Incidencia creada correctamente');
-          // Cerrar formulario según dónde estemos
-          if (this.formularioVisible) {
-            this.cerrarFormulario();
-          } else if (this.mostrarFormularioIntegrado) {
-            this.cerrarFormularioIntegrado();
-          }
+          // Cerrar modal
+          this.cerrarFormularioModal();
           this.aplicarFiltros();
         })
         .catch(err => {
@@ -469,7 +433,7 @@ export class IncidenciasComponent implements OnInit {
       })
       .finally(() => this.cargando = false);
   }
-    cerrarFormulario(): void {
+  cerrarFormulario(): void {
     this.formularioVisible = false;
     this.incidenciaSeleccionada = null;
     setTimeout(() => {
@@ -482,8 +446,27 @@ export class IncidenciasComponent implements OnInit {
     }, 300);
   }
   
+  cerrarFormularioModal(): void {
+    this.mostrarFormularioModal = false;
+    this.incidenciaSeleccionada = null;
+    this.formularioIncidencia.enable();
+    this.formularioIncidencia.reset({
+      titulo: '',
+      tipoIncidencia: '',
+      alumnosImplicados: '',
+      profesorReporta: '',
+      nivelUrgencia: '',
+      lugarSuceso: '',
+      descripcion: '',
+      estado: 'Pendiente',
+      fechaHora: new Date(),
+      medidasAdoptadas: '',
+      adjuntos: []
+    });
+  }
+  
   cerrarFormularioIntegrado(): void {
-    this.mostrarFormularioIntegrado = false;
+    this.mostrarFormularioModal = false;
     this.incidenciaSeleccionada = null;
     this.formularioIncidencia.enable();
     this.formularioIncidencia.reset({
