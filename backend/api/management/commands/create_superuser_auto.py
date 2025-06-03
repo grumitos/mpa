@@ -2,6 +2,12 @@ import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Cargar variables de entorno del archivo .env
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 User = get_user_model()
 

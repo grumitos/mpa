@@ -9,10 +9,15 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
 .incidencias-container {
   width: 100%;
   padding: var(--spacing-lg);
+  margin: 0;
   background-color: var(--color-bg-lightest);
   color: var(--color-dark);
   font-family: var(--font-body);
   min-height: calc(100vh - 64px);
+  box-sizing: border-box;
+  margin-left: calc(-1 * var(--spacing-lg));
+  margin-right: calc(-1 * var(--spacing-lg));
+  width: calc(100% + 2 * var(--spacing-lg));
   
   @media (max-width: 768px) {
     padding: var(--spacing-md);
@@ -78,12 +83,16 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
 // Estilos de tarjetas
 .card {
   margin-bottom: var(--spacing-lg);
+  margin-left: 0;
+  margin-right: 0;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   overflow: hidden;
   transition: box-shadow $transition-standard;
+  width: 100%;
+  box-sizing: border-box;
   
   &:hover {
     box-shadow: var(--shadow-md);
@@ -167,9 +176,8 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
       color: var(--color-text-muted);
     }
   }
-  
-  mat-card-content {
-    padding: var(--spacing-lg);
+    mat-card-content {
+    padding: 0;
     
     &.collapsed {
       padding: 0;
@@ -191,122 +199,141 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
   }
 }
 
-// Estilos para los filtros - Versión más compacta
+// Estilos para los filtros - Unificado con .card
 .filter-card {
-  margin-bottom: var(--spacing-sm);
-  transition: all $transition-standard;
+  padding: 0;
+  // Unificar con .card ya existente
+  margin-bottom: var(--spacing-lg);
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: box-shadow $transition-standard;
+  width: 100%;
+  box-sizing: border-box;
   
   &:hover {
     box-shadow: var(--shadow-md);
   }
-  
-  mat-card-content {
-    padding: var(--spacing-xs) var(--spacing-md) !important;
+    mat-card-content {
+    padding: 0;
     
     &.collapsed {
-      padding: 0 !important;
+      padding: 0;
       max-height: 0;
       overflow: hidden;
       transition: all $transition-standard;
     }
   }
-    .filters-form {
-    .filter-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-xs);
+}
+
+// Estilos para formulario de filtros
+.filters-form {
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--color-border-light);
+  background-color: var(--color-bg-lightest);
+  
+  .filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+    
+    .filter-field {
+      min-width: 0; // Permitir que los campos se contraigan
       
-      &:last-of-type {
-        margin-bottom: 0;
+      @media (max-width: 768px) {
+        grid-column: 1 / -1; // Ocupar toda la fila en móvil
       }
       
-      .filter-field {
-        min-width: 0; // Permitir que los campos se contraigan
+      &.full-width {
+        grid-column: 1 / -1; // Ocupar toda la fila
+      }
+      
+      label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      mat-form-field {
+        width: 100%;
         
-        @media (max-width: 768px) {
-          grid-column: 1 / -1; // Ocupar toda la fila en móvil
+        .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+          transition: all $transition-standard;
         }
         
-        &.full-width {
-          grid-column: 1 / -1; // Ocupar toda la fila
-        }
-        
-        label {
-          display: block;
-          font-size: 0.65rem;
-          font-weight: 600;
-          color: var(--color-text-muted);
-          margin-bottom: 2px;
-          text-transform: uppercase;
-          letter-spacing: 0.3px;
-        }
-        
-        mat-form-field {
-          width: 100%;
-          
-          .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
-            transition: all $transition-standard;
-          }
-          
-          &:hover:not(.mat-focused) {
-            .mat-mdc-form-field-outline {
-              border-color: var(--color-primary);
-              opacity: 0.7;
-            }
+        &:hover:not(.mat-focused) {
+          .mat-mdc-form-field-outline {
+            border-color: var(--color-primary);
+            opacity: 0.7;
           }
         }
       }
     }
+  }
+  
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border-light);
     
-    .filter-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: var(--spacing-xs);
-      margin-top: var(--spacing-xs);
-      padding-top: var(--spacing-xs);
-      border-top: 1px solid var(--color-border-light);
+    @media (max-width: 576px) {
+      flex-direction: row;
+      justify-content: center;
+      gap: var(--spacing-sm);
       
-      @media (max-width: 576px) {
-        flex-direction: row;
-        justify-content: center;
-        gap: var(--spacing-xs);
+      button {
+        flex: 1;
+        max-width: 120px;
+      }
+    }
+    
+    button {
+      min-width: 100px;
+      height: 36px;
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 0.875rem;
+      transition: all $transition-standard;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.mat-primary {
+        background-color: var(--color-primary);
         
-        button {
-          flex: 1;
-          max-width: 100px;
+        &:hover {
+          background-color: var(--color-primary-hover);
         }
       }
       
-      button {
-        min-width: 80px;
-        height: 32px;
-        padding: var(--spacing-xs) var(--spacing-sm);
-        font-size: 0.8rem;
-        transition: all $transition-standard;
-        
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        &.mat-primary {
-          background-color: var(--color-primary);
-          
-          &:hover {
-            background-color: var(--color-primary-hover);
-          }
-        }
-        
-        mat-icon {
-          font-size: 16px;
-          width: 16px;
-          height: 16px;
-        }
-        
-        span {
-          font-size: 0.8rem;
-        }
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+      
+      span {
+        font-size: 0.875rem;
       }
     }
   }
@@ -315,6 +342,7 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
 // Estilos para la tabla de datos
 .data-card {
   transition: all $transition-standard;
+  padding: 0;
   
   &:hover {
     box-shadow: var(--shadow-md);
@@ -324,11 +352,14 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
     width: 100%;
     overflow-x: auto;
     border-radius: var(--border-radius-md);
+    padding: 0;
+    margin: 0;
     
     table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
+      margin: 0;
       
       th.mat-header-cell {
         font-weight: 600;
@@ -360,10 +391,11 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
         transition: all $transition-standard;
         vertical-align: middle;
       }
-      
-      tr.mat-row {
+        tr.mat-row {
         transition: all $transition-standard;
         cursor: pointer;
+        padding: 0;
+        margin: 0;
         
         &:hover {
           background-color: var(--color-hover);
