@@ -191,43 +191,55 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
   }
 }
 
-// Estilos para los filtros
+// Estilos para los filtros - Versión más compacta
 .filter-card {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
   transition: all $transition-standard;
   
   &:hover {
     box-shadow: var(--shadow-md);
   }
   
-  .filters-form {
+  mat-card-content {
+    padding: var(--spacing-xs) var(--spacing-md) !important;
+    
+    &.collapsed {
+      padding: 0 !important;
+      max-height: 0;
+      overflow: hidden;
+      transition: all $transition-standard;
+    }
+  }
+    .filters-form {
     .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-md);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-xs);
+      
+      &:last-of-type {
+        margin-bottom: 0;
+      }
       
       .filter-field {
-        flex: 1;
-        min-width: 200px;
+        min-width: 0; // Permitir que los campos se contraigan
         
         @media (max-width: 768px) {
-          min-width: 100%;
+          grid-column: 1 / -1; // Ocupar toda la fila en móvil
         }
         
         &.full-width {
-          width: 100%;
-          min-width: 100%;
+          grid-column: 1 / -1; // Ocupar toda la fila
         }
         
         label {
           display: block;
-          font-size: 0.75rem;
+          font-size: 0.65rem;
           font-weight: 600;
           color: var(--color-text-muted);
-          margin-bottom: 6px;
+          margin-bottom: 2px;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.3px;
         }
         
         mat-form-field {
@@ -250,26 +262,32 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
     .filter-actions {
       display: flex;
       justify-content: flex-end;
-      gap: var(--spacing-md);
-      margin-top: var(--spacing-md);
-      padding-top: var(--spacing-md);
+      gap: var(--spacing-xs);
+      margin-top: var(--spacing-xs);
+      padding-top: var(--spacing-xs);
       border-top: 1px solid var(--color-border-light);
       
       @media (max-width: 576px) {
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: center;
+        gap: var(--spacing-xs);
         
         button {
-          width: 100%;
+          flex: 1;
+          max-width: 100px;
         }
       }
       
       button {
-        min-width: 120px;
+        min-width: 80px;
+        height: 32px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.8rem;
         transition: all $transition-standard;
         
         &:hover {
           transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         &.mat-primary {
@@ -278,6 +296,16 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
           &:hover {
             background-color: var(--color-primary-hover);
           }
+        }
+        
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+        
+        span {
+          font-size: 0.8rem;
         }
       }
     }
@@ -974,11 +1002,62 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
   .mat-mdc-text-field-wrapper {
     background-color: transparent;
   }
+    // Hacer los form fields más compactos - Versión ultra compacta
+  .filter-card .mat-mdc-form-field {
+    .mat-mdc-form-field-infix {
+      min-height: unset;
+      padding: 4px 0; // Reducido de 8px a 4px
+    }
+    
+    .mat-mdc-form-field-wrapper {
+      padding-bottom: 0;
+    }
+    
+    .mat-mdc-text-field-wrapper {
+      height: 36px; // Reducido de 40px a 36px
+    }
+    
+    // Hacer más compactos los botones/iconos del datepicker y select
+    .mat-mdc-form-field-icon-prefix,
+    .mat-mdc-form-field-icon-suffix {
+      width: 36px; // Reducido para hacer más compacto
+      
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+    
+    // Reducir el espacio en los labels flotantes
+    .mat-mdc-floating-label {
+      font-size: 0.75rem;
+    }
+    
+    // Hacer más compacto el select trigger
+    .mat-mdc-select-trigger {
+      height: 36px;
+      min-height: 36px;
+    }
+    
+    // Reducir subscript wrapper
+    .mat-mdc-form-field-subscript-wrapper {
+      margin-top: 0;
+      min-height: unset;
+      font-size: 0.7rem;
+    }
+  }
   
-  // Corregir el padding interno
-  .mat-mdc-form-field-infix {
-    min-height: unset;
-    padding: 12px 0;
+  // Mantener el tamaño normal para el modal
+  .modal-container .mat-mdc-form-field {
+    .mat-mdc-form-field-infix {
+      min-height: unset;
+      padding: 12px 0;
+    }
+    
+    .mat-mdc-text-field-wrapper {
+      height: auto;
+    }
   }
   
   // Mejorar el aspecto de los selects
@@ -1053,5 +1132,16 @@ $transition-acceleration: 0.15s cubic-bezier(0.4, 0.0, 1, 1);
     font-size: 0.75rem;
     background-color: var(--color-dark);
     color: var(--color-white);
+  }
+    // Hacer más compactos los campos de fecha en filtros
+  .filter-card .mat-datepicker-toggle {
+    height: 36px;
+    width: 36px;
+    
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 }
