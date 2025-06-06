@@ -554,7 +554,9 @@ export class IncidenciasComponent implements OnInit {
       return;
     }    try {
       // Usar dynamic import para lazy loading
-      const XLSX = await import('xlsx-js-style');
+      // El modulo expone la libreria en la propiedad `default`
+      const XLSXModule = await import('xlsx-js-style');
+      const XLSX = XLSXModule.default;
       
       // Preparar los datos para xlsx-js-style
       const headers = [
