@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Incidencia } from '../incidencias/incidencias.component';
 import { Horario }    from '../horario/horario.component';
+import { environment } from '../../environments/environment';
 
 // Define Nota interface for use within the service and by components
 export interface Nota {
@@ -22,29 +23,44 @@ export interface Nota {
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
-  private supabase: SupabaseClient;
+  private supabase: SupabaseClient | null = null;
   private readonly TABLE_INCIDENCIAS = 'incidencias';
   private readonly TABLE_HORARIO     = 'horario';
   private readonly TABLE_NOTAS       = 'notas'; // New table name for notas
 
   constructor() {
-    const url = 'REDACTED_SUPABASE_URL';
-    const key = 'REDACTED_SUPABASE_ANON_KEY';
-    console.log('SupabaseService: Initializing client...');
+    const { supabaseUrl, supabaseAnonKey } = environment;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      // Sin configuración la app arranca igual; las llamadas a Supabase fallan con un mensaje claro.
+      console.warn(
+        'SupabaseService: faltan supabaseUrl y supabaseAnonKey en src/environments/. ' +
+        'Incidencias, horario y notas no funcionarán hasta completarlos.'
+      );
+      return;
+    }
     try {
       // Cambiar a true para que Supabase guarde la sesión y envíe el JWT en cada llamada
-      this.supabase = createClient(url, key, {
+      this.supabase = createClient(supabaseUrl, supabaseAnonKey, {
         auth: {
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: false
         }
       });
-      console.log('SupabaseService: Client initialized:', this.supabase ? 'OK' : 'FAILED');
     } catch (e) {
       console.error('SupabaseService: Error during client initialization:', e);
       throw e;
     }
+  }
+
+  /** Cliente de Supabase; falla con un mensaje claro si no está configurado. */
+  private get client(): SupabaseClient {
+    if (!this.supabase) {
+      throw new Error(
+        'Supabase no está configurado: completa supabaseUrl y supabaseAnonKey en src/environments/.'
+      );
+    }
+    return this.supabase;
   }
 
   // --- Incidencias ---
@@ -83,7 +99,7 @@ export class SupabaseService {
 
   async getAll(): Promise<Incidencia[]> {
     console.log('SupabaseService: getAll()');
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_INCIDENCIAS)
       .select('*');
     if (error) throw error;
@@ -91,7 +107,7 @@ export class SupabaseService {
   }
 
   async getById(id: number): Promise<Incidencia | null> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_INCIDENCIAS)
       .select('*')
       .eq('id', id)
@@ -102,7 +118,7 @@ export class SupabaseService {
 
   async create(inc: Incidencia): Promise<Incidencia> {
     const row = this.mapIncidenciaToRow(inc);
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_INCIDENCIAS)
       .insert(row)
       .select()
@@ -113,7 +129,7 @@ export class SupabaseService {
 
   async update(inc: Incidencia): Promise<Incidencia> {
     const row = this.mapIncidenciaToRow(inc);
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_INCIDENCIAS)
       .update(row)
       .eq('id', inc.id)
@@ -124,7 +140,7 @@ export class SupabaseService {
   }
 
   async delete(id: number): Promise<void> {
-    const { error } = await this.supabase
+    const { error } = await this.client
       .from(this.TABLE_INCIDENCIAS)
       .delete()
       .eq('id', id);
@@ -154,7 +170,7 @@ export class SupabaseService {
   }
 
   async getAllHorarios(): Promise<Horario[]> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_HORARIO)
       .select('*');
     if (error) throw error;
@@ -162,7 +178,7 @@ export class SupabaseService {
   }
 
   async getHorarioById(id: number): Promise<Horario | null> {
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_HORARIO)
       .select('*')
       .eq('id', id)
@@ -173,7 +189,7 @@ export class SupabaseService {
 
   async createHorario(h: Horario): Promise<Horario> {
     const row = this.mapHorarioToRow(h);
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_HORARIO)
       .insert(row)
       .select()
@@ -184,7 +200,7 @@ export class SupabaseService {
 
   async updateHorario(h: Horario): Promise<Horario> {
     const row = this.mapHorarioToRow(h);
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_HORARIO)
       .update(row)
       .eq('id', h.id)
@@ -195,7 +211,7 @@ export class SupabaseService {
   }
 
   async deleteHorario(id: number): Promise<void> {
-    const { error } = await this.supabase
+    const { error } = await this.client
       .from(this.TABLE_HORARIO)
       .delete()
       .eq('id', id);
@@ -245,7 +261,7 @@ export class SupabaseService {
 
   async getAllNotas(): Promise<Nota[]> {
     console.log('SupabaseService: getAllNotas()');
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_NOTAS)
       .select('*')
       .order('id', { ascending: false }); // Cambiado de 'created_at' a 'id' ya que es una columna que seguro existe
@@ -258,7 +274,7 @@ export class SupabaseService {
 
   async getNotaById(id: number): Promise<Nota | null> {
     console.log(`SupabaseService: getNotaById(${id})`);
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_NOTAS)
       .select('*')
       .eq('id', id)
@@ -275,7 +291,7 @@ export class SupabaseService {
     const row = this.mapNotaToRow(nota as Nota); // Cast because mapNotaToRow expects Nota with all fields
     delete row.id; // Ensure id is not sent for creation
 
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_NOTAS)
       .insert(row)
       .select()
@@ -297,7 +313,7 @@ export class SupabaseService {
     // Do not send id in the update payload itself, it's used in .eq()
     const { id, ...updateData } = row;
 
-    const { data, error } = await this.supabase
+    const { data, error } = await this.client
       .from(this.TABLE_NOTAS)
       .update(updateData)
       .eq('id', nota.id)
@@ -312,7 +328,7 @@ export class SupabaseService {
 
   async deleteNota(id: number): Promise<boolean> {
     console.log(`SupabaseService: deleteNota(${id})`);
-    const { error } = await this.supabase
+    const { error } = await this.client
       .from(this.TABLE_NOTAS)
       .delete()
       .eq('id', id);
