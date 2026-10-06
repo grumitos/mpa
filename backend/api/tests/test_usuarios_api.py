@@ -58,6 +58,40 @@ class UsuarioApiTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Usuario.objects.get(email='padre@example.com').check_password(PASSWORD))
 
+    def test_create_ignores_privilege_fields(self):
+        self.authenticate()
+        payload = {
+            'email': 'intruso@example.com',
+            'username': 'intruso',
+            'password': PASSWORD,
+            'is_superuser': True,
+            'is_staff': True,
+        }
+
+        response = self.client.post('/api/usuarios/', payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        created = Usuario.objects.get(email='intruso@example.com')
+        self.assertFalse(created.is_superuser)
+        self.assertFalse(created.is_staff)
+
+    def test_update_cannot_grant_privileges_and_hashes_a_new_password(self):
+        user = Usuario.objects.create_user(email='alumno@example.com', username='alumno', password=PASSWORD)
+        token = Token.objects.create(user=user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {token.key}')
+
+        response = self.client.patch(
+            f'/api/usuarios/{user.pk}/',
+            {'is_superuser': True, 'is_staff': True, 'password': 'otra-clave-2'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user.refresh_from_db()
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.is_staff)
+        self.assertTrue(user.check_password('otra-clave-2'))
+
     def test_create_rejects_a_duplicate_email(self):
         self.authenticate()
         payload = {'email': 'root@example.com', 'username': 'otro', 'password': PASSWORD}
