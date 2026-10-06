@@ -14,14 +14,34 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include # Asegúrate de importar include
-from rest_framework.authtoken.views import obtain_auth_token # Importar la vista de token
+from django.http import FileResponse, Http404
 from django.shortcuts import redirect
+from django.urls import include, path, re_path
+from rest_framework.authtoken.views import obtain_auth_token # Importar la vista de token
+
+
+def frontend_index(request, *args, **kwargs):
+    """Sirve index.html del frontend compilado para que el router de Angular resuelva la ruta.
+
+    Sin compilar (no existe frontend/dist), la raíz sigue yendo al admin y el resto da 404.
+    """
+    index = settings.FRONTEND_DIST / 'index.html'
+    if index.is_file():
+        response = FileResponse(open(index, 'rb'), content_type='text/html; charset=utf-8')
+        response['Cache-Control'] = 'no-cache'
+        return response
+    if request.path == '/':
+        return redirect('/admin/')
+    raise Http404('El frontend no está compilado: ejecuta "npx ng build" en frontend/.')
+
 
 urlpatterns = [
-    path('', lambda request: redirect('/admin/')),
     path('admin/', admin.site.urls),
     path('api/api-token-auth/', obtain_auth_token), # Ruta para obtener el token
     path('api/', include('api.urls')), # URLs de la app api
+    # Rutas del frontend (/, /dashboard, /incidencias...). Los archivos con extensión (js, css, ico)
+    # los sirve WhiteNoise desde la carpeta compilada y no llegan aquí.
+    re_path(r'^(?!api/|admin/|static/)[^.]*$', frontend_index),
 ]

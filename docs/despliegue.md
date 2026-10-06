@@ -5,6 +5,15 @@ configuración que se usaron siguen en el repositorio; esta guía resume cómo c
 configuración se pasa por variables de entorno, así que no hay que editar código para cambiar de
 servidor (salvo `apiUrl` en el frontend).
 
+## Un solo servicio: Django sirve el frontend
+
+Si existe `frontend/dist/mpa/browser` (resultado de `npx ng build`), Django lo sirve en la raíz:
+WhiteNoise entrega los archivos compilados y `mpa_project.urls` devuelve `index.html` para las rutas
+de Angular. La API queda en `/api/` y el panel de administración en `/admin/`, todo en el mismo
+origen, así que `apiUrl` es `/api` y no hace falta CORS. Es lo que usa `run.bat` en local. En un
+servidor basta con compilar el frontend (`cd frontend`, `npm ci`, `npx ng build`) antes de arrancar
+el backend.
+
 ## Backend en Render
 
 Servicio web de Python con estos comandos, ejecutados desde la raíz del repositorio:
