@@ -1,36 +1,33 @@
-# Visual Studio Code
-.vscode/
-ejemplo/
-
-# Python / Django
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-db.sqlite3
-/static/
-/media/
-*.log
+# Secretos
 .env
+.env.*
+!.env.example
 
-# Entorno virtual de Python
-backend/venv/
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Angular / Node
+# Node y Angular
 node_modules/
 dist/
 .angular/
-npm-debug.log
-yarn-error.log
-e2e/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+npm-debug.log*
 
-# Archivos de sistema operativo
+# Datos locales y salidas generadas
+backend/db.sqlite3
+backend/staticfiles/
+backend/media/
+*.log
+
+# Sistema y editores
 .DS_Store
 Thumbs.db
-
-# Ignorar package-lock.json en el raíz
-/package-lock.json
+.idea/
+.vscode/
