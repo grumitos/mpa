@@ -2,24 +2,23 @@ import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
-from pathlib import Path
-from dotenv import load_dotenv
-
-# Cargar variables de entorno del archivo .env
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 User = get_user_model()
+
+# Valor de ejemplo de .env.example: se trata como si la contraseña faltara.
+PLACEHOLDER_PASSWORD = 'tu_clave_aqui'
+
 
 class Command(BaseCommand):
     help = 'Crear superusuario automáticamente usando variables de entorno'
 
     def handle(self, *args, **options):
+        # Las variables llegan del entorno o del .env que carga settings.py.
         email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
         password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
-        username = os.environ.get('DJANGO_SUPERUSER_USERNAME', email)  # Usar email como username por defecto
+        username = os.environ.get('DJANGO_SUPERUSER_USERNAME') or email  # Usar email como username por defecto
 
-        if not email or not password:
+        if not email or not password or password == PLACEHOLDER_PASSWORD:
             self.stdout.write(
                 self.style.WARNING(
                     'Variables de entorno DJANGO_SUPERUSER_EMAIL y DJANGO_SUPERUSER_PASSWORD son requeridas'
@@ -36,16 +35,16 @@ class Command(BaseCommand):
                 return
 
             # Crear superusuario
-            superuser = User.objects.create_superuser(
+            User.objects.create_superuser(
                 email=email,
                 password=password,
                 username=username
             )
-            
+
             self.stdout.write(
                 self.style.SUCCESS(f'Superusuario creado exitosamente: {email}')
             )
-            
+
         except IntegrityError as e:
             self.stdout.write(
                 self.style.ERROR(f'Error al crear superusuario: {e}')

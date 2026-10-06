@@ -12,25 +12,46 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from .env file (only exists in local development)
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+# Carga el .env de la raíz del repositorio (solo existe en local; en un
+# despliegue se usan variables de entorno reales, que tienen prioridad).
+load_dotenv(BASE_DIR.parent / '.env')
+
+
+def env_list(name, default):
+    """Lee una lista separada por comas desde el entorno."""
+    items = [item.strip() for item in os.getenv(name, '').split(',')]
+    return [item for item in items if item] or default
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'REDACTED_DJANGO_SECRET_KEY')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['mpa-5lha.onrender.com', 'localhost', '127.0.0.1']
+# SECURITY WARNING: keep the secret key used in production secret!
+# La clave se lee siempre del entorno. Si falta, con DEBUG=True se genera una
+# efímera (cambia en cada arranque, así que las sesiones del admin no
+# sobreviven a un reinicio); sin DEBUG no se arranca, para no usar nunca una
+# clave conocida en un despliegue.
+SECRET_KEY = os.getenv('SECRET_KEY', '').strip()
+if not SECRET_KEY or SECRET_KEY == 'tu_clave_aqui':
+    if not DEBUG:
+        raise ImproperlyConfigured(
+            'Falta la variable de entorno SECRET_KEY. Defínela o, solo en '
+            'desarrollo local, activa DEBUG=True para usar una clave efímera.'
+        )
+    SECRET_KEY = get_random_secret_key()
+
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', ['localhost', '127.0.0.1'])
 
 
 # Application definition
@@ -137,12 +158,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'api.Usuario'
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'https://mpa-two.vercel.app',
-]
+# Solo hace falta si el frontend se sirve desde otro origen (p. ej. ng serve en
+# el puerto 4200 o un despliegue aparte); el frontend compilado que sirve
+# Django usa el mismo origen que la API.
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS', ['http://localhost:4200'])
 
-# Para Vercel, también puedes permitir todos los orígenes de Vercel (opcional):
 CORS_ALLOW_ALL_ORIGINS = False
 
 # Configuraciones de seguridad para producción
@@ -151,7 +171,3 @@ SECURE_SSL_REDIRECT = False  # Render maneja SSL automáticamente
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-
-# Configuración de puerto para Render
-import os
-PORT = os.environ.get('PORT', 8000)
